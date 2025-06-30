@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Coin - التحقق</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section class="verify-section">
+      <h1 class="section-title">التحقق من الحساب</h1>
+      
+      <p class="section-subtitle" style="text-align: center; color: var(--sc-text-gray); margin-bottom: 2rem;">
+        يرجى التحقق من حسابك باستخدام إحدى الطرق التالية.
+      </p>
+      
+      <div class="verify-methods">
+        <!-- التحقق عبر تيليجرام -->
+        <div class="verify-card">
+          <div class="verify-icon">
+            <i class="fab fa-telegram"></i>
+          </div>
+          <h2 class="verify-title">التحقق عبر تيليجرام</h2>
+          <p class="verify-description">
+            قم بالتحقق من حسابك باستخدام حساب تيليجرام الخاص بك. سيتم إرسال رمز تحقق إلى بوت تيليجرام الخاص بنا.
+          </p>
+          <button class="btn btn-primary" onclick="verifyWithTelegram()">
+            <i class="fab fa-telegram"></i> التحقق عبر تيليجرام
+          </button>
+        </div>
+        
+        <!-- التحقق عبر محفظة TON -->
+        <div class="verify-card">
+          <div class="verify-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <h2 class="verify-title">التحقق عبر محفظة TON</h2>
+          <p class="verify-description">
+            قم بالتحقق من حسابك باستخدام محفظة TON الخاصة بك. سيتم إرسال رسالة تحقق إلى محفظتك.
+          </p>
+          <button class="btn btn-primary" onclick="verifyWithTON()">
+            <i class="fas fa-wallet"></i> التحقق عبر محفظة TON
+          </button>
+        </div>
+      </div>
+      
+      <!-- نموذج التحقق عبر تيليجرام -->
+      <div class="verify-form" id="telegram-form" style="display: none;">
+        <h2 class="verify-form-title">التحقق عبر تيليجرام</h2>
+        
+        <div class="form-steps">
+          <div class="form-step active">
+            <div class="step-number">1</div>
+            <div class="step-text">إدخال معرف تيليجرام</div>
+          </div>
+          <div class="form-step">
+            <div class="step-number">2</div>
+            <div class="step-text">التواصل مع البوت</div>
+          </div>
+          <div class="form-step">
+            <div class="step-number">3</div>
+            <div class="step-text">إدخال رمز التحقق</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">معرف تيليجرام الخاص بك:</label>
+          <input type="text" class="form-input" id="telegram-username" placeholder="مثال: @username">
+        </div>
+        
+        <div class="telegram-bot-info">
+          <div class="bot-icon">
+            <i class="fab fa-telegram"></i>
+          </div>
+          <div class="bot-details">
+            <div class="bot-name">Smart Coin Bot</div>
+            <div class="bot-username">@SmartCoin_Bot</div>
+            <div class="bot-token">توكن البوت: 7878479949:AAFcjuxYJ9lWEC2OMxuvTQGv2ur082X7xUE</div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" onclick="proceedToTelegramBot()">
+          متابعة
+        </button>
+      </div>
+      
+      <!-- نموذج التحقق عبر محفظة TON -->
+      <div class="verify-form" id="ton-form" style="display: none;">
+        <h2 class="verify-form-title">التحقق عبر محفظة TON</h2>
+        
+        <div class="form-steps">
+          <div class="form-step active">
+            <div class="step-number">1</div>
+            <div class="step-text">إدخال عنوان المحفظة</div>
+          </div>
+          <div class="form-step">
+            <div class="step-number">2</div>
+            <div class="step-text">توقيع الرسالة</div>
+          </div>
+          <div class="form-step">
+            <div class="step-number">3</div>
+            <div class="step-text">التحقق من التوقيع</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">عنوان محفظة TON الخاص بك:</label>
+          <input type="text" class="form-input" id="ton-address" placeholder="مثال: EQCcR3-l9mfJ8O_1vIuI80NSx6WcRYxIvY-09KNaQjhXbUDN">
+        </div>
+        
+        <div class="wallet-message">
+          <div class="message-label">الرسالة المطلوب توقيعها:</div>
+          <div class="message-content">
+            I confirm that I am the owner of this TON wallet and I want to verify my Smart Coin account. Timestamp: <span id="timestamp"></span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="copyMessage()">
+            <i class="fas fa-copy"></i> نسخ الرسالة
+          </button>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">التوقيع:</label>
+          <input type="text" class="form-input" id="ton-signature" placeholder="الصق التوقيع هنا بعد توقيع الرسالة في محفظتك">
+        </div>
+        
+        <button class="btn btn-primary" onclick="verifyTONSignature()">
+          تحقق
+        </button>
+      </div>
+      
+      <!-- نموذج إدخال رمز التحقق -->
+      <div class="verify-form" id="code-form" style="display: none;">
+        <h2 class="verify-form-title">إدخال رمز التحقق</h2>
+        
+        <p style="text-align: center; color: var(--sc-text-gray); margin-bottom: 2rem;">
+          تم إرسال رمز تحقق إلى بوت تيليجرام الخاص بنا. يرجى إدخال الرمز أدناه.
+        </p>
+        
+        <div class="form-group">
+          <label class="form-label">رمز التحقق:</label>
+          <div class="verification-code-input">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 0)">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 1)">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 2)">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 3)">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 4)">
+            <input type="text" maxlength="1" class="code-digit" onkeyup="moveToNext(this, 5)">
+          </div>
+        </div>
+        
+        <div class="resend-code">
+          <span id="resend-timer">إعادة إرسال الرمز بعد 60 ثانية</span>
+          <button class="btn btn-text" id="resend-button" onclick="resendCode()" disabled>
+            إعادة إرسال الرمز
+          </button>
+        </div>
+        
+        <button class="btn btn-primary" onclick="verifyCode()">
+          تحقق
+        </button>
+      </div>
+    </section>
+  </div>
+  
+  <!-- نافذة النجاح المنبثقة -->
+  <div id="success-modal" class="modal">
+    <div class="modal-content">
+      <div style="text-align: center;">
+        <div style="font-size: 4rem; color: var(--sc-success); margin-bottom: 1rem;">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--sc-success);">تم التحقق بنجاح!</h2>
+        <p style="color: var(--sc-text-gray); margin-bottom: 2rem; font-size: 1.2rem;">
+          تم التحقق من حسابك بنجاح. يمكنك الآن الاستمتاع بجميع ميزات Smart Coin.
+        </p>
+        <button class="btn btn-primary" onclick="redirectToHome()">
+          العودة إلى الصفحة الرئيسية
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // تحديث الطابع الزمني
+    document.getElementById('timestamp').textContent = new Date().toISOString();
+    
+    // التحقق عبر تيليجرام
+    function verifyWithTelegram() {
+      document.querySelectorAll('.verify-form').forEach(form => {
+        form.style.display = 'none';
+      });
+      document.getElementById('telegram-form').style.display = 'block';
+      
+      // التمرير إلى النموذج
+      document.getElementById('telegram-form').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // التحقق عبر محفظة TON
+    function verifyWithTON() {
+      document.querySelectorAll('.verify-form').forEach(form => {
+        form.style.display = 'none';
+      });
+      document.getElementById('ton-form').style.display = 'block';
+      
+      // التمرير إلى النموذج
+      document.getElementById('ton-form').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // المتابعة إلى بوت تيليجرام
+    function proceedToTelegramBot() {
+      const username = document.getElementById('telegram-username').value;
+      
+      if (!username) {
+        alert('يرجى إدخال معرف تيليجرام الخاص بك.');
+        return;
+      }
+      
+      // محاكاة الاتصال ببوت تيليجرام
+      alert('سيتم توجيهك إلى بوت تيليجرام الخاص بنا. يرجى اتباع التعليمات هناك للحصول على رمز التحقق.');
+      
+      // عرض نموذج إدخال الرمز
+      document.querySelectorAll('.verify-form').forEach(form => {
+        form.style.display = 'none';
+      });
+      document.getElementById('code-form').style.display = 'block';
+      
+      // بدء العد التنازلي لإعادة إرسال الرمز
+      startResendTimer();
+      
+      // التمرير إلى النموذج
+      document.getElementById('code-form').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // نسخ الرسالة
+    function copyMessage() {
+      const message = document.querySelector('.message-content').textContent;
+      navigator.clipboard.writeText(message).then(() => {
+        alert('تم نسخ الرسالة بنجاح!');
+      });
+    }
+    
+    // التحقق من توقيع محفظة TON
+    function verifyTONSignature() {
+      const address = document.getElementById('ton-address').value;
+      const signature = document.getElementById('ton-signature').value;
+      
+      if (!address) {
+        alert('يرجى إدخال عنوان محفظة TON الخاص بك.');
+        return;
+      }
+      
+      if (!signature) {
+        alert('يرجى إدخال التوقيع.');
+        return;
+      }
+      
+      // محاكاة التحقق من التوقيع
+      showSuccessModal();
+    }
+    
+    // التحقق من الرمز
+    function verifyCode() {
+      const codeDigits = document.querySelectorAll('.code-digit');
+      let code = '';
+      
+      codeDigits.forEach(digit => {
+        code += digit.value;
+      });
+      
+      if (code.length !== 6) {
+        alert('يرجى إدخال رمز التحقق المكون من 6 أرقام.');
+        return;
+      }
+      
+      // محاكاة التحقق من الرمز
+      showSuccessModal();
+    }
+    
+    // الانتقال بين حقول رمز التحقق
+    function moveToNext(field, index) {
+      const codeDigits = document.querySelectorAll('.code-digit');
+      
+      if (field.value.length === 1 && index < 5) {
+        codeDigits[index + 1].focus();
+      }
+    }
+    
+    // بدء العد التنازلي لإعادة إرسال الرمز
+    function startResendTimer() {
+      const resendTimer = document.getElementById('resend-timer');
+      const resendButton = document.getElementById('resend-button');
+      let seconds = 60;
+      
+      const timer = setInterval(() => {
+        seconds--;
+        resendTimer.textContent = `إعادة إرسال الرمز بعد ${seconds} ثانية`;
+        
+        if (seconds <= 0) {
+          clearInterval(timer);
+          resendTimer.style.display = 'none';
+          resendButton.disabled = false;
+        }
+      }, 1000);
+    }
+    
+    // إعادة إرسال الرمز
+    function resendCode() {
+      const resendTimer = document.getElementById('resend-timer');
+      const resendButton = document.getElementById('resend-button');
+      
+      // محاكاة إعادة إرسال الرمز
+      alert('تم إعادة إرسال رمز التحقق!');
+      
+      // إعادة تعيين العد التنازلي
+      resendTimer.style.display = 'inline';
+      resendButton.disabled = true;
+      startResendTimer();
+    }
+    
+    // عرض نافذة النجاح
+    function showSuccessModal() {
+      document.getElementById('success-modal').style.display = 'flex';
+    }
+    
+    // إعادة التوجيه إلى الصفحة الرئيسية
+    function redirectToHome() {
+      window.location.href = 'index.html';
+    }
+    
+    // إغلاق النافذة المنبثقة عند النقر خارجها
+    window.addEventListener('click', (event) => {
+      const successModal = document.getElementById('success-modal');
+      if (event.target === successModal) {
+        successModal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المتجر - Smart Coin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .store-container {
+      padding: 20px;
+      margin-bottom: 100px;
+    }
+    
+    .store-title {
+      color: #FFD700;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .store-subtitle {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .packages-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 3rem;
+    }
+    
+    .package-card {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .package-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+    }
+    
+    .package-title {
+      color: #FFD700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .package-price {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .package-price span {
+      font-size: 1rem;
+      color: #aaa;
+    }
+    
+    .package-features {
+      margin-bottom: 1.5rem;
+    }
+    
+    .package-feature {
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .package-feature i {
+      color: #FFD700;
+      margin-left: 10px;
+    }
+    
+    .package-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .buy-button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .buy-button:hover {
+      background-color: #e5c100;
+    }
+    
+    .buy-button i {
+      margin-left: 10px;
+    }
+    
+    .gift-cards-container {
+      margin-top: 3rem;
+    }
+    
+    .gift-cards-title {
+      color: #FFD700;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .gift-cards-subtitle {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .gift-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .gift-card {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gift-card-locked {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .gift-card-locked-text {
+      color: #FFD700;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .gift-card-timer {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .gift-card-image {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+    }
+    
+    .gift-card-title {
+      color: #FFD700;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .gift-card-price {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .gift-card-price span {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    
+    .gift-card-button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    
+    .gift-card-button:hover {
+      background-color: #e5c100;
+    }
+    
+    .gift-card-button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+    
+    .countdown-timer {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 5px;
+    }
+    
+    .countdown-item {
+      background-color: #222;
+      padding: 5px;
+      border-radius: 3px;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .locked-icon {
+      font-size: 2rem;
+      color: #FFD700;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- رأس الصفحة -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="Smart Coin Logo">
+      </div>
+      
+      <nav class="nav">
+        <a href="index.html" class="nav-link">الرئيسية</a>
+        <a href="earn.html" class="nav-link">التعدين</a>
+        <a href="store.html" class="nav-link active">المتجر</a>
+        <a href="referrals.html" class="nav-link">الإحالات</a>
+        <a href="tasks.html" class="nav-link">المهام</a>
+        <a href="wallet.html" class="nav-link">المحفظة</a>
+        <a href="wheel.html" class="nav-link">عجلة الحظ</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- قسم المتجر -->
+  <section class="store-container">
+    <h1 class="store-title">متجر Smart Coin</h1>
+    <p class="store-subtitle">اشترِ حزم تعدين لزيادة أرباحك اليومية أو استبدل عملاتك ببطاقات هدايا</p>
+    
+    <h2 class="store-title">حزم زيادة التعدين</h2>
+    <div class="packages-container">
+      <!-- الحزمة الأساسية -->
+      <div class="package-card">
+        <h3 class="package-title">الحزمة الأساسية</h3>
+        <div class="package-price">$1 <span>/ شهرياً</span></div>
+        <div class="package-features">
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>معدل تعدين 20 عملة يومياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>600 عملة شهرياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>دعم على مدار الساعة</span>
+          </div>
+        </div>
+        <div class="package-buttons">
+          <button class="buy-button" data-package="1" data-payment="ton">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام TON
+          </button>
+          <button class="buy-button" data-package="1" data-payment="sol">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام Solana
+          </button>
+        </div>
+      </div>
+      
+      <!-- الحزمة المتوسطة -->
+      <div class="package-card">
+        <h3 class="package-title">الحزمة المتوسطة</h3>
+        <div class="package-price">$2 <span>/ شهرياً</span></div>
+        <div class="package-features">
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>معدل تعدين 35 عملة يومياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>1050 عملة شهرياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>دعم على مدار الساعة</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>أولوية في الإصدارات الجديدة</span>
+          </div>
+        </div>
+        <div class="package-buttons">
+          <button class="buy-button" data-package="2" data-payment="ton">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام TON
+          </button>
+          <button class="buy-button" data-package="2" data-payment="sol">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام Solana
+          </button>
+        </div>
+      </div>
+      
+      <!-- الحزمة المتقدمة -->
+      <div class="package-card">
+        <h3 class="package-title">الحزمة المتقدمة</h3>
+        <div class="package-price">$5 <span>/ شهرياً</span></div>
+        <div class="package-features">
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>معدل تعدين 50 عملة يومياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>1500 عملة شهرياً</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>دعم VIP</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>أولوية في الإصدارات الجديدة</span>
+          </div>
+          <div class="package-feature">
+            <i class="fas fa-check"></i>
+            <span>مكافآت حصرية</span>
+          </div>
+        </div>
+        <div class="package-buttons">
+          <button class="buy-button" data-package="3" data-payment="ton">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام TON
+          </button>
+          <button class="buy-button" data-package="3" data-payment="sol">
+            <i class="fas fa-wallet"></i>
+            شراء باستخدام Solana
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="gift-cards-container">
+      <h2 class="gift-cards-title">بطاقات الهدايا</h2>
+      <p class="gift-cards-subtitle">استبدل عملات Smart Coin ببطاقات هدايا من متاجر شهيرة</p>
+      
+      <div class="gift-cards-grid">
+        <!-- بطاقة Google Play -->
+        <div class="gift-card">
+          <div class="gift-card-locked">
+            <i class="fas fa-lock locked-icon"></i>
+            <div class="gift-card-locked-text">متاح بعد إدراج العملة</div>
+            <div class="gift-card-timer">متبقي للإدراج:</div>
+            <div class="countdown-timer">
+              <div class="countdown-item" id="days-gp">40</div>
+              <div class="countdown-item" id="hours-gp">00</div>
+              <div class="countdown-item" id="minutes-gp">00</div>
+              <div class="countdown-item" id="seconds-gp">00</div>
+            </div>
+          </div>
+          <img src="https://play-lh.googleusercontent.com/RbQy0Xf4TW-UVpnFNiVzPEcqr-jxfReVGxbwzLpWCrG3zGKjQQqQkF2VzPFu9Bfwy3M" alt="Google Play" class="gift-card-image">
+          <h3 class="gift-card-title">بطاقة Google Play</h3>
+          <div class="gift-card-price">500 <span>SM</span></div>
+          <button class="gift-card-button" disabled>شراء</button>
+        </div>
+        
+        <!-- بطاقة Amazon -->
+        <div class="gift-card">
+          <div class="gift-card-locked">
+            <i class="fas fa-lock locked-icon"></i>
+            <div class="gift-card-locked-text">متاح بعد إدراج العملة</div>
+            <div class="gift-card-timer">متبقي للإدراج:</div>
+            <div class="countdown-timer">
+              <div class="countdown-item" id="days-am">40</div>
+              <div class="countdown-item" id="hours-am">00</div>
+              <div class="countdown-item" id="minutes-am">00</div>
+              <div class="countdown-item" id="seconds-am">00</div>
+            </div>
+          </div>
+          <img src="https://m.media-amazon.com/images/G/01/gc/designs/livepreview/a_generic_white_10_us_noto_email_v2016_us-main._CB627448186_.png" alt="Amazon" class="gift-card-image">
+          <h3 class="gift-card-title">بطاقة Amazon</h3>
+          <div class="gift-card-price">1000 <span>SM</span></div>
+          <button class="gift-card-button" disabled>شراء</button>
+        </div>
+        
+        <!-- بطاقة Steam -->
+        <div class="gift-card">
+          <div class="gift-card-locked">
+            <i class="fas fa-lock locked-icon"></i>
+            <div class="gift-card-locked-text">متاح بعد إدراج العملة</div>
+            <div class="gift-card-timer">متبقي للإدراج:</div>
+            <div class="countdown-timer">
+              <div class="countdown-item" id="days-st">40</div>
+              <div class="countdown-item" id="hours-st">00</div>
+              <div class="countdown-item" id="minutes-st">00</div>
+              <div class="countdown-item" id="seconds-st">00</div>
+            </div>
+          </div>
+          <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/items/2159260/bb28f1c9a89ebbf5854b21b3b1a8b3e9c7c2d9a3.png" alt="Steam" class="gift-card-image">
+          <h3 class="gift-card-title">بطاقة Steam</h3>
+          <div class="gift-card-price">800 <span>SM</span></div>
+          <button class="gift-card-button" disabled>شراء</button>
+        </div>
+        
+        <!-- بطاقة PlayStation -->
+        <div class="gift-card">
+          <div class="gift-card-locked">
+            <i class="fas fa-lock locked-icon"></i>
+            <div class="gift-card-locked-text">متاح بعد إدراج العملة</div>
+            <div class="gift-card-timer">متبقي للإدراج:</div>
+            <div class="countdown-timer">
+              <div class="countdown-item" id="days-ps">40</div>
+              <div class="countdown-item" id="hours-ps">00</div>
+              <div class="countdown-item" id="minutes-ps">00</div>
+              <div class="countdown-item" id="seconds-ps">00</div>
+            </div>
+          </div>
+          <img src="https://gmedia.playstation.com/is/image/SIEPDC/ps-store-gift-card-listing-thumb-01-10sep20?$facebook$" alt="PlayStation" class="gift-card-image">
+          <h3 class="gift-card-title">بطاقة PlayStation</h3>
+          <div class="gift-card-price">1200 <span>SM</span></div>
+          <button class="gift-card-button" disabled>شراء</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- تذييل الصفحة -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="assets/images/logo.png" alt="Smart Coin Logo" width="80">
+      </div>
+      
+      <div class="footer-links">
+        <a href="#" class="footer-link">الشروط والأحكام</a>
+        <a href="#" class="footer-link">سياسة الخصوصية</a>
+        <a href="#" class="footer-link">اتصل بنا</a>
+      </div>
+      
+      <p class="copyright">© 2025 Smart Coin. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+  
+  <!-- شريط التنقل السفلي (للأجهزة المحمولة) -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="referrals.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-user-plus"></i></div>
+      <div class="nav-text">الإحالات</div>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-text">المحفظة</div>
+    </a>
+    <a href="wheel.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-dharmachakra"></i></div>
+      <div class="nav-text">عجلة الحظ</div>
+    </a>
+  </nav>
+  
+  <script src="js/store-payment.js"></script>
+  <script>
+    // عداد تنازلي لبطاقات الهدايا
+    function updateCountdown() {
+      // تاريخ الإدراج (بعد 40 يوم من الآن)
+      const launchDate = new Date();
+      launchDate.setDate(launchDate.getDate() + 40);
+      
+      // الوقت الحالي
+      const now = new Date();
+      
+      // الفرق بالمللي ثانية
+      const diff = launchDate - now;
+      
+      // حساب الأيام والساعات والدقائق والثواني
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      // تحديث العدادات
+      document.getElementById('days-gp').textContent = days;
+      document.getElementById('hours-gp').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes-gp').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds-gp').textContent = seconds.toString().padStart(2, '0');
+      
+      document.getElementById('days-am').textContent = days;
+      document.getElementById('hours-am').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes-am').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds-am').textContent = seconds.toString().padStart(2, '0');
+      
+      document.getElementById('days-st').textContent = days;
+      document.getElementById('hours-st').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes-st').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds-st').textContent = seconds.toString().padStart(2, '0');
+      
+      document.getElementById('days-ps').textContent = days;
+      document.getElementById('hours-ps').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes-ps').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds-ps').textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    // تحديث العداد كل ثانية
+    setInterval(updateCountdown, 1000);
+    
+    // تحديث العداد عند تحميل الصفحة
+    updateCountdown();
+  </script>
+</body>
+</html>

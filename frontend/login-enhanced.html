@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - Smart Coin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/enhanced-style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+      color: #fff;
+      font-family: 'Tajawal', 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* خلفية متحركة مذهلة */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 188, 212, 0.15) 0%, transparent 50%);
+      animation: backgroundShift 15s ease-in-out infinite;
+    }
+
+    /* جزيئات متحركة */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #FFD700, transparent),
+        radial-gradient(2px 2px at 40px 70px, #9C27B0, transparent),
+        radial-gradient(1px 1px at 90px 40px, #00BCD4, transparent);
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      animation: particleFloat 25s linear infinite;
+      opacity: 0.4;
+    }
+    
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .logo-container {
+      margin-bottom: 30px;
+      text-align: center;
+      animation: logoFloat 6s ease-in-out infinite;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(145deg, #1a1a1a, #000);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #FFD700;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.5),
+        inset 0 0 30px rgba(255, 215, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      animation: logoGlow 4s ease-in-out infinite;
+      margin: 0 auto;
+    }
+
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, #FFD700, transparent);
+      animation: logoRotate 4s linear infinite;
+      opacity: 0.3;
+    }
+
+    .logo img {
+      width: 70%;
+      height: auto;
+      z-index: 2;
+      position: relative;
+    }
+    
+    .login-title {
+      color: #FFD700;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      background: linear-gradient(45deg, #FFD700, #FF9800, #FFD700);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: titleGradient 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .gold-underline {
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37);
+      margin: 0 auto 2rem;
+      border-radius: 4px;
+      animation: underlineGlow 2s ease-in-out infinite;
+    }
+    
+    .login-subtitle {
+      color: #fff;
+      font-size: 1.3rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      animation: subtitleFade 2s ease-in-out;
+      opacity: 0.9;
+    }
+    
+    .login-methods {
+      width: 100%;
+      max-width: 450px;
+      background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(0, 0, 0, 0.9));
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(255, 215, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      backdrop-filter: blur(10px);
+      animation: cardSlideIn 0.8s ease-out;
+    }
+    
+    .login-method {
+      margin-bottom: 2rem;
+    }
+    
+    .login-method-title {
+      color: #FFD700;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .login-method-description {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+    
+    .telegram-login-container {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    .telegram-login-btn {
+      background: linear-gradient(135deg, #0088cc, #0099dd);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 
+        0 8px 25px rgba(0, 136, 204, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .telegram-login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .telegram-login-btn:hover::before {
+      left: 100%;
+    }
+
+    .telegram-login-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 12px 35px rgba(0, 136, 204, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .telegram-login-btn:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    .telegram-icon {
+      font-size: 1.3rem;
+      animation: iconBounce 2s ease-in-out infinite;
+    }
+
+    .ton-login-btn {
+      background: linear-gradient(135deg, #0088cc, #00aaff);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 
+        0 8px 25px rgba(0, 136, 204, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      width: 100%;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .ton-login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .ton-login-btn:hover::before {
+      left: 100%;
+    }
+
+    .ton-login-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 12px 35px rgba(0, 170, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .ton-icon {
+      font-size: 1.3rem;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    
+    .login-note {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 25px;
+      text-align: center;
+      line-height: 1.5;
+    }
+    
+    .loading-indicator {
+      display: none;
+      text-align: center;
+      margin-top: 25px;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 215, 0, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #FFD700;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    .loading-text {
+      color: #FFD700;
+      font-weight: bold;
+      animation: textPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes textPulse {
+      0%, 100% {
+        opacity: 0.7;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    /* تأثيرات إضافية */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #666;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #FFD700, transparent);
+    }
+
+    .divider span {
+      padding: 0 15px;
+      font-size: 0.9rem;
+      color: #FFD700;
+    }
+
+    /* إخفاء العناصر غير المرغوب فيها */
+    .bottom-nav,
+    .header,
+    .footer {
+      display: none !important;
+    }
+
+    /* تأثيرات الاستجابة */
+    @media (max-width: 768px) {
+      .login-title {
+        font-size: 2.5rem;
+      }
+      
+      .login-methods {
+        padding: 30px 25px;
+        margin: 0 15px;
+      }
+      
+      .telegram-login-btn,
+      .ton-login-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-title {
+        font-size: 2rem;
+      }
+      
+      .login-subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .login-methods {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo-container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="Smart Coin Logo">
+      </div>
+    </div>
+    
+    <h1 class="login-title">تسجيل الدخول</h1>
+    <div class="gold-underline"></div>
+    
+    <div class="login-subtitle">مرحباً بك في منصة SmartCoin الذكية</div>
+    
+    <div class="login-methods">
+      <div class="login-method">
+        <h2 class="login-method-title">
+          <i class="fab fa-telegram-plane"></i>
+          تسجيل الدخول عبر تيليجرام
+        </h2>
+        <p class="login-method-description">
+          قم بتسجيل الدخول بنقرة واحدة باستخدام حساب تيليجرام الخاص بك للوصول الفوري إلى منصة التعدين.
+        </p>
+        
+        <div class="telegram-login-container">
+          <button class="telegram-login-btn" id="telegram-login-btn" onclick="loginWithTelegram()">
+            <i class="fab fa-telegram-plane telegram-icon"></i>
+            تسجيل الدخول عبر تيليجرام
+          </button>
+        </div>
+
+        <div class="divider">
+          <span>أو</span>
+        </div>
+
+        <button class="ton-login-btn" id="ton-login-btn" onclick="loginWithTON()">
+          <i class="fas fa-wallet ton-icon"></i>
+          تسجيل الدخول عبر محفظة TON
+        </button>
+        
+        <div class="loading-indicator" id="loading-indicator">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">جاري تسجيل الدخول...</div>
+        </div>
+        
+        <p class="login-note">
+          بالضغط على زر تسجيل الدخول، أنت توافق على 
+          <a href="#" style="color: #FFD700;">شروط الاستخدام</a> و
+          <a href="#" style="color: #FFD700;">سياسة الخصوصية</a> الخاصة بنا.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // التحقق من حالة تسجيل الدخول
+      if (localStorage.getItem('smartcoin_logged_in') === 'true') {
+        // إذا كان المستخدم مسجل الدخول بالفعل، قم بتحويله إلى صفحة التعدين
+        window.location.href = 'earn.html';
+        return;
+      }
+
+      // إضافة تأثيرات بصرية للعناصر
+      addVisualEffects();
+    });
+
+    // إضافة تأثيرات بصرية
+    function addVisualEffects() {
+      // تأثير الظهور التدريجي للعناصر
+      const elements = document.querySelectorAll('.login-method, .logo-container, .login-title');
+      elements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+          element.style.transition = 'all 0.6s ease-out';
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        }, index * 200);
+      });
+    }
+
+    // تسجيل الدخول عبر تيليجرام
+    async function loginWithTelegram() {
+      console.log('تسجيل الدخول عبر تيليجرام...');
+      
+      // عرض مؤشر التحميل
+      showLoadingIndicator();
+      
+      try {
+        // محاكاة عملية تسجيل الدخول (في التطبيق الحقيقي، يجب استخدام Telegram Login Widget)
+        // يمكن استخدام Telegram Bot API أو Telegram Login Widget
+        
+        // للتجربة، سنقوم بمحاكاة تسجيل دخول ناجح
+        await simulateLogin();
+        
+        // تخزين حالة تسجيل الدخول
+        localStorage.setItem('smartcoin_logged_in', 'true');
+        localStorage.setItem('smartcoin_user', JSON.stringify({
+          id: 'telegram_user_' + Date.now(),
+          name: 'مستخدم تيليجرام',
+          login_method: 'telegram',
+          login_time: Date.now()
+        }));
+        
+        // عرض رسالة نجاح
+        showSuccessMessage('تم تسجيل الدخول بنجاح!');
+        
+        // تحويل المستخدم إلى صفحة التعدين بعد ثانيتين
+        setTimeout(() => {
+          window.location.href = 'earn.html';
+        }, 2000);
+        
+      } catch (error) {
+        console.error('خطأ في تسجيل الدخول:', error);
+        hideLoadingIndicator();
+        showErrorMessage('فشل تسجيل الدخول عبر تيليجرام. يرجى المحاولة مرة أخرى.');
+      }
+    }
+
+    // تسجيل الدخول عبر محفظة TON
+    async function loginWithTON() {
+      console.log('تسجيل الدخول عبر محفظة TON...');
+      
+      // عرض مؤشر التحميل
+      showLoadingIndicator();
+      
+      try {
+        // محاكاة عملية تسجيل الدخول عبر TON (في التطبيق الحقيقي، يجب استخدام TON Connect)
+        await simulateLogin();
+        
+        // تخزين حالة تسجيل الدخول
+        localStorage.setItem('smartcoin_logged_in', 'true');
+        localStorage.setItem('smartcoin_user', JSON.stringify({
+          id: 'ton_user_' + Date.now(),
+          name: 'مستخدم TON',
+          login_method: 'ton',
+          login_time: Date.now()
+        }));
+        
+        // عرض رسالة نجاح
+        showSuccessMessage('تم تسجيل الدخول بنجاح!');
+        
+        // تحويل المستخدم إلى صفحة التعدين بعد ثانيتين
+        setTimeout(() => {
+          window.location.href = 'earn.html';
+        }, 2000);
+        
+      } catch (error) {
+        console.error('خطأ في تسجيل الدخول:', error);
+        hideLoadingIndicator();
+        showErrorMessage('فشل تسجيل الدخول عبر محفظة TON. يرجى المحاولة مرة أخرى.');
+      }
+    }
+
+    // محاكاة عملية تسجيل الدخول
+    function simulateLogin() {
+      return new Promise((resolve) => {
+        // محاكاة تأخير الشبكة
+        setTimeout(resolve, 2000);
+      });
+    }
+
+    // عرض مؤشر التحميل
+    function showLoadingIndicator() {
+      const loadingIndicator = document.getElementById('loading-indicator');
+      const telegramBtn = document.getElementById('telegram-login-btn');
+      const tonBtn = document.getElementById('ton-login-btn');
+      
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'block';
+      }
+      
+      if (telegramBtn) {
+        telegramBtn.disabled = true;
+        telegramBtn.style.opacity = '0.6';
+      }
+      
+      if (tonBtn) {
+        tonBtn.disabled = true;
+        tonBtn.style.opacity = '0.6';
+      }
+    }
+
+    // إخفاء مؤشر التحميل
+    function hideLoadingIndicator() {
+      const loadingIndicator = document.getElementById('loading-indicator');
+      const telegramBtn = document.getElementById('telegram-login-btn');
+      const tonBtn = document.getElementById('ton-login-btn');
+      
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+      }
+      
+      if (telegramBtn) {
+        telegramBtn.disabled = false;
+        telegramBtn.style.opacity = '1';
+      }
+      
+      if (tonBtn) {
+        tonBtn.disabled = false;
+        tonBtn.style.opacity = '1';
+      }
+    }
+
+    // عرض رسالة نجاح
+    function showSuccessMessage(message) {
+      const notification = createNotification(message, 'success');
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 3000);
+    }
+
+    // عرض رسالة خطأ
+    function showErrorMessage(message) {
+      const notification = createNotification(message, 'error');
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 5000);
+    }
+
+    // إنشاء إشعار
+    function createNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.style.position = 'fixed';
+      notification.style.top = '20px';
+      notification.style.right = '20px';
+      notification.style.padding = '15px 20px';
+      notification.style.borderRadius = '10px';
+      notification.style.color = 'white';
+      notification.style.fontWeight = 'bold';
+      notification.style.zIndex = '1000';
+      notification.style.maxWidth = '300px';
+      notification.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+      notification.style.animation = 'notificationSlide 0.5s ease-out';
+      
+      if (type === 'success') {
+        notification.style.background = 'linear-gradient(135deg, #4CAF50, #66BB6A)';
+      } else if (type === 'error') {
+        notification.style.background = 'linear-gradient(135deg, #F44336, #EF5350)';
+      }
+      
+      notification.textContent = message;
+      
+      return notification;
+    }
+
+    // دالة التحقق من بيانات المستخدم المرسلة من تيليجرام (للاستخدام المستقبلي مع Telegram Widget)
+    async function onTelegramAuth(user) {
+      console.log('Telegram user data:', user);
+      
+      // عرض مؤشر التحميل
+      showLoadingIndicator();
+      
+      try {
+        // إرسال بيانات المستخدم إلى الخادم للتحقق والمصادقة
+        const response = await fetch('/api/telegram-auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user)
+        });
+        
+        const result = await response.json();
+
+        if (result.success) {
+          // تخزين حالة تسجيل الدخول
+          localStorage.setItem('smartcoin_logged_in', 'true');
+          localStorage.setItem('smartcoin_user', JSON.stringify(result.user));
+          
+          // تحويل المستخدم إلى صفحة التعدين
+          window.location.href = 'earn.html';
+        } else {
+          hideLoadingIndicator();
+          showErrorMessage(result.message || 'فشل تسجيل الدخول عبر تيليجرام. يرجى المحاولة مرة أخرى.');
+        }
+      } catch (error) {
+        console.error('Error during Telegram authentication:', error);
+        hideLoadingIndicator();
+        showErrorMessage('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      }
+    }
+  </script>
+</body>
+</html>
+

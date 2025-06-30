@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Coin - التعدين</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section class="earn-page">
+      <h1 class="section-title">تعدين Smart Coin</h1>
+      
+      <div class="mining-container">
+        <h2 class="mining-title">التعدين اليومي</h2>
+        <p class="mining-rate">معدل التعدين الحالي: <span class="mining-rate-value">3</span> عملة/يوم</p>
+        
+        <div class="mining-progress">
+          <div class="mining-progress-bar" id="mining-progress-bar" style="width: 0%;"></div>
+        </div>
+        
+        <button class="mining-button" id="mining-button">
+          <i class="fas fa-hammer"></i> ابدأ التعدين
+        </button>
+        
+        <div class="mining-timer" id="mining-timer">
+          متاح مرة واحدة كل 24 ساعة
+        </div>
+      </div>
+      
+      <div class="mining-stats" style="display: flex; justify-content: space-between; max-width: 500px; margin: 0 auto 2rem;">
+        <div class="stat-card">
+          <div class="stat-value" id="total-mined">120</div>
+          <div class="stat-label">إجمالي العملات المعدنة</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value" id="mining-days">40</div>
+          <div class="stat-label">أيام التعدين</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value" id="mining-level">2</div>
+          <div class="stat-label">مستوى التعدين</div>
+        </div>
+      </div>
+      
+      <div class="mining-upgrades" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center; color: var(--sc-text-light);">
+          ترقيات التعدين
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; max-width: 800px; margin: 0 auto;">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+            <h3 class="feature-title">معزز السرعة</h3>
+            <p class="feature-description">زيادة سرعة التعدين بنسبة 10%</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="color: var(--sc-gold); font-weight: bold;">500 SM</span>
+              <button class="btn btn-primary btn-sm">شراء</button>
+            </div>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-gem"></i></div>
+            <h3 class="feature-title">معزز الكفاءة</h3>
+            <p class="feature-description">زيادة كفاءة التعدين بنسبة 15%</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="color: var(--sc-gold); font-weight: bold;">750 SM</span>
+              <button class="btn btn-primary btn-sm">شراء</button>
+            </div>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-clock"></i></div>
+            <h3 class="feature-title">معزز الوقت</h3>
+            <p class="feature-description">تقليل وقت الانتظار بين عمليات التعدين بنسبة 20%</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="color: var(--sc-gold); font-weight: bold;">1000 SM</span>
+              <button class="btn btn-primary btn-sm">شراء</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mining-history">
+        <h2 class="history-title">سجل التعدين</h2>
+        
+        <div class="history-list" id="mining-history">
+          <!-- سيتم إضافة العناصر ديناميكياً -->
+          <div class="history-item">
+            <div class="history-date">16/04/2025 - 10:30</div>
+            <div class="history-amount">+3 SM</div>
+          </div>
+          
+          <div class="history-item">
+            <div class="history-date">15/04/2025 - 09:45</div>
+            <div class="history-amount">+3 SM</div>
+          </div>
+          
+          <div class="history-item">
+            <div class="history-date">14/04/2025 - 11:20</div>
+            <div class="history-amount">+3 SM</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- نافذة المكافأة المنبثقة -->
+  <div id="reward-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeRewardModal()">&times;</span>
+      <div style="text-align: center;">
+        <div style="font-size: 4rem; color: var(--sc-gold); margin-bottom: 1rem;">
+          <i class="fas fa-coins"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--sc-gold);">مبروك!</h2>
+        <p style="color: var(--sc-text-gray); margin-bottom: 2rem; font-size: 1.2rem;">
+          لقد حصلت على <span style="color: var(--sc-gold); font-weight: bold;">3</span> عملات Smart Coin
+        </p>
+        <button class="btn btn-primary" onclick="closeRewardModal()">
+          رائع!
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-text">المحفظة</div>
+    </a>
+  </nav>
+  
+  <script>
+    // عناصر DOM
+    const miningButton = document.getElementById('mining-button');
+    const miningTimer = document.getElementById('mining-timer');
+    const miningProgressBar = document.getElementById('mining-progress-bar');
+    const rewardModal = document.getElementById('reward-modal');
+    const miningHistory = document.getElementById('mining-history');
+    
+    // التحقق من حالة التعدين من localStorage
+    let lastMiningTime = localStorage.getItem('last_mining_time');
+    let isMiningAvailable = true;
+    
+    if (lastMiningTime) {
+      const now = new Date().getTime();
+      const timeDiff = now - parseInt(lastMiningTime);
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+      
+      if (hoursDiff < 24) {
+        // لم تمر 24 ساعة بعد
+        isMiningAvailable = false;
+        
+        // حساب الوقت المتبقي
+        const remainingHours = Math.floor(24 - hoursDiff);
+        const remainingMinutes = Math.floor((24 - hoursDiff - remainingHours) * 60);
+        
+        miningTimer.textContent = `متاح بعد ${remainingHours} ساعة و ${remainingMinutes} دقيقة`;
+        miningButton.disabled = true;
+        
+        // تحديث شريط التقدم
+        const progress = (hoursDiff / 24) * 100;
+        miningProgressBar.style.width = `${progress}%`;
+      }
+    }
+    
+    // بدء التعدين
+    miningButton.addEventListener('click', () => {
+      if (!isMiningAvailable) {
+        return;
+      }
+      
+      // تعطيل زر التعدين
+      miningButton.disabled = true;
+      
+      // بدء التعدين (محاكاة)
+      let progress = 0;
+      const miningInterval = setInterval(() => {
+        progress += 1;
+        miningProgressBar.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+          clearInterval(miningInterval);
+          
+          // تحديث وقت آخر تعدين
+          const now = new Date().getTime();
+          localStorage.setItem('last_mining_time', now);
+          
+          // تحديث النص
+          miningTimer.textContent = 'متاح بعد 24 ساعة';
+          
+          // إظهار نافذة المكافأة
+          rewardModal.style.display = 'flex';
+          
+          // إضافة سجل جديد
+          addMiningRecord();
+          
+          // تحديث الإحصائيات
+          updateStats();
+        }
+      }, 50);
+    });
+    
+    // إضافة سجل تعدين جديد
+    function addMiningRecord() {
+      const now = new Date();
+      const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      
+      historyItem.innerHTML = `
+        <div class="history-date">${formattedDate}</div>
+        <div class="history-amount">+3 SM</div>
+      `;
+      
+      // إضافة السجل في بداية القائمة
+      miningHistory.insertBefore(historyItem, miningHistory.firstChild);
+    }
+    
+    // تحديث الإحصائيات
+    function updateStats() {
+      const totalMined = document.getElementById('total-mined');
+      const miningDays = document.getElementById('mining-days');
+      
+      // زيادة إجمالي العملات المعدنة
+      totalMined.textContent = parseInt(totalMined.textContent) + 3;
+      
+      // زيادة أيام التعدين
+      miningDays.textContent = parseInt(miningDays.textContent) + 1;
+    }
+    
+    // إغلاق نافذة المكافأة
+    function closeRewardModal() {
+      rewardModal.style.display = 'none';
+    }
+    
+    // إغلاق النافذة المنبثقة عند النقر خارجها
+    window.addEventListener('click', (event) => {
+      if (event.target === rewardModal) {
+        closeRewardModal();
+      }
+    });
+  </script>
+</body>
+</html>

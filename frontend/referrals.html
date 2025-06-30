@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Coin - الإحالات</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section class="referrals-section">
+      <h1 class="section-title">برنامج الإحالات</h1>
+      
+      <p class="section-subtitle" style="text-align: center; color: var(--sc-text-gray); margin-bottom: 2rem;">
+        ادعُ أصدقاءك للانضمام إلى Smart Coin واحصل على مكافآت قيمة لكل مستخدم جديد!
+      </p>
+      
+      <!-- بطاقة الإحالة -->
+      <div class="referral-card">
+        <div class="referral-header">
+          <h2 class="referral-title">رابط الإحالة الخاص بك</h2>
+          <p class="referral-subtitle">شارك هذا الرابط مع أصدقائك للحصول على مكافآت</p>
+        </div>
+        
+        <div class="referral-link-container">
+          <input type="text" class="referral-link" id="referral-link" value="https://smartcoin.app/ref/user123456" readonly>
+          <button class="btn btn-primary btn-sm" onclick="copyReferralLink()">
+            <i class="fas fa-copy"></i> نسخ
+          </button>
+        </div>
+        
+        <div class="referral-share">
+          <p>أو شارك عبر:</p>
+          <div class="share-buttons">
+            <button class="share-button telegram" onclick="shareVia('telegram')">
+              <i class="fab fa-telegram"></i>
+            </button>
+            <button class="share-button whatsapp" onclick="shareVia('whatsapp')">
+              <i class="fab fa-whatsapp"></i>
+            </button>
+            <button class="share-button twitter" onclick="shareVia('twitter')">
+              <i class="fab fa-twitter"></i>
+            </button>
+            <button class="share-button facebook" onclick="shareVia('facebook')">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- إحصائيات الإحالة -->
+      <div class="referral-stats">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-value" id="total-referrals">16</div>
+          <div class="stat-label">إجمالي الإحالات</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-coins"></i></div>
+          <div class="stat-value" id="total-earnings">16</div>
+          <div class="stat-label">الأرباح ($)</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+          <div class="stat-value" id="active-referrals">12</div>
+          <div class="stat-label">إحالات نشطة</div>
+        </div>
+      </div>
+      
+      <!-- مستويات المكافآت -->
+      <div class="rewards-levels">
+        <h2 class="rewards-title">مستويات المكافآت</h2>
+        <p class="rewards-subtitle">احصل على مكافآت أكبر كلما زاد عدد الإحالات!</p>
+        
+        <div class="levels-container">
+          <!-- المستوى 1 -->
+          <div class="level-card active">
+            <div class="level-header">
+              <div class="level-number">1</div>
+              <div class="level-title">المستوى الأول</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">16 إحالة</div>
+              <div class="level-reward">$1</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%;"></div>
+              </div>
+              <div class="progress-text">16/16</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-check-circle"></i> مكتمل
+            </div>
+          </div>
+          
+          <!-- المستوى 2 -->
+          <div class="level-card active">
+            <div class="level-header">
+              <div class="level-number">2</div>
+              <div class="level-title">المستوى الثاني</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">25 إحالة</div>
+              <div class="level-reward">$3</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 64%;"></div>
+              </div>
+              <div class="progress-text">16/25</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-spinner fa-spin"></i> قيد التقدم
+            </div>
+          </div>
+          
+          <!-- المستوى 3 -->
+          <div class="level-card">
+            <div class="level-header">
+              <div class="level-number">3</div>
+              <div class="level-title">المستوى الثالث</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">50 إحالة</div>
+              <div class="level-reward">$4</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 32%;"></div>
+              </div>
+              <div class="progress-text">16/50</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-lock"></i> غير مفتوح
+            </div>
+          </div>
+          
+          <!-- المستوى 4 -->
+          <div class="level-card">
+            <div class="level-header">
+              <div class="level-number">4</div>
+              <div class="level-title">المستوى الرابع</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">100 إحالة</div>
+              <div class="level-reward">$6</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 16%;"></div>
+              </div>
+              <div class="progress-text">16/100</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-lock"></i> غير مفتوح
+            </div>
+          </div>
+          
+          <!-- المستوى 5 -->
+          <div class="level-card">
+            <div class="level-header">
+              <div class="level-number">5</div>
+              <div class="level-title">المستوى الخامس</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">300 إحالة</div>
+              <div class="level-reward">$10</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 5%;"></div>
+              </div>
+              <div class="progress-text">16/300</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-lock"></i> غير مفتوح
+            </div>
+          </div>
+          
+          <!-- المستوى 6 -->
+          <div class="level-card">
+            <div class="level-header">
+              <div class="level-number">6</div>
+              <div class="level-title">المستوى السادس</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">1000 إحالة</div>
+              <div class="level-reward">$50</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 1.6%;"></div>
+              </div>
+              <div class="progress-text">16/1000</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-lock"></i> غير مفتوح
+            </div>
+          </div>
+          
+          <!-- المستوى 7 -->
+          <div class="level-card">
+            <div class="level-header">
+              <div class="level-number">7</div>
+              <div class="level-title">المستوى السابع</div>
+            </div>
+            <div class="level-body">
+              <div class="level-requirement">2000 إحالة</div>
+              <div class="level-reward">$75</div>
+            </div>
+            <div class="level-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0.8%;"></div>
+              </div>
+              <div class="progress-text">16/2000</div>
+            </div>
+            <div class="level-status">
+              <i class="fas fa-lock"></i> غير مفتوح
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- قائمة الإحالات -->
+      <div class="referrals-list-container">
+        <h2 class="referrals-list-title">قائمة الإحالات</h2>
+        
+        <div class="referrals-list">
+          <!-- إحالة 1 -->
+          <div class="referral-item">
+            <div class="referral-user">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-info">
+                <div class="user-name">أحمد محمد</div>
+                <div class="user-date">انضم في 15/04/2025</div>
+              </div>
+            </div>
+            <div class="referral-status active">
+              <i class="fas fa-circle"></i> نشط
+            </div>
+          </div>
+          
+          <!-- إحالة 2 -->
+          <div class="referral-item">
+            <div class="referral-user">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-info">
+                <div class="user-name">سارة أحمد</div>
+                <div class="user-date">انضمت في 14/04/2025</div>
+              </div>
+            </div>
+            <div class="referral-status active">
+              <i class="fas fa-circle"></i> نشط
+            </div>
+          </div>
+          
+          <!-- إحالة 3 -->
+          <div class="referral-item">
+            <div class="referral-user">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-info">
+                <div class="user-name">محمد علي</div>
+                <div class="user-date">انضم في 12/04/2025</div>
+              </div>
+            </div>
+            <div class="referral-status active">
+              <i class="fas fa-circle"></i> نشط
+            </div>
+          </div>
+          
+          <!-- إحالة 4 -->
+          <div class="referral-item">
+            <div class="referral-user">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-info">
+                <div class="user-name">فاطمة محمود</div>
+                <div class="user-date">انضمت في 10/04/2025</div>
+              </div>
+            </div>
+            <div class="referral-status inactive">
+              <i class="fas fa-circle"></i> غير نشط
+            </div>
+          </div>
+          
+          <!-- زر عرض المزيد -->
+          <button class="btn btn-secondary btn-sm view-more-btn">
+            عرض المزيد <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- نافذة المشاركة المنبثقة -->
+  <div id="share-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeShareModal()">&times;</span>
+      <h2 class="modal-title">مشاركة رابط الإحالة</h2>
+      
+      <div class="modal-body">
+        <p style="text-align: center; color: var(--sc-text-gray); margin-bottom: 1.5rem;">
+          سيتم فتح تطبيق <span id="share-platform">التيليجرام</span> لمشاركة رابط الإحالة الخاص بك.
+        </p>
+        
+        <div class="referral-message">
+          <p>انضم إلى Smart Coin واحصل على مكافآت يومية! استخدم رابط الإحالة الخاص بي:</p>
+          <p style="direction: ltr; text-align: left; font-weight: bold; margin-top: 0.5rem;">https://smartcoin.app/ref/user123456</p>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="confirmShare()">
+          مشاركة الآن
+        </button>
+        <button class="btn btn-secondary" onclick="closeShareModal()">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="referrals.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-user-plus"></i></div>
+      <div class="nav-text">الإحالات</div>
+    </a>
+  </nav>
+  
+  <script>
+    // عناصر DOM
+    const shareModal = document.getElementById('share-modal');
+    const sharePlatform = document.getElementById('share-platform');
+    
+    // نسخ رابط الإحالة
+    function copyReferralLink() {
+      const referralLink = document.getElementById('referral-link');
+      referralLink.select();
+      document.execCommand('copy');
+      
+      // إظهار رسالة تأكيد
+      alert('تم نسخ رابط الإحالة بنجاح!');
+    }
+    
+    // مشاركة عبر منصة معينة
+    function shareVia(platform) {
+      // تحديث اسم المنصة في النافذة المنبثقة
+      switch (platform) {
+        case 'telegram':
+          sharePlatform.textContent = 'التيليجرام';
+          break;
+        case 'whatsapp':
+          sharePlatform.textContent = 'الواتساب';
+          break;
+        case 'twitter':
+          sharePlatform.textContent = 'تويتر';
+          break;
+        case 'facebook':
+          sharePlatform.textContent = 'فيسبوك';
+          break;
+      }
+      
+      // عرض النافذة المنبثقة
+      shareModal.style.display = 'flex';
+    }
+    
+    // إغلاق نافذة المشاركة
+    function closeShareModal() {
+      shareModal.style.display = 'none';
+    }
+    
+    // تأكيد المشاركة
+    function confirmShare() {
+      // محاكاة المشاركة
+      alert('تم فتح تطبيق المشاركة!');
+      closeShareModal();
+    }
+    
+    // إغلاق النافذة المنبثقة عند النقر خارجها
+    window.addEventListener('click', (event) => {
+      if (event.target === shareModal) {
+        closeShareModal();
+      }
+    });
+    
+    // زر عرض المزيد
+    const viewMoreBtn = document.querySelector('.view-more-btn');
+    viewMoreBtn.addEventListener('click', () => {
+      // محاكاة تحميل المزيد من الإحالات
+      viewMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+      
+      setTimeout(() => {
+        // إضافة إحالات جديدة
+        const referralsList = document.querySelector('.referrals-list');
+        
+        for (let i = 0; i < 3; i++) {
+          const newReferral = document.createElement('div');
+          newReferral.className = 'referral-item';
+          
+          const isActive = Math.random() > 0.3;
+          
+          newReferral.innerHTML = `
+            <div class="referral-user">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-info">
+                <div class="user-name">مستخدم جديد ${i + 5}</div>
+                <div class="user-date">انضم في 0${8 - i}/04/2025</div>
+              </div>
+            </div>
+            <div class="referral-status ${isActive ? 'active' : 'inactive'}">
+              <i class="fas fa-circle"></i> ${isActive ? 'نشط' : 'غير نشط'}
+            </div>
+          `;
+          
+          referralsList.insertBefore(newReferral, viewMoreBtn);
+        }
+        
+        // تحديث نص الزر
+        viewMoreBtn.innerHTML = 'عرض المزيد <i class="fas fa-chevron-down"></i>';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Coin - المهام</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section class="tasks-section">
+      <h1 class="section-title">مهام Smart Coin</h1>
+      
+      <p class="section-subtitle" style="text-align: center; color: var(--sc-text-gray); margin-bottom: 2rem;">
+        أكمل المهام اليومية والأسبوعية للحصول على مكافآت إضافية من عملة Smart Coin.
+      </p>
+      
+      <!-- المهام اليومية -->
+      <div class="tasks-container">
+        <h2 class="tasks-title">
+          <i class="fas fa-calendar-day"></i> المهام اليومية
+          <span class="tasks-counter">3/5 مكتملة</span>
+        </h2>
+        
+        <div class="tasks-list">
+          <!-- مهمة 1 -->
+          <div class="task-card completed">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-hammer"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">قم بالتعدين اليومي</h3>
+                <p class="task-description">قم بتشغيل التعدين اليومي مرة واحدة على الأقل.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+10 SM</div>
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="fas fa-check"></i> مكتمل
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 2 -->
+          <div class="task-card completed">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-dharmachakra"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">أدر عجلة الحظ</h3>
+                <p class="task-description">قم بتدوير عجلة الحظ مرة واحدة على الأقل.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+5 SM</div>
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="fas fa-check"></i> مكتمل
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 3 -->
+          <div class="task-card completed">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-share-alt"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">شارك التطبيق مع صديق</h3>
+                <p class="task-description">قم بمشاركة رابط الإحالة الخاص بك مع صديق واحد على الأقل.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+15 SM</div>
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="fas fa-check"></i> مكتمل
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 4 -->
+          <div class="task-card">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fab fa-telegram"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">انضم إلى قناة التيليجرام</h3>
+                <p class="task-description">انضم إلى قناة التيليجرام الرسمية للحصول على آخر الأخبار والتحديثات.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+20 SM</div>
+              <button class="btn btn-primary btn-sm" onclick="completeTask(this, 3)">
+                إكمال المهمة
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 5 -->
+          <div class="task-card">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fab fa-twitter"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">تابعنا على X (تويتر)</h3>
+                <p class="task-description">تابع حساب Smart Coin الرسمي على منصة X (تويتر).</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+15 SM</div>
+              <button class="btn btn-primary btn-sm" onclick="completeTask(this, 4)">
+                إكمال المهمة
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- المهام الأسبوعية -->
+      <div class="tasks-container" style="margin-top: 3rem;">
+        <h2 class="tasks-title">
+          <i class="fas fa-calendar-week"></i> المهام الأسبوعية
+          <span class="tasks-counter">1/4 مكتملة</span>
+        </h2>
+        
+        <div class="tasks-list">
+          <!-- مهمة 1 -->
+          <div class="task-card completed">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">قم بدعوة 3 أصدقاء</h3>
+                <p class="task-description">قم بدعوة 3 أصدقاء جدد للانضمام إلى Smart Coin.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+50 SM</div>
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="fas fa-check"></i> مكتمل
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 2 -->
+          <div class="task-card">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-hammer"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">قم بالتعدين لمدة 7 أيام متتالية</h3>
+                <p class="task-description">قم بتشغيل التعدين اليومي لمدة 7 أيام متتالية.</p>
+                <div class="task-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 57%;"></div>
+                  </div>
+                  <div class="progress-text">4/7</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+100 SM</div>
+              <button class="btn btn-secondary btn-sm" disabled>
+                قيد التقدم
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 3 -->
+          <div class="task-card">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">اشترِ حزمة تعدين</h3>
+                <p class="task-description">قم بشراء أي حزمة تعدين من المتجر.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+75 SM</div>
+              <button class="btn btn-primary btn-sm" onclick="completeTask(this, 6)">
+                إكمال المهمة
+              </button>
+            </div>
+          </div>
+          
+          <!-- مهمة 4 -->
+          <div class="task-card">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fab fa-youtube"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">اشترك في قناة اليوتيوب</h3>
+                <p class="task-description">اشترك في قناة Smart Coin الرسمية على يوتيوب وشاهد فيديو تعليمي واحد على الأقل.</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+40 SM</div>
+              <button class="btn btn-primary btn-sm" onclick="completeTask(this, 7)">
+                إكمال المهمة
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- التحديات الخاصة -->
+      <div class="tasks-container" style="margin-top: 3rem;">
+        <h2 class="tasks-title">
+          <i class="fas fa-trophy"></i> التحديات الخاصة
+          <span class="tasks-counter">0/3 مكتملة</span>
+        </h2>
+        
+        <div class="tasks-list">
+          <!-- تحدي 1 -->
+          <div class="task-card special">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-crown"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">تحدي المستوى الذهبي</h3>
+                <p class="task-description">قم بالوصول إلى المستوى 10 في نظام المستويات.</p>
+                <div class="task-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 20%;"></div>
+                  </div>
+                  <div class="progress-text">المستوى 2/10</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+500 SM</div>
+              <button class="btn btn-secondary btn-sm" disabled>
+                قيد التقدم
+              </button>
+            </div>
+          </div>
+          
+          <!-- تحدي 2 -->
+          <div class="task-card special">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-user-friends"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">تحدي الإحالات الكبرى</h3>
+                <p class="task-description">قم بدعوة 50 مستخدم جديد للانضمام إلى Smart Coin.</p>
+                <div class="task-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 6%;"></div>
+                  </div>
+                  <div class="progress-text">3/50</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+1000 SM</div>
+              <button class="btn btn-secondary btn-sm" disabled>
+                قيد التقدم
+              </button>
+            </div>
+          </div>
+          
+          <!-- تحدي 3 -->
+          <div class="task-card special">
+            <div class="task-content">
+              <div class="task-icon">
+                <i class="fas fa-gem"></i>
+              </div>
+              <div class="task-info">
+                <h3 class="task-title">تحدي المستثمر</h3>
+                <p class="task-description">قم بشراء جميع حزم التعدين المتاحة في المتجر.</p>
+                <div class="task-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%;"></div>
+                  </div>
+                  <div class="progress-text">0/3</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-reward">+2000 SM</div>
+              <button class="btn btn-secondary btn-sm" disabled>
+                قيد التقدم
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- نافذة المكافأة المنبثقة -->
+  <div id="reward-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeRewardModal()">&times;</span>
+      <div style="text-align: center;">
+        <div style="font-size: 4rem; color: var(--sc-gold); margin-bottom: 1rem;">
+          <i class="fas fa-coins"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--sc-gold);">مبروك!</h2>
+        <p style="color: var(--sc-text-gray); margin-bottom: 2rem; font-size: 1.2rem;">
+          لقد أكملت المهمة وحصلت على <span id="reward-amount" style="color: var(--sc-gold); font-weight: bold;">20</span> عملات Smart Coin
+        </p>
+        <button class="btn btn-primary" onclick="closeRewardModal()">
+          رائع!
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="tasks.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-text">المحفظة</div>
+    </a>
+  </nav>
+  
+  <script>
+    // عناصر DOM
+    const rewardModal = document.getElementById('reward-modal');
+    const rewardAmount = document.getElementById('reward-amount');
+    
+    // مكافآت المهام
+    const taskRewards = [
+      10, 5, 15, 20, 15, // المهام اليومية
+      50, 100, 75, 40,   // المهام الأسبوعية
+      500, 1000, 2000    // التحديات الخاصة
+    ];
+    
+    // إكمال المهمة
+    function completeTask(button, taskIndex) {
+      // تعطيل الزر
+      button.disabled = true;
+      
+      // تغيير نص الزر
+      button.innerHTML = '<i class="fas fa-check"></i> مكتمل';
+      button.classList.remove('btn-primary');
+      button.classList.add('btn-success');
+      
+      // إضافة الفئة المكتملة للبطاقة
+      button.closest('.task-card').classList.add('completed');
+      
+      // تحديث عداد المهام المكتملة
+      const tasksContainer = button.closest('.tasks-container');
+      const tasksCounter = tasksContainer.querySelector('.tasks-counter');
+      const [completed, total] = tasksCounter.textContent.split('/');
+      tasksCounter.textContent = `${parseInt(completed) + 1}/${total}`;
+      
+      // عرض نافذة المكافأة
+      rewardAmount.textContent = taskRewards[taskIndex];
+      rewardModal.style.display = 'flex';
+    }
+    
+    // إغلاق نافذة المكافأة
+    function closeRewardModal() {
+      rewardModal.style.display = 'none';
+    }
+    
+    // إغلاق النافذة المنبثقة عند النقر خارجها
+    window.addEventListener('click', (event) => {
+      if (event.target === rewardModal) {
+        closeRewardModal();
+      }
+    });
+  </script>
+</body>
+</html>

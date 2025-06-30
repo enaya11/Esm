@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Coin - المحفظة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section class="wallet-section">
+      <h1 class="section-title">محفظة Smart Coin</h1>
+      
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <h2 class="wallet-title">رصيدك الحالي</h2>
+          <div class="wallet-balance">1,250.75</div>
+          <div class="wallet-value">≈ $125.07</div>
+        </div>
+        
+        <div class="wallet-actions">
+          <button class="btn btn-primary" onclick="showDepositModal()">
+            <i class="fas fa-arrow-down"></i> إيداع
+          </button>
+          <button class="btn btn-secondary" onclick="showWithdrawModal()">
+            <i class="fas fa-arrow-up"></i> سحب
+          </button>
+        </div>
+        
+        <div class="wallet-address">
+          <div class="address-label">عنوان محفظتك الداخلية:</div>
+          <div class="address-box">
+            <input type="text" class="address-input" id="wallet-address" value="EQCcR3-l9mfJ8O_1vIuI80NSx6WcRYxIvY-09KNaQjhXbUDN" readonly>
+            <button class="btn btn-secondary btn-sm" onclick="copyAddress()">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+          <p style="color: var(--sc-text-gray); font-size: 0.9rem; margin-top: 0.5rem;">
+            هذا هو عنوان محفظتك الداخلية في Smart Coin. استخدمه للإيداع من محافظ خارجية.
+          </p>
+        </div>
+      </div>
+      
+      <!-- قسم ربط المحافظ الخارجية -->
+      <div class="wallet-card" style="margin-top: 2rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--sc-text-light);">ربط المحافظ الخارجية</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- محفظة TON -->
+          <div style="background-color: var(--sc-gray); border-radius: 10px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <img src="assets/ton.svg" alt="TON" width="40" height="40">
+              <div>
+                <div style="font-weight: bold; color: var(--sc-text-light);">محفظة TON</div>
+                <div style="font-size: 0.9rem; color: var(--sc-text-gray);" id="ton-status">غير متصلة</div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="connect-ton" onclick="connectWallet('ton')">
+              <i class="fas fa-link"></i> ربط
+            </button>
+          </div>
+          
+          <!-- محفظة Solana -->
+          <div style="background-color: var(--sc-gray); border-radius: 10px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <img src="assets/solana.svg" alt="Solana" width="40" height="40">
+              <div>
+                <div style="font-weight: bold; color: var(--sc-text-light);">محفظة Solana</div>
+                <div style="font-size: 0.9rem; color: var(--sc-text-gray);" id="solana-status">غير متصلة</div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="connect-solana" onclick="connectWallet('solana')">
+              <i class="fas fa-link"></i> ربط
+            </button>
+          </div>
+        </div>
+        
+        <p style="color: var(--sc-text-gray); font-size: 0.9rem; margin-top: 1.5rem; text-align: center;">
+          ربط المحافظ الخارجية يتيح لك إمكانية الإيداع والسحب بسهولة.
+        </p>
+      </div>
+      
+      <!-- قسم المعاملات -->
+      <div class="transactions-section">
+        <h2 class="transactions-title">سجل المعاملات</h2>
+        
+        <div class="transactions-list" id="transactions-list">
+          <!-- معاملة 1 -->
+          <div class="transaction-card">
+            <div class="transaction-info">
+              <div class="transaction-type deposit">إيداع</div>
+              <div class="transaction-date">16/04/2025 - 10:30</div>
+              <div class="transaction-id">TX: 0x7f9e8d7c6b5a4321</div>
+            </div>
+            <div class="transaction-amount deposit">+100 SM</div>
+          </div>
+          
+          <!-- معاملة 2 -->
+          <div class="transaction-card">
+            <div class="transaction-info">
+              <div class="transaction-type">تعدين</div>
+              <div class="transaction-date">15/04/2025 - 15:45</div>
+              <div class="transaction-id">MINING-REWARD</div>
+            </div>
+            <div class="transaction-amount deposit">+20 SM</div>
+          </div>
+          
+          <!-- معاملة 3 -->
+          <div class="transaction-card">
+            <div class="transaction-info">
+              <div class="transaction-type">مكافأة مهمة</div>
+              <div class="transaction-date">14/04/2025 - 09:15</div>
+              <div class="transaction-id">TASK-REWARD</div>
+            </div>
+            <div class="transaction-amount deposit">+50 SM</div>
+          </div>
+          
+          <!-- معاملة 4 -->
+          <div class="transaction-card">
+            <div class="transaction-info">
+              <div class="transaction-type">جائزة عجلة الحظ</div>
+              <div class="transaction-date">13/04/2025 - 18:20</div>
+              <div class="transaction-id">WHEEL-PRIZE</div>
+            </div>
+            <div class="transaction-amount deposit">+75 SM</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- نافذة الإيداع المنبثقة -->
+  <div id="deposit-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('deposit-modal')">&times;</span>
+      <h2 class="modal-title">إيداع عملات</h2>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">اختر العملة:</label>
+          <select class="form-input" id="deposit-currency">
+            <option value="ton">TON</option>
+            <option value="solana">Solana (SOL)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">المبلغ:</label>
+          <input type="number" class="form-input" id="deposit-amount" placeholder="أدخل المبلغ" min="0.001" step="0.001">
+        </div>
+        
+        <div class="wallet-address-container">
+          <div class="address-label">عنوان الإيداع:</div>
+          <div class="payment-address" id="deposit-address">EQCcR3-l9mfJ8O_1vIuI80NSx6WcRYxIvY-09KNaQjhXbUDN</div>
+          <button class="btn btn-secondary btn-sm" onclick="copyDepositAddress()">
+            <i class="fas fa-copy"></i> نسخ العنوان
+          </button>
+        </div>
+        
+        <div class="payment-qr">
+          <div id="deposit-qrcode"></div>
+        </div>
+        
+        <p style="text-align: center; color: var(--sc-text-gray); margin-bottom: 1rem;">
+          يرجى إرسال المبلغ المطلوب إلى العنوان أعلاه. سيتم تحديث رصيدك بعد تأكيد المعاملة.
+        </p>
+        
+        <div class="form-group">
+          <label class="form-label">معرف المعاملة (اختياري):</label>
+          <input type="text" class="form-input" id="deposit-tx-id" placeholder="أدخل معرف المعاملة للتحقق السريع">
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="confirmDeposit()">تأكيد الإيداع</button>
+        <button class="btn btn-secondary" onclick="closeModal('deposit-modal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- نافذة السحب المنبثقة -->
+  <div id="withdraw-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('withdraw-modal')">&times;</span>
+      <h2 class="modal-title">سحب عملات</h2>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">اختر العملة:</label>
+          <select class="form-input" id="withdraw-currency">
+            <option value="sm">Smart Coin (SM)</option>
+            <option value="ton">TON</option>
+            <option value="solana">Solana (SOL)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">المبلغ:</label>
+          <input type="number" class="form-input" id="withdraw-amount" placeholder="أدخل المبلغ" min="0.001" step="0.001">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">عنوان المحفظة الخارجية:</label>
+          <input type="text" class="form-input" id="withdraw-address" placeholder="أدخل عنوان المحفظة">
+        </div>
+        
+        <div class="withdraw-note" style="background-color: var(--sc-gray); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <i class="fas fa-info-circle" style="color: var(--sc-warning);"></i>
+            <span style="font-weight: bold; color: var(--sc-warning);">ملاحظة هامة</span>
+          </div>
+          <p style="color: var(--sc-text-gray); font-size: 0.9rem; margin: 0;">
+            سحب عملات Smart Coin (SM) غير متاح حالياً. سيتم تفعيل هذه الميزة بعد إدراج العملة في منصات التداول.
+          </p>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="withdraw-button" onclick="confirmWithdraw()" disabled>تأكيد السحب</button>
+        <button class="btn btn-secondary" onclick="closeModal('withdraw-modal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- نافذة ربط المحفظة المنبثقة -->
+  <div id="connect-wallet-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('connect-wallet-modal')">&times;</span>
+      <h2 class="modal-title" id="connect-wallet-title">ربط محفظة TON</h2>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">عنوان المحفظة:</label>
+          <input type="text" class="form-input" id="connect-wallet-address" placeholder="أدخل عنوان المحفظة">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">رمز التحقق:</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" class="form-input" id="connect-wallet-code" placeholder="أدخل رمز التحقق">
+            <button class="btn btn-secondary" onclick="sendVerificationCode()">
+              إرسال الرمز
+            </button>
+          </div>
+        </div>
+        
+        <p style="text-align: center; color: var(--sc-text-gray); margin: 1.5rem 0;">
+          سيتم إرسال رمز تحقق إلى محفظتك للتأكد من ملكيتك لها.
+        </p>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="confirmWalletConnection()">تأكيد الربط</button>
+        <button class="btn btn-secondary" onclick="closeModal('connect-wallet-modal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="wallet.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-text">المحفظة</div>
+    </a>
+  </nav>
+  
+  <!-- مكتبة QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode.js/qrcode.min.js"></script>
+  
+  <script>
+    // عناصر DOM
+    const depositModal = document.getElementById('deposit-modal');
+    const withdrawModal = document.getElementById('withdraw-modal');
+    const connectWalletModal = document.getElementById('connect-wallet-modal');
+    
+    // فتح نافذة الإيداع
+    function showDepositModal() {
+      // إنشاء رمز QR
+      const qrcodeContainer = document.getElementById('deposit-qrcode');
+      qrcodeContainer.innerHTML = '';
+      
+      new QRCode(qrcodeContainer, {
+        text: document.getElementById('deposit-address').textContent,
+        width: 200,
+        height: 200,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      depositModal.style.display = 'flex';
+    }
+    
+    // فتح نافذة السحب
+    function showWithdrawModal() {
+      // تعطيل زر السحب لعملة SM
+      const withdrawCurrency = document.getElementById('withdraw-currency');
+      const withdrawButton = document.getElementById('withdraw-button');
+      
+      withdrawCurrency.addEventListener('change', function() {
+        if (this.value === 'sm') {
+          withdrawButton.disabled = true;
+        } else {
+          withdrawButton.disabled = false;
+        }
+      });
+      
+      withdrawModal.style.display = 'flex';
+    }
+    
+    // فتح نافذة ربط المحفظة
+    function connectWallet(type) {
+      const title = document.getElementById('connect-wallet-title');
+      
+      if (type === 'ton') {
+        title.textContent = 'ربط محفظة TON';
+      } else if (type === 'solana') {
+        title.textContent = 'ربط محفظة Solana';
+      }
+      
+      // تخزين نوع المحفظة في متغير عام
+      window.currentWalletType = type;
+      
+      connectWalletModal.style.display = 'flex';
+    }
+    
+    // إغلاق النوافذ المنبثقة
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // نسخ عنوان المحفظة
+    function copyAddress() {
+      const address = document.getElementById('wallet-address').value;
+      navigator.clipboard.writeText(address).then(() => {
+        alert('تم نسخ العنوان بنجاح!');
+      });
+    }
+    
+    // نسخ عنوان الإيداع
+    function copyDepositAddress() {
+      const address = document.getElementById('deposit-address').textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        alert('تم نسخ العنوان بنجاح!');
+      });
+    }
+    
+    // إرسال رمز التحقق
+    function sendVerificationCode() {
+      const address = document.getElementById('connect-wallet-address').value;
+      
+      if (!address) {
+        alert('يرجى إدخال عنوان المحفظة أولاً.');
+        return;
+      }
+      
+      // محاكاة إرسال رمز التحقق
+      alert('تم إرسال رمز التحقق إلى المحفظة. يرجى التحقق من تطبيق المحفظة الخاص بك.');
+    }
+    
+    // تأكيد الإيداع
+    function confirmDeposit() {
+      const currency = document.getElementById('deposit-currency').value;
+      const amount = document.getElementById('deposit-amount').value;
+      const txId = document.getElementById('deposit-tx-id').value;
+      
+      if (!amount || parseFloat(amount) <= 0) {
+        alert('يرجى إدخال مبلغ صحيح.');
+        return;
+      }
+      
+      // محاكاة تأكيد الإيداع
+      alert(`تم استلام طلب الإيداع بنجاح. سيتم تحديث رصيدك بعد تأكيد المعاملة.`);
+      closeModal('deposit-modal');
+      
+      // إضافة المعاملة إلى سجل المعاملات (محاكاة)
+      addTransaction('إيداع', amount, currency.toUpperCase(), txId || generateRandomTxId());
+    }
+    
+    // تأكيد السحب
+    function confirmWithdraw() {
+      const currency = document.getElementById('withdraw-currency').value;
+      const amount = document.getElementById('withdraw-amount').value;
+      const address = document.getElementById('withdraw-address').value;
+      
+      if (!amount || parseFloat(amount) <= 0) {
+        alert('يرجى إدخال مبلغ صحيح.');
+        return;
+      }
+      
+      if (!address) {
+        alert('يرجى إدخال عنوان المحفظة الخارجية.');
+        return;
+      }
+      
+      // محاكاة تأكيد السحب
+      if (currency === 'sm') {
+        alert('عذراً، سحب عملات Smart Coin غير متاح حالياً. سيتم تفعيل هذه الميزة بعد إدراج العملة في منصات التداول.');
+      } else {
+        alert(`تم استلام طلب السحب بنجاح. سيتم تحويل ${amount} ${currency.toUpperCase()} إلى المحفظة الخارجية خلال 24 ساعة.`);
+        closeModal('withdraw-modal');
+        
+        // إضافة المعاملة إلى سجل المعاملات (محاكاة)
+        addTransaction('سحب', `-${amount}`, currency.toUpperCase(), generateRandomTxId());
+      }
+    }
+    
+    // تأكيد ربط المحفظة
+    function confirmWalletConnection() {
+      const address = document.getElementById('connect-wallet-address').value;
+      const code = document.getElementById('connect-wallet-code').value;
+      
+      if (!address) {
+        alert('يرجى إدخال عنوان المحفظة.');
+        return;
+      }
+      
+      if (!code) {
+        alert('يرجى إدخال رمز التحقق.');
+        return;
+      }
+      
+      // محاكاة تأكيد ربط المحفظة
+      const walletType = window.currentWalletType;
+      const statusElement = document.getElementById(`${walletType}-status`);
+      const connectButton = document.getElementById(`connect-${walletType}`);
+      
+      statusElement.textContent = 'متصلة';
+      statusElement.style.color = 'var(--sc-success)';
+      
+      connectButton.textContent = 'تم الربط';
+      connectButton.disabled = true;
+      
+      alert(`تم ربط محفظة ${walletType === 'ton' ? 'TON' : 'Solana'} بنجاح!`);
+      closeModal('connect-wallet-modal');
+    }
+    
+    // إضافة معاملة إلى سجل المعاملات
+    function addTransaction(type, amount, currency, txId) {
+      const transactionsList = document.getElementById('transactions-list');
+      const now = new Date();
+      const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      const isDeposit = !amount.toString().startsWith('-');
+      const typeClass = isDeposit ? 'deposit' : 'withdrawal';
+      
+      const transactionCard = document.createElement('div');
+      transactionCard.className = 'transaction-card';
+      
+      transactionCard.innerHTML = `
+        <div class="transaction-info">
+          <div class="transaction-type ${typeClass}">${type}</div>
+          <div class="transaction-date">${formattedDate}</div>
+          <div class="transaction-id">TX: ${txId}</div>
+        </div>
+        <div class="transaction-amount ${typeClass}">${amount} ${currency}</div>
+      `;
+      
+      // إضافة المعاملة في بداية القائمة
+      transactionsList.insertBefore(transactionCard, transactionsList.firstChild);
+    }
+    
+    // إنشاء معرف معاملة عشوائي
+    function generateRandomTxId() {
+      return '0x' + Array.from({length: 16}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    }
+    
+    // إغلاق النوافذ المنبثقة عند النقر خارجها
+    window.addEventListener('click', function(event) {
+      if (event.target === depositModal) {
+        closeModal('deposit-modal');
+      }
+      if (event.target === withdrawModal) {
+        closeModal('withdraw-modal');
+      }
+      if (event.target === connectWalletModal) {
+        closeModal('connect-wallet-modal');
+      }
+    });
+  </script>
+</body>
+</html>

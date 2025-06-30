@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عجلة الحظ - Smart Coin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 100px;
+    }
+    
+    .wheel-title {
+      color: #FFD700;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .wheel-subtitle {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .wheel-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin-bottom: 2rem;
+    }
+    
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      transform: rotate(0deg);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+    
+    .wheel-section {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      transform-origin: bottom right;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #000;
+    }
+    
+    .wheel-center {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: #FFD700;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .wheel-center::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background-color: #000;
+      border-radius: 50%;
+    }
+    
+    .wheel-pointer {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 40px;
+      background-color: #FFD700;
+      clip-path: polygon(50% 0, 0% 100%, 100% 100%);
+      z-index: 5;
+    }
+    
+    .spin-button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .spin-button:hover {
+      background-color: #e5c100;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+    }
+    
+    .spin-button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .prize-info {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 2rem;
+      text-align: center;
+      max-width: 400px;
+      display: none;
+    }
+    
+    .prize-title {
+      color: #FFD700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .prize-description {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .prize-note {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+    
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    
+    .timer-title {
+      color: #FFD700;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .timer {
+      display: flex;
+      gap: 10px;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+    
+    .timer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .timer-value {
+      background-color: #222;
+      padding: 5px 10px;
+      border-radius: 5px;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .timer-label {
+      font-size: 0.7rem;
+      color: #aaa;
+      margin-top: 5px;
+    }
+    
+    .prizes-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 2rem;
+      max-width: 500px;
+    }
+    
+    .prize-item {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 10px;
+      width: calc(33.33% - 10px);
+      text-align: center;
+    }
+    
+    .prize-item-name {
+      color: #FFD700;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .prize-item-chance {
+      color: #aaa;
+      font-size: 0.7rem;
+    }
+    
+    @media (max-width: 768px) {
+      .wheel-wrapper {
+        width: 250px;
+        height: 250px;
+      }
+      
+      .prize-item {
+        width: calc(50% - 10px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- رأس الصفحة -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="Smart Coin Logo">
+      </div>
+      
+      <nav class="nav">
+        <a href="index.html" class="nav-link">الرئيسية</a>
+        <a href="earn.html" class="nav-link">التعدين</a>
+        <a href="store.html" class="nav-link">المتجر</a>
+        <a href="referrals.html" class="nav-link">الإحالات</a>
+        <a href="tasks.html" class="nav-link">المهام</a>
+        <a href="wallet.html" class="nav-link">المحفظة</a>
+        <a href="wheel.html" class="nav-link active">عجلة الحظ</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- قسم عجلة الحظ -->
+  <section class="wheel-container">
+    <h1 class="wheel-title">عجلة الحظ</h1>
+    <p class="wheel-subtitle">أدر العجلة واحصل على جوائز قيمة! لديك فرصة واحدة كل 24 ساعة.</p>
+    
+    <div class="timer-container">
+      <div class="timer-title">الوقت المتبقي للدورة التالية</div>
+      <div class="timer">
+        <div class="timer-section">
+          <div class="timer-value" id="hours">00</div>
+          <div class="timer-label">ساعة</div>
+        </div>
+        <div class="timer-section">
+          <div class="timer-value" id="minutes">00</div>
+          <div class="timer-label">دقيقة</div>
+        </div>
+        <div class="timer-section">
+          <div class="timer-value" id="seconds">00</div>
+          <div class="timer-label">ثانية</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="wheel-wrapper">
+      <div class="wheel-pointer"></div>
+      <div class="wheel" id="wheel">
+        <!-- سيتم إنشاء أقسام العجلة بواسطة JavaScript -->
+      </div>
+      <div class="wheel-center"></div>
+    </div>
+    
+    <button class="spin-button" id="spin-button">أدر العجلة</button>
+    
+    <div class="prize-info" id="prize-info">
+      <h3 class="prize-title" id="prize-title">مبروك!</h3>
+      <p class="prize-description" id="prize-description">لقد ربحت 50 عملة SmartCoin!</p>
+      <p class="prize-note">* لا يمكن سحب الجوائز إلا بعد إدراج العملة</p>
+    </div>
+    
+    <div class="prizes-list">
+      <div class="prize-item">
+        <div class="prize-item-name">100 SmartCoin</div>
+        <div class="prize-item-chance">5%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">50 SmartCoin</div>
+        <div class="prize-item-chance">10%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">25 SmartCoin</div>
+        <div class="prize-item-chance">15%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">10 SmartCoin</div>
+        <div class="prize-item-chance">20%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">0.01 TON</div>
+        <div class="prize-item-chance">5%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">0.001 SOL</div>
+        <div class="prize-item-chance">5%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">5 SmartCoin</div>
+        <div class="prize-item-chance">25%</div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-item-name">حظ أوفر</div>
+        <div class="prize-item-chance">15%</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- تذييل الصفحة -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="assets/images/logo.png" alt="Smart Coin Logo" width="80">
+      </div>
+      
+      <div class="footer-links">
+        <a href="#" class="footer-link">الشروط والأحكام</a>
+        <a href="#" class="footer-link">سياسة الخصوصية</a>
+        <a href="#" class="footer-link">اتصل بنا</a>
+      </div>
+      
+      <p class="copyright">© 2025 Smart Coin. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+  
+  <!-- شريط التنقل السفلي (للأجهزة المحمولة) -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-text">الرئيسية</div>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nav-text">التعدين</div>
+    </a>
+    <a href="store.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-store"></i></div>
+      <div class="nav-text">المتجر</div>
+    </a>
+    <a href="referrals.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-user-plus"></i></div>
+      <div class="nav-text">الإحالات</div>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+      <div class="nav-text">المهام</div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-text">المحفظة</div>
+    </a>
+    <a href="wheel.html" class="nav-item active">
+      <div class="nav-icon"><i class="fas fa-dharmachakra"></i></div>
+      <div class="nav-text">عجلة الحظ</div>
+    </a>
+  </nav>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // تعريف الجوائز
+      const prizes = [
+        { name: '100 SmartCoin', color: '#FFD700', textColor: '#000', chance: 5 },
+        { name: '50 SmartCoin', color: '#FFC107', textColor: '#000', chance: 10 },
+        { name: '25 SmartCoin', color: '#FF9800', textColor: '#000', chance: 15 },
+        { name: '10 SmartCoin', color: '#FF5722', textColor: '#000', chance: 20 },
+        { name: '0.01 TON', color: '#2196F3', textColor: '#fff', chance: 5 },
+        { name: '0.001 SOL', color: '#9C27B0', textColor: '#fff', chance: 5 },
+        { name: '5 SmartCoin', color: '#4CAF50', textColor: '#000', chance: 25 },
+        { name: 'حظ أوفر', color: '#F44336', textColor: '#fff', chance: 15 }
+      ];
+      
+      // إنشاء أقسام العجلة
+      const wheel = document.getElementById('wheel');
+      const totalPrizes = prizes.length;
+      const rotationAngle = 360 / totalPrizes;
+      
+      prizes.forEach((prize, index) => {
+        const section = document.createElement('div');
+        section.className = 'wheel-section';
+        section.style.backgroundColor = prize.color;
+        section.style.color = prize.textColor;
+        section.style.transform = `rotate(${index * rotationAngle}deg)`;
+        section.textContent = prize.name;
+        wheel.appendChild(section);
+      });
+      
+      // تدوير العجلة
+      const spinButton = document.getElementById('spin-button');
+      const prizeInfo = document.getElementById('prize-info');
+      const prizeTitle = document.getElementById('prize-title');
+      const prizeDescription = document.getElementById('prize-description');
+      
+      let canSpin = true;
+      let lastSpinTime = localStorage.getItem('lastSpinTime') ? parseInt(localStorage.getItem('lastSpinTime')) : 0;
+      
+      // التحقق من وقت الدوران الأخير
+      function checkSpinAvailability() {
+        const now = Date.now();
+        const timeElapsed = now - lastSpinTime;
+        const cooldownPeriod = 24 * 60 * 60 * 1000; // 24 ساعة
+        
+        if (timeElapsed < cooldownPeriod && lastSpinTime !== 0) {
+          canSpin = false;
+          spinButton.disabled = true;
+          
+          // تحديث العداد التنازلي
+          const remainingTime = cooldownPeriod - timeElapsed;
+          updateTimer(remainingTime);
+          
+          // تحديث العداد كل ثانية
+          const timerInterval = setInterval(() => {
+            const currentTime = Date.now();
+            const updatedTimeElapsed = currentTime - lastSpinTime;
+            const updatedRemainingTime = cooldownPeriod - updatedTimeElapsed;
+            
+            if (updatedRemainingTime <= 0) {
+              clearInterval(timerInterval);
+              canSpin = true;
+              spinButton.disabled = false;
+              updateTimer(0);
+            } else {
+              updateTimer(updatedRemainingTime);
+            }
+          }, 1000);
+        } else {
+          canSpin = true;
+          spinButton.disabled = false;
+          updateTimer(0);
+        }
+      }
+      
+      // تحديث العداد التنازلي
+      function updateTimer(remainingTime) {
+        const hours = Math.floor(remainingTime / (60 * 60 * 1000));
+        const minutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+        
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      }
+      
+      // تدوير العجلة عند النقر على الزر
+      spinButton.addEventListener('click', function() {
+        if (!canSpin) return;
+        
+        // تعطيل الزر أثناء الدوران
+        spinButton.disabled = true;
+        
+        // إخفاء معلومات الجائزة السابقة
+        prizeInfo.style.display = 'none';
+        
+        // تحديد الجائزة بناءً على الاحتمالات
+        let randomValue = Math.random() * 100;
+        let cumulativeChance = 0;
+        let selectedPrizeIndex = 0;
+        
+        for (let i = 0; i < prizes.length; i++) {
+          cumulativeChance += prizes[i].chance;
+          if (randomValue <= cumulativeChance) {
+            selectedPrizeIndex = i;
+            break;
+          }
+        }
+        
+        // حساب زاوية الدوران
+        const extraRotations = 5; // عدد الدورات الإضافية
+        const targetRotation = 360 * extraRotations + (360 - (selectedPrizeIndex * rotationAngle));
+        
+        // تدوير العجلة
+        wheel.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+        wheel.style.transform = `rotate(${targetRotation}deg)`;
+        
+        // تحديث وقت الدوران الأخير
+        lastSpinTime = Date.now();
+        localStorage.setItem('lastSpinTime', lastSpinTime.toString());
+        
+        // عرض الجائزة بعد انتهاء الدوران
+        setTimeout(() => {
+          const selectedPrize = prizes[selectedPrizeIndex];
+          
+          prizeTitle.textContent = 'مبروك!';
+          prizeDescription.textContent = `لقد ربحت ${selectedPrize.name}!`;
+          
+          if (selectedPrize.name === 'حظ أوفر') {
+            prizeTitle.textContent = 'حظ أوفر!';
+            prizeDescription.textContent = 'حاول مرة أخرى بعد 24 ساعة.';
+          }
+          
+          prizeInfo.style.display = 'block';
+          
+          // تحديث حالة الدوران
+          canSpin = false;
+          checkSpinAvailability();
+        }, 5500);
+      });
+      
+      // التحقق من إمكانية الدوران عند تحميل الصفحة
+      checkSpinAvailability();
+    });
+  </script>
+</body>
+</html>
