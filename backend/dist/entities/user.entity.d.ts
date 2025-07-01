@@ -1,0 +1,31 @@
+import { Order } from './order.entity';
+import { ActivatedPackage } from './activated-package.entity';
+import { Referral } from './referral.entity';
+import { UserActivity } from './user-activity.entity';
+export declare class User {
+    id: string;
+    telegramId: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+    languageCode: string;
+    isPremium: boolean;
+    loginMethod: string;
+    isActive: boolean;
+    referralCode: string;
+    referredBy: string;
+    totalCoins: number;
+    miningRate: number;
+    lastClaim: Date;
+    lastLogin: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    orders: Order[];
+    activatedPackages: ActivatedPackage[];
+    referrals: Referral[];
+    activities: UserActivity[];
+    getFullName(): string;
+    canClaim(): boolean;
+    calculateClaimAmount(): number;
+    private getHoursSinceLastClaim;
+}

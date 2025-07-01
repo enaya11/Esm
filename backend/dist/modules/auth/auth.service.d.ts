@@ -1,0 +1,86 @@
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { User } from '../../entities/user.entity';
+import { UserActivity } from '../../entities/user-activity.entity';
+import { Referral } from '../../entities/referral.entity';
+import { TelegramAuthDto } from './dto/telegram-auth.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+export declare class AuthService {
+    private readonly userRepository;
+    private readonly activityRepository;
+    private readonly referralRepository;
+    private readonly jwtService;
+    private readonly configService;
+    private readonly logger;
+    constructor(userRepository: Repository<User>, activityRepository: Repository<UserActivity>, referralRepository: Repository<Referral>, jwtService: JwtService, configService: ConfigService);
+    authenticateWithTelegram(telegramAuthDto: TelegramAuthDto, ipAddress?: string, userAgent?: string): Promise<{
+        user: {
+            id: string;
+            telegramId: number;
+            username: string;
+            firstName: string;
+            lastName: string;
+            languageCode: string;
+            isPremium: boolean;
+            loginMethod: string;
+            isActive: boolean;
+            referralCode: string;
+            referredBy: string;
+            totalCoins: number;
+            miningRate: number;
+            lastClaim: Date;
+            lastLogin: Date;
+            createdAt: Date;
+            updatedAt: Date;
+            orders: import("../../entities/order.entity").Order[];
+            activatedPackages: import("../../entities/activated-package.entity").ActivatedPackage[];
+            referrals: Referral[];
+            activities: UserActivity[];
+        };
+        token: string;
+    }>;
+    validateJwtPayload(payload: JwtPayload): Promise<User>;
+    logout(userId: string, ipAddress?: string, userAgent?: string): Promise<void>;
+    getUserProfile(userId: string): Promise<{
+        user: {
+            id: string;
+            telegramId: number;
+            username: string;
+            firstName: string;
+            lastName: string;
+            languageCode: string;
+            isPremium: boolean;
+            loginMethod: string;
+            isActive: boolean;
+            referralCode: string;
+            referredBy: string;
+            totalCoins: number;
+            miningRate: number;
+            lastClaim: Date;
+            lastLogin: Date;
+            createdAt: Date;
+            updatedAt: Date;
+            orders: import("../../entities/order.entity").Order[];
+            activatedPackages: import("../../entities/activated-package.entity").ActivatedPackage[];
+            referrals: Referral[];
+            activities: UserActivity[];
+        };
+        referralStats: {
+            totalReferrals: number;
+            totalRewards: number;
+            weeklyReferrals: number;
+            monthlyReferrals: number;
+            recentReferrals: Referral[];
+        };
+    }>;
+    private verifyTelegramAuth;
+    private updateExistingUser;
+    private createNewUser;
+    private processReferral;
+    private generateJwtToken;
+    private generateReferralCode;
+    private logActivity;
+    private getReferralStats;
+    private sanitizeUser;
+}
