@@ -30,7 +30,9 @@ let User = class User {
     totalCoins;
     miningRate;
     lastClaim;
-    lastLogin;
+    lastLoginAt;
+    registeredAt;
+    level;
     createdAt;
     updatedAt;
     orders;
@@ -68,8 +70,8 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'telegram_id', type: 'bigint', unique: true, nullable: true }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ name: 'telegram_id', type: 'varchar', unique: true, nullable: true }),
+    __metadata("design:type", String)
 ], User.prototype, "telegramId", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
@@ -120,9 +122,17 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "lastClaim", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'last_login', type: 'timestamp', nullable: true }),
+    (0, typeorm_1.Column)({ name: 'last_login_at', type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
-], User.prototype, "lastLogin", void 0);
+], User.prototype, "lastLoginAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'registered_at', type: 'timestamp', nullable: true }),
+    __metadata("design:type", Date)
+], User.prototype, "registeredAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'level', default: 1 }),
+    __metadata("design:type", Number)
+], User.prototype, "level", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
     __metadata("design:type", Date)

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار SmartCoin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .features {
+            margin-top: 2rem;
+            text-align: right;
+        }
+        
+        .feature {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 255, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SmartCoin</h1>
+        <p>أقوى منصة تداول لامركزية في العالم</p>
+        <p>بدعم رأس مال 350 مليون دولار</p>
+        
+        <div class="features">
+            <div class="feature">✅ تسجيل دخول عبر تليجرام</div>
+            <div class="feature">✅ نظام تعدين ذكي</div>
+            <div class="feature">✅ مهام يومية</div>
+            <div class="feature">✅ نظام إحالات</div>
+            <div class="feature">✅ عجلة الحظ</div>
+            <div class="feature">✅ واجهة مستخدم متطورة</div>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <a href="login-ultra.html" class="btn">صفحة تسجيل الدخول المتقدمة</a>
+            <a href="earn-ultra.html" class="btn">صفحة الربح المتقدمة</a>
+        </div>
+        
+        <div class="status">
+            <h3>حالة النظام</h3>
+            <p id="system-status">جاري فحص النظام...</p>
+        </div>
+    </div>
+
+    <script>
+        // فحص حالة النظام
+        async function checkSystemStatus() {
+            const statusElement = document.getElementById('system-status');
+            
+            try {
+                // فحص الفرونت إند
+                statusElement.innerHTML = '🌐 الفرونت إند: متصل<br>';
+                
+                // فحص الباك إند
+                try {
+                    const response = await fetch('http://localhost:3000/api/v1/auth/stats');
+                    if (response.ok) {
+                        statusElement.innerHTML += '🖥️ الباك إند: متصل<br>';
+                        const data = await response.json();
+                        statusElement.innerHTML += `👥 إجمالي المستخدمين: ${data.totalUsers || 0}<br>`;
+                        statusElement.innerHTML += `💰 العملات المتداولة: ${data.totalCoinsInCirculation || 0}<br>`;
+                    } else {
+                        statusElement.innerHTML += '🖥️ الباك إند: غير متصل<br>';
+                    }
+                } catch (error) {
+                    statusElement.innerHTML += '🖥️ الباك إند: غير متصل<br>';
+                }
+                
+                statusElement.innerHTML += '✅ النظام جاهز للاستخدام!';
+                
+            } catch (error) {
+                statusElement.innerHTML = '❌ خطأ في فحص النظام: ' + error.message;
+            }
+        }
+        
+        // تشغيل فحص النظام عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', checkSystemStatus);
+        
+        console.log('✅ تم تحميل صفحة الاختبار بنجاح');
+    </script>
+</body>
+</html>
+

@@ -1,6 +1,6 @@
 export interface JwtPayload {
   sub: string; // معرف المستخدم
-  telegramId?: number;
+  telegramId?: string;
   username?: string;
   iat?: number; // تاريخ الإصدار
   exp?: number; // تاريخ الانتهاء

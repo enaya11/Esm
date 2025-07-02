@@ -1,6 +1,6 @@
 export interface JwtPayload {
     sub: string;
-    telegramId?: number;
+    telegramId?: string;
     username?: string;
     iat?: number;
     exp?: number;

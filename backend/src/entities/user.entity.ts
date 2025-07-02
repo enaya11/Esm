@@ -19,8 +19,8 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'telegram_id', type: 'bigint', unique: true, nullable: true })
-  telegramId: number;
+  @Column({ name: 'telegram_id', type: 'varchar', unique: true, nullable: true })
+  telegramId: string;
 
   @Column({ nullable: true })
   username: string;
@@ -58,8 +58,14 @@ export class User {
   @Column({ name: 'last_claim', type: 'timestamp', nullable: true })
   lastClaim: Date;
 
-  @Column({ name: 'last_login', type: 'timestamp', nullable: true })
-  lastLogin: Date;
+  @Column({ name: 'last_login_at', type: 'timestamp', nullable: true })
+  lastLoginAt: Date;
+
+  @Column({ name: 'registered_at', type: 'timestamp', nullable: true })
+  registeredAt: Date;
+
+  @Column({ name: 'level', default: 1 })
+  level: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -9,6 +9,7 @@ export declare enum ActivityType {
     REFERRAL_MADE = "referral_made",
     REFERRAL_BONUS_RECEIVED = "referral_bonus_received",
     TASK_COMPLETED = "task_completed",
+    MINING = "mining",
     WITHDRAWAL_REQUESTED = "withdrawal_requested",
     WITHDRAWAL_COMPLETED = "withdrawal_completed",
     SECURITY_EVENT = "security_event",

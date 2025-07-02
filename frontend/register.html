@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد - SmartCoin</title>
+    <link rel="stylesheet" href="css/enhanced-style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/3d-animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-card {
+            background: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(30, 30, 30, 0.95));
+            border: 2px solid var(--sc-gold);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 50px var(--sc-gold-glow),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .register-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--sc-gold-gradient);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--sc-gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px var(--sc-gold-glow);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .register-logo i {
+            font-size: 40px;
+            color: var(--sc-black);
+        }
+
+        .register-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sc-gold);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px var(--sc-gold-glow);
+        }
+
+        .register-subtitle {
+            color: var(--sc-text-gray);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--sc-gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: var(--sc-text-light);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--sc-gold);
+            box-shadow: 0 0 20px var(--sc-gold-glow);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--sc-text-gray);
+        }
+
+        .password-toggle {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--sc-gold);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--sc-gold-light);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--sc-gold-gradient);
+            border: none;
+            border-radius: 12px;
+            color: var(--sc-black);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .register-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .register-btn:hover::before {
+            left: 100%;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px var(--sc-gold-glow);
+        }
+
+        .register-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--sc-gold), transparent);
+        }
+
+        .divider span {
+            background: var(--sc-gray);
+            padding: 0 20px;
+            color: var(--sc-text-gray);
+            font-size: 14px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(30, 30, 30, 0.8);
+            color: var(--sc-text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-btn:hover {
+            border-color: var(--sc-gold);
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-btn i {
+            font-size: 20px;
+        }
+
+        .telegram-btn {
+            color: #0088cc;
+        }
+
+        .ton-btn {
+            color: var(--sc-cyan);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .login-link a {
+            color: var(--sc-gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: var(--sc-gold-light);
+            text-shadow: 0 0 10px var(--sc-gold-glow);
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--sc-gold);
+        }
+
+        .terms-checkbox a {
+            color: var(--sc-gold);
+            text-decoration: none;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* تأثيرات الجزيئات */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--sc-gold);
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* استجابة للأجهزة المحمولة */
+        @media (max-width: 768px) {
+            .register-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .register-title {
+                font-size: 24px;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- جزيئات متحركة -->
+    <div class="particles" id="particles"></div>
+
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <div class="register-logo">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h1 class="register-title">إنشاء حساب جديد</h1>
+                <p class="register-subtitle">انضم إلى مستقبل العملات الرقمية مع SmartCoin</p>
+            </div>
+
+            <form id="registerForm" class="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="fullName">الاسم الكامل</label>
+                    <input type="text" id="fullName" name="fullName" class="form-input" placeholder="أدخل اسمك الكامل" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">رقم الهاتف</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="أدخل رقم هاتفك" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">كلمة المرور</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="أدخل كلمة مرور قوية" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">تأكيد كلمة المرور</label>
+                    <div style="position: relative;">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="أعد إدخال كلمة المرور" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="referralCode">كود الإحالة (اختياري)</label>
+                    <input type="text" id="referralCode" name="referralCode" class="form-input" placeholder="أدخل كود الإحالة إن وجد">
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                    <label for="agreeTerms">
+                        أوافق على <a href="#" target="_blank">الشروط والأحكام</a> و <a href="#" target="_blank">سياسة الخصوصية</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء الحساب
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>أو سجل باستخدام</span>
+            </div>
+
+            <div class="social-login">
+                <a href="#" class="social-btn telegram-btn" id="telegramRegister">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span>تليجرام</span>
+                </a>
+                <a href="#" class="social-btn ton-btn" id="tonRegister">
+                    <i class="fas fa-wallet"></i>
+                    <span>محفظة TON</span>
+                </a>
+            </div>
+
+            <div class="login-link">
+                <p>لديك حساب بالفعل؟ <a href="login-enhanced.html">تسجيل الدخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إنشاء الجزيئات المتحركة
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // تبديل إظهار/إخفاء كلمة المرور
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + 'Icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // التحقق من صحة النموذج
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('كلمات المرور غير متطابقة');
+                return false;
+            }
+            
+            if (password.length < 8) {
+                alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // معالجة إرسال النموذج
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            // هنا يمكن إضافة منطق التسجيل
+            const formData = new FormData(this);
+            const userData = Object.fromEntries(formData);
+            
+            console.log('بيانات التسجيل:', userData);
+            
+            // محاكاة عملية التسجيل
+            const registerBtn = document.querySelector('.register-btn');
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إنشاء الحساب...';
+            registerBtn.disabled = true;
+            
+            setTimeout(() => {
+                // محاكاة إنشاء رمز مميز
+                const token = 'smartcoin_token_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                // حفظ بيانات المستخدم
+                const user = {
+                    id: Date.now(),
+                    fullName: userData.fullName,
+                    email: userData.email,
+                    phone: userData.phone,
+                    registrationDate: new Date().toISOString()
+                };
+                
+                // استخدام نظام الحماية لتسجيل الدخول
+                if (window.AuthGuard) {
+                    AuthGuard.onLoginSuccess(token, user);
+                } else {
+                    // fallback إذا لم يتم تحميل نظام الحماية
+                    localStorage.setItem('smartcoin_token', token);
+                    localStorage.setItem('smartcoin_user', JSON.stringify(user));
+                    localStorage.setItem('smartcoin_login_time', Date.now().toString());
+                    window.location.href = 'earn-ultra.html';
+                }
+            }, 2000);
+        });
+
+        // تسجيل عبر تليجرام
+        document.getElementById('telegramRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('سيتم توجيهك لتسجيل الدخول عبر تليجرام');
+            // هنا يمكن إضافة منطق التسجيل عبر تليجرام
+        });
+
+        // تسجيل عبر محفظة TON
+        document.getElementById('tonRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('سيتم توجيهك لتسجيل الدخول عبر محفظة TON');
+            // هنا يمكن إضافة منطق التسجيل عبر محفظة TON
+        });
+
+        // تشغيل الجزيئات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
+

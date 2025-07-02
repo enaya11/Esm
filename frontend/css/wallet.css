@@ -1,0 +1,398 @@
+/* تنسيقات صفحة المحفظة */
+
+.wallet-container {
+    padding: 20px;
+}
+
+.wallet-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #AEFF6A;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(174, 255, 106, 0.5);
+}
+
+/* بطاقات المحفظة */
+.wallet-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.wallet-card {
+    flex: 1;
+    min-width: 300px;
+    background: linear-gradient(145deg, #1a1a1d 0%, #27272a 100%);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(174, 255, 106, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.wallet-card:hover::before {
+    opacity: 1;
+}
+
+.wallet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.wallet-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-card-header h2 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 0;
+}
+
+.wallet-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #18181b;
+    box-shadow: 0 0 10px rgba(174, 255, 106, 0.5);
+}
+
+.wallet-logo img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.wallet-card-body {
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-balance {
+    margin-bottom: 15px;
+}
+
+.balance-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #a1a1aa;
+    margin-bottom: 5px;
+}
+
+.balance-amount {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #AEFF6A;
+    text-shadow: 0 0 5px rgba(174, 255, 106, 0.5);
+}
+
+.wallet-address {
+    position: relative;
+}
+
+.address-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #a1a1aa;
+    margin-bottom: 5px;
+}
+
+.address-value {
+    display: block;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #18181b;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    word-break: break-all;
+    font-family: monospace;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 30px;
+    left: 10px;
+    background-color: #AEFF6A;
+    color: #18181b;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background-color: #8bff2a;
+}
+
+.wallet-card-footer {
+    display: flex;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #27272a;
+    color: #fff;
+}
+
+.deposit-btn {
+    background-color: #AEFF6A;
+    color: #18181b;
+}
+
+.deposit-btn:hover {
+    background-color: #8bff2a;
+}
+
+.withdraw-btn {
+    background-color: #3f3f46;
+}
+
+.withdraw-btn:hover {
+    background-color: #52525b;
+}
+
+.connect-btn {
+    background-color: #AEFF6A;
+    color: #18181b;
+    width: 100%;
+}
+
+.connect-btn:hover {
+    background-color: #8bff2a;
+}
+
+/* العمليات الأخيرة */
+.wallet-actions {
+    margin-bottom: 40px;
+}
+
+.wallet-actions h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.transactions-list {
+    background-color: #27272a;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #3f3f46;
+    transition: all 0.2s ease;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-item:hover {
+    background-color: #3f3f46;
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #18181b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.transaction-icon img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-title {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.transaction-date {
+    font-size: 0.8rem;
+    color: #a1a1aa;
+}
+
+.transaction-amount {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.transaction-amount.positive {
+    color: #AEFF6A;
+}
+
+.transaction-amount.negative {
+    color: #ef4444;
+}
+
+.no-transactions {
+    text-align: center;
+    padding: 20px;
+    color: #a1a1aa;
+    font-style: italic;
+}
+
+/* معلومات المحفظة */
+.wallet-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.info-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.info-card {
+    flex: 1;
+    min-width: 300px;
+    background-color: #27272a;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    color: #AEFF6A;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    font-size: 1rem;
+    color: #d4d4d8;
+    line-height: 1.6;
+}
+
+/* النوافذ المنبثقة */
+.popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup {
+    background-color: #27272a;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #3f3f46;
+}
+
+.popup-header h3 {
+    font-size: 1.5rem;
+    color: #AEFF6A;
+    margin: 0;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+    color: #ef4444;
+}
+
+.popup-content {
+    padding: 20px;
+}
+
+/* تنسيقات الاستجابة */
+@media (max-width: 768px) {
+    .wallet-cards {
+        flex-direction: column;
+    }
+    
+    .wallet-card {
+        min-width: 100%;
+    }
+    
+    .info-cards {
+        flex-direction: column;
+    }
+    
+    .info-card {
+        min-width: 100%;
+    }
+}
+

@@ -3,8 +3,8 @@
 
 class TelegramBotHandler {
   constructor() {
-    this.botUsername = 'MySmartCoin_bot';
-    this.botUrl = 'http://t.me/MySmartCoin_bot';
+    this.botUsername = 'smartcoin_official_bot';
+    this.botUrl = 'https://t.me/smartcoin_official_bot';
     // توكن البوت محفوظ بشكل آمن في الخادم وغير معروض للمستخدمين
     this.verificationCodes = new Map();
     this.verificationTimeout = 5 * 60 * 1000; // 5 minutes in milliseconds

@@ -4,7 +4,7 @@ import { Referral } from './referral.entity';
 import { UserActivity } from './user-activity.entity';
 export declare class User {
     id: string;
-    telegramId: number;
+    telegramId: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -17,7 +17,9 @@ export declare class User {
     totalCoins: number;
     miningRate: number;
     lastClaim: Date;
-    lastLogin: Date;
+    lastLoginAt: Date;
+    registeredAt: Date;
+    level: number;
     createdAt: Date;
     updatedAt: Date;
     orders: Order[];

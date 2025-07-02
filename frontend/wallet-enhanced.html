@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محفظتي - SmartCoin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/wallet.css">
+    <link rel="stylesheet" href="css/3d-animations.css">
+    <link rel="stylesheet" href="css/3d-effects-extra.css">
+    <!-- تحميل مكتبة TON Connect SDK -->
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" defer></script>
+    <!-- تحميل مكتبة TON Connect UI -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="img/logo.png" alt="SmartCoin Logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="earn-enhanced.html">التعدين</a></li>
+                    <li><a href="tasks-enhanced.html">المهام</a></li>
+                    <li><a href="referrals-enhanced.html">الإحالات</a></li>
+                    <li><a href="wheel-enhanced.html">عجلة الحظ</a></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <span class="balance"><span id="user-balance">0</span> SM</span>
+                <div class="user-menu">
+                    <span id="user-name">مستخدم</span>
+                    <div class="dropdown-menu">
+                        <a href="profile-enhanced.html">الملف الشخصي</a>
+                        <a href="wallet-enhanced.html" class="active">محفظتي</a>
+                        <a href="#" id="logout-btn" class="logout-btn">تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="wallet-container">
+                <h1>محفظتي</h1>
+                
+                <div class="wallet-cards">
+                    <!-- بطاقة محفظة SmartCoin -->
+                    <div class="wallet-card smartcoin-wallet">
+                        <div class="wallet-card-header">
+                            <h2>محفظة SmartCoin</h2>
+                            <div class="wallet-logo">
+                                <img src="img/logo.png" alt="SmartCoin Logo">
+                            </div>
+                        </div>
+                        <div class="wallet-card-body">
+                            <div class="wallet-balance">
+                                <span class="balance-label">الرصيد:</span>
+                                <span class="balance-amount"><span id="sc-balance">0</span> SM</span>
+                            </div>
+                            <div class="wallet-address">
+                                <span class="address-label">عنوان المحفظة:</span>
+                                <span class="address-value" id="sc-address">SC_...</span>
+                                <button class="copy-btn" data-clipboard-target="#sc-address">نسخ</button>
+                            </div>
+                        </div>
+                        <div class="wallet-card-footer">
+                            <button class="action-btn deposit-btn">إيداع</button>
+                            <button class="action-btn withdraw-btn">سحب</button>
+                        </div>
+                    </div>
+                    
+                    <!-- بطاقة محفظة TON -->
+                    <div class="wallet-card ton-wallet">
+                        <div class="wallet-card-header">
+                            <h2>محفظة TON</h2>
+                            <div class="wallet-logo">
+                                <img src="img/ton-icon.png" alt="TON Logo">
+                            </div>
+                        </div>
+                        <div class="wallet-card-body">
+                            <div class="wallet-balance">
+                                <span class="balance-label">الرصيد:</span>
+                                <span class="balance-amount"><span id="ton-balance">0</span> TON</span>
+                            </div>
+                            <div class="wallet-address">
+                                <span class="address-label">عنوان المحفظة:</span>
+                                <span class="address-value" id="ton-address">EQ...</span>
+                                <button class="copy-btn" data-clipboard-target="#ton-address">نسخ</button>
+                            </div>
+                        </div>
+                        <div class="wallet-card-footer">
+                            <button class="action-btn connect-btn" id="connect-ton-btn">ربط المحفظة</button>
+                            <div id="ton-connect"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wallet-actions">
+                    <h2>العمليات الأخيرة</h2>
+                    <div class="transactions-list" id="transactions-list">
+                        <!-- ستتم إضافة العمليات ديناميكياً -->
+                        <div class="no-transactions">لا توجد عمليات حتى الآن</div>
+                    </div>
+                </div>
+                
+                <div class="wallet-info">
+                    <h2>معلومات المحفظة</h2>
+                    <div class="info-cards">
+                        <div class="info-card">
+                            <h3>ما هي محفظة SmartCoin؟</h3>
+                            <p>محفظة SmartCoin هي محفظة داخلية تستخدم لتخزين وإدارة عملات SmartCoin الخاصة بك. يمكنك استخدامها للإيداع والسحب وتتبع رصيدك.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>ما هي محفظة TON؟</h3>
+                            <p>محفظة TON هي محفظة خارجية تستخدم لتخزين وإدارة عملات TON الخاصة بك. يمكنك ربطها بحسابك في SmartCoin للاستفادة من ميزات إضافية.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="img/logo.png" alt="SmartCoin Logo">
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="#">الشروط والأحكام</a></li>
+                    <li><a href="#">سياسة الخصوصية</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <a href="#"><img src="img/telegram-icon.png" alt="Telegram"></a>
+                <a href="#"><img src="img/twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="img/discord-icon.png" alt="Discord"></a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>جميع الحقوق محفوظة &copy; 2025 SmartCoin</p>
+        </div>
+    </footer>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="popup-container" class="popup-container" style="display: none;">
+        <div class="popup">
+            <div class="popup-header">
+                <h3 id="popup-title">عنوان النافذة</h3>
+                <button id="popup-close" class="popup-close">&times;</button>
+            </div>
+            <div id="popup-content" class="popup-content">
+                <!-- سيتم إضافة المحتوى ديناميكياً -->
+            </div>
+        </div>
+    </div>
+
+    <!-- سكريبت المصادقة -->
+    <script src="js/auth.js"></script>
+    <!-- سكريبت مصادقة TON المحسن -->
+    <script src="js/ton-connect-enhanced.js"></script>
+    <!-- سكريبت المحفظة -->
+    <script src="js/wallet.js"></script>
+    <!-- سكريبت الأتمتة ثلاثية الأبعاد -->
+    <script src="js/3d-automation.js"></script>
+    <!-- سكريبت التطبيق الرئيسي -->
+    <script src="js/app.js"></script>
+    
+    <script>
+        // التحقق من حالة تسجيل الدخول
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من وجود توكن المصادقة
+            const authToken = localStorage.getItem('smartcoin_auth_token');
+            const walletAddress = localStorage.getItem('smartcoin_wallet');
+            
+            if (!authToken && !walletAddress) {
+                // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
+                window.location.href = 'login-enhanced.html';
+                return;
+            }
+            
+            // تحميل بيانات المستخدم
+            const userData = JSON.parse(localStorage.getItem('smartcoin_user') || '{}');
+            
+            // تحديث اسم المستخدم والرصيد
+            document.getElementById('user-name').textContent = userData.name || 'مستخدم';
+            document.getElementById('user-balance').textContent = userData.balance || 0;
+            document.getElementById('sc-balance').textContent = userData.balance || 0;
+            
+            // تحديث عنوان محفظة TON
+            if (walletAddress) {
+                document.getElementById('ton-address').textContent = walletAddress;
+                document.getElementById('connect-ton-btn').style.display = 'none';
+            }
+            
+            // تهيئة TON Connect UI
+            const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'tonconnect-manifest.json',
+                buttonRootId: 'ton-connect'
+            });
+            
+            // تخصيص الخيارات
+            tonConnectUI.uiOptions = {
+                language: 'en',
+                theme: 'SYSTEM',
+                uiPreferences: {
+                    colorsSet: {
+                        accent: '#AEFF6A',
+                        background: {
+                            primary: '#18181B',
+                            secondary: '#27272A'
+                        }
+                    }
+                }
+            };
+            
+            // إضافة مستمع للاتصال الناجح
+            tonConnectUI.onStatusChange(wallet => {
+                if (wallet) {
+                    console.log('تم الاتصال بالمحفظة:', wallet);
+                    
+                    // تحديث عنوان محفظة TON
+                    document.getElementById('ton-address').textContent = wallet.account.address;
+                    document.getElementById('connect-ton-btn').style.display = 'none';
+                    
+                    // تحديث معالج محفظة TON
+                    if (window.tonWalletHandler) {
+                        window.tonWalletHandler.walletAddress = wallet.account.address;
+                        window.tonWalletHandler.publicKey = wallet.account.publicKey;
+                        window.tonWalletHandler.isConnected = true;
+                        
+                        // معالجة الاتصال الناجح
+                        window.tonWalletHandler.handleSuccessfulConnection(wallet);
+                    }
+                    
+                    // تحديث رصيد محفظة TON
+                    fetchTonBalance(wallet.account.address);
+                }
+            });
+            
+            // حفظ مثيل TON Connect UI في نطاق عام
+            window.tonConnectUI = tonConnectUI;
+            
+            // زر ربط محفظة TON
+            document.getElementById('connect-ton-btn').addEventListener('click', async function() {
+                try {
+                    const wallet = await tonConnectUI.connectWallet();
+                    console.log('تم الاتصال بالمحفظة:', wallet);
+                } catch (error) {
+                    console.error('خطأ في الاتصال بالمحفظة:', error);
+                }
+            });
+            
+            // أزرار النسخ
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const target = document.querySelector(this.dataset.clipboardTarget);
+                    if (target) {
+                        navigator.clipboard.writeText(target.textContent)
+                            .then(() => {
+                                // تغيير نص الزر مؤقتاً
+                                const originalText = this.textContent;
+                                this.textContent = 'تم النسخ!';
+                                setTimeout(() => {
+                                    this.textContent = originalText;
+                                }, 2000);
+                            })
+                            .catch(err => {
+                                console.error('فشل في نسخ النص:', err);
+                            });
+                    }
+                });
+            });
+            
+            // الحصول على عنوان محفظة SmartCoin
+            fetchSmartCoinWallet();
+            
+            // الحصول على رصيد محفظة TON
+            if (walletAddress) {
+                fetchTonBalance(walletAddress);
+            }
+            
+            // الحصول على العمليات الأخيرة
+            fetchRecentTransactions();
+        });
+        
+        // الحصول على عنوان محفظة SmartCoin
+        async function fetchSmartCoinWallet() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('smartcoin_user') || '{}');
+                const authToken = localStorage.getItem('smartcoin_auth_token');
+                
+                if (!userData.id || !authToken) {
+                    return;
+                }
+                
+                const response = await fetch(`https://api.smartcoin-app.com/wallets/user/${userData.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.wallet) {
+                    document.getElementById('sc-address').textContent = data.wallet.internalAddress;
+                }
+            } catch (error) {
+                console.error('خطأ في الحصول على عنوان محفظة SmartCoin:', error);
+            }
+        }
+        
+        // الحصول على رصيد محفظة TON
+        async function fetchTonBalance(address) {
+            try {
+                const response = await fetch(`https://toncenter.com/api/v2/getAddressBalance?address=${address}`);
+                const data = await response.json();
+                
+                if (data.ok && data.result) {
+                    // تحويل الرصيد من نانو TON إلى TON
+                    const balanceInTon = parseFloat(data.result) / 1000000000;
+                    document.getElementById('ton-balance').textContent = balanceInTon.toFixed(4);
+                }
+            } catch (error) {
+                console.error('خطأ في الحصول على رصيد محفظة TON:', error);
+            }
+        }
+        
+        // الحصول على العمليات الأخيرة
+        async function fetchRecentTransactions() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('smartcoin_user') || '{}');
+                const authToken = localStorage.getItem('smartcoin_auth_token');
+                
+                if (!userData.id || !authToken) {
+                    return;
+                }
+                
+                const response = await fetch(`https://api.smartcoin-app.com/transactions/user/${userData.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.transactions && data.transactions.length > 0) {
+                    const transactionsList = document.getElementById('transactions-list');
+                    transactionsList.innerHTML = '';
+                    
+                    data.transactions.forEach(transaction => {
+                        const transactionItem = document.createElement('div');
+                        transactionItem.className = `transaction-item ${transaction.type}`;
+                        
+                        const transactionDate = new Date(transaction.createdAt).toLocaleDateString('ar-SA');
+                        const transactionTime = new Date(transaction.createdAt).toLocaleTimeString('ar-SA');
+                        
+                        transactionItem.innerHTML = `
+                            <div class="transaction-icon">
+                                <img src="img/${transaction.type}-icon.png" alt="${transaction.type}">
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">${transaction.description}</div>
+                                <div class="transaction-date">${transactionDate} ${transactionTime}</div>
+                            </div>
+                            <div class="transaction-amount ${transaction.type === 'deposit' ? 'positive' : 'negative'}">
+                                ${transaction.type === 'deposit' ? '+' : '-'}${transaction.amount} SM
+                            </div>
+                        `;
+                        
+                        transactionsList.appendChild(transactionItem);
+                    });
+                } else {
+                    document.getElementById('transactions-list').innerHTML = '<div class="no-transactions">لا توجد عمليات حتى الآن</div>';
+                }
+            } catch (error) {
+                console.error('خطأ في الحصول على العمليات الأخيرة:', error);
+                document.getElementById('transactions-list').innerHTML = '<div class="no-transactions">لا توجد عمليات حتى الآن</div>';
+            }
+        }
+    </script>
+</body>
+</html>
+

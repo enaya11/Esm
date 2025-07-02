@@ -23,6 +23,7 @@ var ActivityType;
     ActivityType["REFERRAL_MADE"] = "referral_made";
     ActivityType["REFERRAL_BONUS_RECEIVED"] = "referral_bonus_received";
     ActivityType["TASK_COMPLETED"] = "task_completed";
+    ActivityType["MINING"] = "mining";
     ActivityType["WITHDRAWAL_REQUESTED"] = "withdrawal_requested";
     ActivityType["WITHDRAWAL_COMPLETED"] = "withdrawal_completed";
     ActivityType["SECURITY_EVENT"] = "security_event";

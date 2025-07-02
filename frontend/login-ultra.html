@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - SmartCoin</title>
+    
+    <!-- الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ultra-modern-style.css">
+    
+    <style>
+        /* تخصيص صفحة تسجيل الدخول */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 215, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: rotate 15s linear infinite;
+            z-index: -1;
+        }
+        
+        .login-card::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 22px;
+            z-index: -1;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #D4AF37, #FFD700, #FFDF4F);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .welcome-text {
+            color: var(--sc-gold);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .login-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .telegram-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, #D4AF37, #FFD700, #FFDF4F);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            box-shadow: 
+                0 10px 30px rgba(255, 215, 0, 0.3),
+                0 0 20px rgba(255, 215, 0, 0.2);
+        }
+        
+        .telegram-login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .telegram-login-btn:hover::before {
+            left: 100%;
+        }
+        
+        .telegram-login-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 15px 40px rgba(255, 215, 0, 0.4),
+                0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .telegram-login-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+        
+        .telegram-icon {
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .features-list {
+            text-align: right;
+            margin-top: 2rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            color: var(--sc-gold);
+            transform: translateX(-5px);
+        }
+        
+        .feature-icon {
+            color: var(--sc-gold);
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+        
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--sc-gold);
+            display: block;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .loading-text {
+            color: var(--sc-gold);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* تأثيرات الجسيمات الخاصة بصفحة تسجيل الدخول */
+        .login-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--sc-gold);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* تأثيرات الاستجابة */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .platform-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .telegram-login-btn {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+        
+        /* تأثيرات إضافية للتفاعل */
+        .interactive-glow {
+            position: relative;
+        }
+        
+        .interactive-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .interactive-glow:hover::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة التحميل -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري التحميل...</div>
+    </div>
+
+    <!-- جسيمات متحركة -->
+    <div class="login-particles" id="particles-container"></div>
+
+    <!-- حاوي تسجيل الدخول -->
+    <div class="login-container">
+        <div class="login-card interactive-glow">
+            <!-- الشعار والعنوان -->
+            <h1 class="logo">SmartCoin</h1>
+            <p class="subtitle">أقوى منصة تداول لامركزية في العالم</p>
+            <p class="welcome-text">مرحباً بك في مستقبل التداول</p>
+            
+            <!-- طرق تسجيل الدخول -->
+            <div class="login-methods">
+                <button class="telegram-login-btn ripple-effect" id="telegram-login-btn">
+                    <i class="fab fa-telegram telegram-icon"></i>
+                    <span>تسجيل الدخول عبر تليجرام</span>
+                </button>
+            </div>
+            
+            <!-- قائمة الميزات -->
+            <div class="features-list">
+                <div class="feature-item slide-in-right" style="animation-delay: 0.1s;">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <span>أمان متقدم ومصادقة ثنائية</span>
+                </div>
+                <div class="feature-item slide-in-right" style="animation-delay: 0.2s;">
+                    <i class="fas fa-coins feature-icon"></i>
+                    <span>تعدين ذكي بمعدلات عالية</span>
+                </div>
+                <div class="feature-item slide-in-right" style="animation-delay: 0.3s;">
+                    <i class="fas fa-users feature-icon"></i>
+                    <span>نظام إحالات مربح</span>
+                </div>
+                <div class="feature-item slide-in-right" style="animation-delay: 0.4s;">
+                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <span>واجهة متجاوبة وسهلة الاستخدام</span>
+                </div>
+            </div>
+            
+            <!-- إحصائيات المنصة -->
+            <div class="platform-stats">
+                <div class="stat-item hover-lift">
+                    <span class="stat-number">350M</span>
+                    <span class="stat-label">رأس المال (دولار)</span>
+                </div>
+                <div class="stat-item hover-lift">
+                    <span class="stat-number" id="user-count">0</span>
+                    <span class="stat-label">المستخدمين النشطين</span>
+                </div>
+                <div class="stat-item hover-lift">
+                    <span class="stat-number" id="coin-count">0</span>
+                    <span class="stat-label">العملات المتداولة</span>
+                </div>
+                <div class="stat-item hover-lift">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">الدعم الفني</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة منبثقة للمصادقة -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h3>تسجيل الدخول عبر تليجرام</h3>
+                <button class="modal-close" onclick="hideModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- سيتم ملء المحتوى ديناميكياً -->
+            </div>
+        </div>
+    </div>
+
+    <!-- رسائل التنبيه -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- سكريپت التكامل مع النظام -->
+    <script src="js/auth-integration.js"></script>
+    <script src="js/ultra-animations.js"></script>
+    
+    <!-- سكريپت مصادقة تليجرام -->
+    <script src="js/telegram-auth.js"></script>
+    
+    <!-- سكريپت صفحة تسجيل الدخول -->
+    <script>
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 بدء تهيئة صفحة تسجيل الدخول المتقدمة...');
+            
+            // إخفاء شاشة التحميل
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1500);
+            
+            // إنشاء الجسيمات المتحركة
+            createParticles();
+            
+            // تحديث الإحصائيات
+            updateStats();
+            
+            // تفعيل التأثيرات
+            activateEffects();
+            
+            console.log('✅ تم تهيئة صفحة تسجيل الدخول المتقدمة بنجاح');
+        });
+        
+        // إنشاء الجسيمات المتحركة
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // تحديث الإحصائيات
+        async function updateStats() {
+            try {
+                // محاكاة جلب البيانات
+                const userCount = Math.floor(Math.random() * 10000) + 50000;
+                const coinCount = Math.floor(Math.random() * 1000000) + 5000000;
+                
+                // تحديث العدادات بتأثير متحرك
+                animateCounter('user-count', userCount);
+                animateCounter('coin-count', coinCount);
+                
+            } catch (error) {
+                console.log('تعذر تحديث الإحصائيات:', error);
+            }
+        }
+        
+        // تحريك العدادات
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const duration = 2000;
+            const startTime = Date.now();
+            const startValue = 0;
+            
+            function updateCounter() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
+                
+                if (elementId === 'coin-count') {
+                    element.textContent = formatNumber(currentValue);
+                } else {
+                    element.textContent = formatNumber(currentValue);
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                }
+            }
+            
+            updateCounter();
+        }
+        
+        // تنسيق الأرقام
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // تفعيل التأثيرات
+        function activateEffects() {
+            // تأثيرات التحويم للعناصر
+            const hoverElements = document.querySelectorAll('.hover-lift, .interactive-glow');
+            hoverElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                element.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // تأثير الموجة للأزرار
+            const rippleButtons = document.querySelectorAll('.ripple-effect');
+            rippleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+        
+        // إظهار النافذة المنبثقة
+        function showModal(title, content) {
+            const modal = document.getElementById('auth-modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            modalBody.innerHTML = content;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // إخفاء النافذة المنبثقة
+        function hideModal() {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // إظهار الإشعارات
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+        }
+        
+        console.log('✅ تم تهيئة صفحة تسجيل الدخول المتقدمة بنجاح');
+    </script>
+</body>
+</html>
+

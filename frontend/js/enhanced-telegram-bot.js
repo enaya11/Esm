@@ -1,17 +1,14 @@
-// Enhanced Telegram Bot Integration for SmartCoin
-// This file handles Telegram bot interactions with real bot token
-
 class TelegramBotHandler {
   constructor() {
     // توكن البوت الفعلي
     this.botToken = '7519072707:AAE-Jn9vGSorlh1OPEkNNQcxQcTYLcfgQjQ';
     this.botUsername = 'SMARTCOINAPPbot';
     this.apiUrl = `https://api.telegram.org/bot${this.botToken}`;
-    
+
     // معلومات المستخدم
     this.currentUser = null;
     this.isInitialized = false;
-    
+
     // إعدادات الإشعارات
     this.notificationsEnabled = true;
     this.lastNotificationTime = 0;
@@ -21,21 +18,21 @@ class TelegramBotHandler {
   // تهيئة البوت
   async initialize() {
     console.log('تهيئة بوت تليجرام...');
-    
+
     try {
       // التحقق من صحة التوكن
       const botInfo = await this.getBotInfo();
-      
+
       if (botInfo.ok) {
         console.log(`تم تهيئة البوت بنجاح: @${botInfo.result.username}`);
         this.isInitialized = true;
-        
+
         // تحميل معلومات المستخدم من localStorage
         this.loadUserData();
-        
+
         // إعداد Telegram Web App إذا كان متاحاً
         this.initializeTelegramWebApp();
-        
+
         return true;
       } else {
         throw new Error('فشل في التحقق من صحة توكن البوت');
@@ -74,22 +71,22 @@ class TelegramBotHandler {
   initializeTelegramWebApp() {
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
-      
+
       // تهيئة Web App
       tg.ready();
-      
+
       // الحصول على بيانات المستخدم من Telegram
       if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const telegramUser = tg.initDataUnsafe.user;
         this.handleTelegramUser(telegramUser);
       }
-      
+
       // إعداد الأزرار الرئيسية
       this.setupMainButton(tg);
-      
+
       // إعداد الأزرار الثانوية
       this.setupBackButton(tg);
-      
+
       console.log('تم تهيئة Telegram Web App بنجاح');
     } else {
       console.log('Telegram Web App غير متاح');
@@ -109,14 +106,14 @@ class TelegramBotHandler {
       loginTime: Date.now(),
       isPremium: telegramUser.is_premium || false
     };
-    
+
     // تخزين بيانات المستخدم
     this.currentUser = userData;
     localStorage.setItem('smartcoin_user', JSON.stringify(userData));
     localStorage.setItem('smartcoin_logged_in', 'true');
-    
+
     console.log('تم تسجيل دخول المستخدم عبر تليجرام:', userData);
-    
+
     // إرسال رسالة ترحيب
     this.sendWelcomeMessage();
   }
@@ -126,12 +123,12 @@ class TelegramBotHandler {
     tg.MainButton.setText('بدء التعدين');
     tg.MainButton.color = '#FFD700';
     tg.MainButton.textColor = '#000000';
-    
+
     tg.MainButton.onClick(() => {
       // الانتقال إلى صفحة التعدين
       window.location.href = 'earn.html';
     });
-    
+
     tg.MainButton.show();
   }
 
@@ -148,19 +145,15 @@ class TelegramBotHandler {
     if (!this.currentUser || !this.currentUser.telegramId) {
       return;
     }
-    
+
     const welcomeMessage = `
 🎉 مرحباً بك في SmartCoin!
-
-أهلاً ${this.currentUser.firstName}! 
-
-🪙 لقد انضممت بنجاح إلى منصة SmartCoin للتعدين الذكي
+أهلاً ${this.currentUser.firstName}! 🪙 لقد انضممت بنجاح إلى منصة SmartCoin للتعدين الذكي
 💰 ابدأ التعدين الآن واحصل على عملات مجانية يومياً
 🎁 ادعُ أصدقاءك واحصل على مكافآت إضافية
-
 استمتع بتجربة التعدين! 🚀
     `;
-    
+
     try {
       await this.sendMessage(this.currentUser.telegramId, welcomeMessage);
     } catch (error) {
@@ -177,7 +170,7 @@ class TelegramBotHandler {
         parse_mode: 'HTML',
         ...options
       };
-      
+
       const response = await fetch(`${this.apiUrl}/sendMessage`, {
         method: 'POST',
         headers: {
@@ -185,9 +178,9 @@ class TelegramBotHandler {
         },
         body: JSON.stringify(payload)
       });
-      
+
       const result = await response.json();
-      
+
       if (result.ok) {
         console.log('تم إرسال الرسالة بنجاح');
         return result.result;
@@ -205,16 +198,14 @@ class TelegramBotHandler {
     if (!this.canSendNotification()) {
       return;
     }
-    
+
     const message = `
 🎉 تهانينا!
-
 💰 لقد حصلت على ${coinsEarned} عملة SmartCoin جديدة!
 ⏰ الوقت: ${new Date().toLocaleString('ar-SA')}
-
 🚀 استمر في التعدين لكسب المزيد!
     `;
-    
+
     try {
       if (this.currentUser && this.currentUser.telegramId) {
         await this.sendMessage(this.currentUser.telegramId, message);
@@ -230,17 +221,15 @@ class TelegramBotHandler {
     if (!this.canSendNotification()) {
       return;
     }
-    
+
     const message = `
 ✅ تم تفعيل الباقة بنجاح!
-
 📦 الباقة: ${packageName}
 💵 السعر: ${price} دولار (${currency})
 ⏰ تاريخ التفعيل: ${new Date().toLocaleString('ar-SA')}
-
 🎯 ستحصل الآن على معدل تعدين محسّن!
     `;
-    
+
     try {
       if (this.currentUser && this.currentUser.telegramId) {
         await this.sendMessage(this.currentUser.telegramId, message);
@@ -256,17 +245,15 @@ class TelegramBotHandler {
     if (!this.canSendNotification()) {
       return;
     }
-    
+
     const message = `
 🎊 إحالة جديدة!
-
 👤 انضم ${referredUserName} إلى SmartCoin من خلال رابط الإحالة الخاص بك!
 🎁 لقد حصلت على مكافأة إحالة
 💰 استمر في دعوة الأصدقاء لكسب المزيد!
-
 شكراً لك على نشر SmartCoin! 🙏
     `;
-    
+
     try {
       if (this.currentUser && this.currentUser.telegramId) {
         await this.sendMessage(this.currentUser.telegramId, message);
@@ -282,17 +269,15 @@ class TelegramBotHandler {
     if (!this.canSendNotification()) {
       return;
     }
-    
+
     const message = `
 ✅ مهمة مكتملة!
-
 📋 المهمة: ${taskName}
 🎁 المكافأة: ${reward} عملة SmartCoin
 ⏰ الوقت: ${new Date().toLocaleString('ar-SA')}
-
 🎯 تحقق من المهام الأخرى لكسب المزيد!
     `;
-    
+
     try {
       if (this.currentUser && this.currentUser.telegramId) {
         await this.sendMessage(this.currentUser.telegramId, message);
@@ -308,7 +293,7 @@ class TelegramBotHandler {
     if (!this.notificationsEnabled) {
       return false;
     }
-    
+
     const now = Date.now();
     return (now - this.lastNotificationTime) >= this.notificationCooldown;
   }
@@ -317,7 +302,7 @@ class TelegramBotHandler {
   toggleNotifications(enabled) {
     this.notificationsEnabled = enabled;
     localStorage.setItem('telegram_notifications_enabled', enabled.toString());
-    
+
     console.log(`تم ${enabled ? 'تفعيل' : 'إلغاء تفعيل'} إشعارات تليجرام`);
   }
 
@@ -326,7 +311,7 @@ class TelegramBotHandler {
     if (!this.currentUser) {
       return null;
     }
-    
+
     const referralCode = this.currentUser.id || this.currentUser.telegramId;
     return `https://t.me/${this.botUsername}?start=${referralCode}`;
   }
@@ -334,26 +319,24 @@ class TelegramBotHandler {
   // مشاركة رابط الإحالة
   async shareReferralLink() {
     const referralLink = this.generateReferralLink();
-    
+
     if (!referralLink) {
       console.error('لا يمكن إنشاء رابط الإحالة');
       return;
     }
-    
+
     const shareText = `
 🚀 انضم إلى SmartCoin واحصل على عملات رقمية مجانية!
-
 💰 تعدين سهل ومجاني
 🎁 مكافآت يومية
 🌟 نظام إحالات مربح
-
 ابدأ الآن: ${referralLink}
     `;
-    
+
     // استخدام Telegram Web App للمشاركة إذا كان متاحاً
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
-      
+
       if (tg.openTelegramLink) {
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
         tg.openTelegramLink(shareUrl);
@@ -371,7 +354,7 @@ class TelegramBotHandler {
   async copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
-      
+
       // عرض إشعار نجاح
       if (window.SmartCoinPayment && window.SmartCoinPayment.showNotification) {
         window.SmartCoinPayment.showNotification('تم نسخ رابط الإحالة إلى الحافظة!', 'success');
@@ -380,7 +363,7 @@ class TelegramBotHandler {
       }
     } catch (error) {
       console.error('خطأ في نسخ النص:', error);
-      
+
       // طريقة بديلة للنسخ
       const textArea = document.createElement('textarea');
       textArea.value = text;
@@ -388,7 +371,7 @@ class TelegramBotHandler {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      
+
       alert('تم نسخ رابط الإحالة!');
     }
   }
@@ -403,9 +386,9 @@ class TelegramBotHandler {
     this.currentUser = null;
     localStorage.removeItem('smartcoin_user');
     localStorage.removeItem('smartcoin_logged_in');
-    
+
     console.log('تم تسجيل خروج المستخدم');
-    
+
     // إعادة توجيه إلى صفحة تسجيل الدخول
     window.location.href = 'login-enhanced.html';
   }
@@ -420,18 +403,16 @@ class TelegramBotHandler {
     if (!this.canSendNotification()) {
       return;
     }
-    
+
     const message = `
 📊 تقريرك اليومي - SmartCoin
-
 💰 العملات المكتسبة اليوم: ${stats.coinsEarned || 0}
 📈 إجمالي العملات: ${stats.totalCoins || 0}
 👥 عدد الإحالات: ${stats.referrals || 0}
 ✅ المهام المكتملة: ${stats.completedTasks || 0}
-
 🎯 استمر في التعدين لكسب المزيد غداً!
     `;
-    
+
     try {
       if (this.currentUser && this.currentUser.telegramId) {
         await this.sendMessage(this.currentUser.telegramId, message);
@@ -463,4 +444,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // تصدير المعالج للاستخدام العام
 window.TelegramBotHandler = telegramBotHandler;
-
