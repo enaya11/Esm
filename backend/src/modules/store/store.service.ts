@@ -103,11 +103,11 @@ export class StoreService {
             paymentCurrency: currency,
             paymentAmountCrypto: amountCrypto,
             paymentAddress: paymentAddress,
-            status: OrderStatus.PENDING, // Use enum
-            transactionId: this.generateUniqueTransactionId(), // Generate unique ID for tracking
+            status: OrderStatus.PENDING,
+            transactionId: this.generateUniqueTransactionId(),
             createdAt: new Date(),
-        } as Order);
-        await this.orderRepository.save(order);
+        } as Partial<Order>); // Explicitly cast to Partial<Order>
+        await this.orderRepository.save(order as Order); // Save as Order
 
         // Send payment instructions to the user via Telegram bot
         const message = `✅ تم إنشاء طلب شراء لحزمة "${packageDetails.name}".\n\nيرجى تحويل ${amountCrypto.toFixed(4)} ${currency} إلى العنوان التالي لإتمام الشراء:\n\`${paymentAddress}\`\n\nمعرف الطلب: \`${order.transactionId}\`\n\nسيتم تفعيل الباقة تلقائياً بعد تأكيد الدفع.`;
@@ -132,7 +132,13 @@ export class StoreService {
     async confirmMiningPackagePayment(userId: string, transactionId: string) {
         this.logger.log(`User ${userId} attempting to confirm mining package payment for transaction ID: ${transactionId}`);
 
-        const order = await this.orderRepository.findOne({ where: { transactionId, userId, status: OrderStatus.PENDING } });
+        const order = await this.orderRepository.findOne({
+            where: {
+                transactionId: transactionId,
+                userId: userId,
+                status: OrderStatus.PENDING
+            }
+        });
         if (!order) {
             throw new NotFoundException('الطلب غير موجود أو تم تأكيده بالفعل.');
         }
@@ -147,14 +153,13 @@ export class StoreService {
         }
 
         if (!isPaymentVerified) {
-            // Optionally, update order status to FAILED or keep PENDING for retry
-            // For now, we'll just throw an error
             throw new BadRequestException('لم يتم تأكيد الدفع بعد أو فشل التحقق.');
         }
 
         // Payment confirmed, activate package and update order status
         order.status = OrderStatus.COMPLETED;
         order.updatedAt = new Date();
+        order.completedAt = new Date(); // Set completedAt
         await this.orderRepository.save(order);
 
         const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -167,8 +172,8 @@ export class StoreService {
                 miningRate: packageDetails.rate,
                 startDate: new Date(),
                 endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)), // 1 month duration
-            });
-            await this.activatedPackageRepository.save(activatedPackage);
+            } as Partial<ActivatedPackage>); // Explicitly cast to Partial<ActivatedPackage>
+            await this.activatedPackageRepository.save(activatedPackage as ActivatedPackage); // Save as ActivatedPackage
 
             // Send success notification via Telegram bot
             const message = `🎉 تم تفعيل حزمة التعدين "${packageDetails.name}" بنجاح!`;
@@ -229,12 +234,13 @@ export class StoreService {
             amountUSD: giftCardDetails.valueUSD,
             paymentCurrency: 'SM',
             paymentAmountCrypto: giftCardDetails.priceSM,
-            status: OrderStatus.COMPLETED, // Use enum
+            status: OrderStatus.COMPLETED,
             transactionId: this.generateUniqueTransactionId(),
             metadata: { giftCode: giftCode },
             createdAt: new Date(),
-        } as Order); // Cast to Order
-        await this.orderRepository.save(order);
+            completedAt: new Date(), // Gift card purchases are immediately completed
+        } as Partial<Order>); // Explicitly cast to Partial<Order>
+        await this.orderRepository.save(order as Order); // Save as Order
 
         // Send success notification via Telegram bot
         const message = `🎉 تم شراء بطاقة "${giftCardDetails.name}" بنجاح!\n\nرمز البطاقة: \`${giftCode}\`\n\nاستمتع بهديتك!`;
