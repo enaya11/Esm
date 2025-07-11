@@ -9,13 +9,14 @@ import axios from 'axios';
 import { User } from '../../entities/user.entity';
 import { UserActivity, ActivityType } from '../../entities/user-activity.entity';
 import { Referral } from '../../entities/referral.entity';
-import { TelegramAuthDto } from './dto/telegram-auth.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { TelegramAuthDto } from './dto/telegram-auth.dto';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private readonly botToken: string;
+  private readonly otpStore = new Map<string, { code: string; expiresAt: number; userId: string }>(); // In-memory OTP store
 
   constructor(
     @InjectRepository(User)
@@ -38,77 +39,193 @@ export class AuthService {
   }
 
   /**
-   * تسجيل الدخول عبر تليجرام مع التحقق المحسن
+   * Validates Telegram login data and authenticates the user.
    */
-  async telegramLogin(telegramData: any, ipAddress?: string, userAgent?: string) {
-    try {
-      this.logger.log(`محاولة تسجيل دخول عبر تليجرام للمستخدم: ${telegramData.telegram_id}`);
+  async telegramLogin(
+    telegramAuthDto: TelegramAuthDto,
+    ipAddress?: string,
+    userAgent?: string,
+  ) {
+    this.logger.log(`Attempting Telegram login for user: ${telegramAuthDto.username || telegramAuthDto.id}`);
 
-      // التحقق من صحة البيانات
-      if (!telegramData.telegram_id) {
-        throw new BadRequestException('معرف التليجرام مطلوب');
-      }
+    const { id, auth_date, hash, ...data } = telegramAuthDto;
 
-      // البحث عن المستخدم أو إنشاؤه
-      let user = await this.userRepository.findOne({
-        where: { telegramId: telegramData.telegram_id.toString() },
-      });
+    // Verify the data received from Telegram
+    const checkString = Object.keys(data)
+      .sort()
+      .map((key) => `${key}=${data[key]}`)
+      .join('\n');
 
-      if (user) {
-        // تحديث بيانات المستخدم الموجود
-        user = await this.updateExistingUser(user, telegramData);
-        this.logger.log(`تم تحديث بيانات المستخدم الموجود: ${user.telegramId}`);
-      } else {
-        // إنشاء مستخدم جديد
-        user = await this.createNewUser(telegramData);
-        this.logger.log(`تم إنشاء مستخدم جديد: ${user.telegramId}`);
+    const secretKey = crypto.createHash('sha256').update(this.botToken).digest();
+    const hmac = crypto.createHmac('sha256', secretKey).update(checkString).digest('hex');
 
-        // إرسال رسالة ترحيب عبر البوت
-        await this.sendWelcomeMessage(telegramData.telegram_id, telegramData.first_name);
-      }
+    if (hmac !== hash) {
+      this.logger.warn(`Invalid Telegram hash for user ID: ${id}`);
+      throw new UnauthorizedException('بيانات تيليجرام غير صالحة.');
+    }
 
-      // إنشاء JWT token
-      const payload: JwtPayload = {
-        sub: user.id,
+    // Check if the authentication data is too old (e.g., 1 hour)
+    if (Date.now() / 1000 - Number(auth_date) > 3600) { // Explicitly cast auth_date to Number
+      this.logger.warn(`Outdated Telegram auth data for user ID: ${id}`);
+      throw new UnauthorizedException('بيانات المصادقة منتهية الصلاحية.');
+    }
+
+    let user = await this.userRepository.findOne({ where: { telegramId: id.toString() } });
+
+    if (user) {
+      // Update existing user
+      user = await this.updateExistingUser(user, telegramAuthDto);
+      this.logger.log(`Existing user logged in: ${user.telegramId}`);
+    } else {
+      // Create new user
+      user = await this.createNewUser(telegramAuthDto);
+      this.logger.log(`New user registered via Telegram: ${user.telegramId}`);
+      await this.sendWelcomeMessage(user.telegramId, user.firstName || user.username);
+    }
+
+    // Generate JWT token
+    const payload: JwtPayload = {
+      sub: user.id,
+      telegramId: user.telegramId,
+      username: user.username,
+    };
+    const accessToken = this.jwtService.sign(payload);
+
+    // Log login activity
+    await this.logUserActivity(
+      user.id,
+      ActivityType.LOGIN,
+      ipAddress,
+      userAgent,
+      { method: 'telegram' }
+    );
+
+    // Send login success notification via bot
+    await this.sendLoginSuccessNotification(user.telegramId);
+
+    return {
+      success: true,
+      message: 'تم تسجيل الدخول بنجاح',
+      token: accessToken,
+      user: {
+        id: user.id,
         telegramId: user.telegramId,
         username: user.username,
-      };
+        firstName: user.firstName,
+        lastName: user.lastName,
+        totalCoins: user.totalCoins,
+        miningRate: user.miningRate,
+        level: user.level,
+        referralCode: user.referralCode,
+      },
+    };
+  }
 
-      const accessToken = this.jwtService.sign(payload);
+  /**
+   * يولد رمز OTP ويرسله إلى المستخدم عبر تيليجرام.
+   */
+  async generateTelegramOtp(telegramIdentifier: string) {
+    this.logger.log(`محاولة توليد OTP للمعرف: ${telegramIdentifier}`);
 
-      // تسجيل نشاط تسجيل الدخول
-      await this.logUserActivity(
-        user.id,
-        ActivityType.LOGIN,
-        ipAddress,
-        userAgent,
-        { method: 'telegram' }
-      );
+    // Find user by username or telegramId (assuming telegramIdentifier can be either)
+    let user = await this.userRepository.findOne({
+      where: [
+        { username: telegramIdentifier },
+        { telegramId: telegramIdentifier },
+      ],
+    });
 
-      // إرسال إشعار تسجيل دخول ناجح عبر البوت
-      await this.sendLoginSuccessNotification(telegramData.telegram_id);
-
-      return {
-        success: true,
-        message: 'تم تسجيل الدخول بنجاح',
-        token: accessToken,
-        user: {
-          id: user.id,
-          telegramId: user.telegramId,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          totalCoins: user.totalCoins,
-          miningRate: user.miningRate,
-          level: user.level,
-          referralCode: user.referralCode,
-        },
-      };
-
-    } catch (error) {
-      this.logger.error(`خطأ في تسجيل الدخول عبر تليجرام: ${error.message}`, error.stack);
-      throw error;
+    if (!user) {
+      throw new BadRequestException('المستخدم غير موجود. يرجى بدء المحادثة مع البوت أولاً.');
     }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+    const expiresAt = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
+
+    this.otpStore.set(telegramIdentifier, { code: otp, expiresAt, userId: user.id });
+    this.logger.log(`تم توليد OTP للمستخدم ${telegramIdentifier}: ${otp}`);
+
+    try {
+      await this.sendTelegramMessage(user.telegramId, `رمز التحقق الخاص بك هو: ${otp}\n\nهذا الرمز صالح لمدة 5 دقائق.`);
+      this.logger.log(`تم إرسال OTP إلى المستخدم ${telegramIdentifier}`);
+      return { success: true, message: 'تم إرسال رمز التحقق بنجاح.' };
+    } catch (error) {
+      this.logger.error(`فشل إرسال OTP إلى ${telegramIdentifier}: ${error.message}`);
+      throw new BadRequestException('فشل إرسال رمز التحقق. يرجى التأكد من أنك بدأت المحادثة مع البوت.');
+    }
+  }
+
+  /**
+   * يتحقق من رمز OTP ويسجل دخول المستخدم.
+   */
+  async verifyTelegramOtp(telegramIdentifier: string, otp: string, ipAddress?: string, userAgent?: string) {
+    this.logger.log(`محاولة التحقق من OTP للمعرف: ${telegramIdentifier}`);
+
+    const storedOtpData = this.otpStore.get(telegramIdentifier);
+
+    if (!storedOtpData || storedOtpData.code !== otp) {
+      throw new BadRequestException('رمز التحقق غير صحيح.');
+    }
+
+    if (Date.now() > storedOtpData.expiresAt) {
+      this.otpStore.delete(telegramIdentifier); // Clear expired OTP
+      throw new BadRequestException('رمز التحقق منتهي الصلاحية.');
+    }
+
+    // OTP is valid, proceed with login/registration
+    let user = await this.userRepository.findOne({
+      where: { id: storedOtpData.userId },
+    });
+
+    if (!user) {
+      // This case should ideally not happen if userId from otpStore is reliable
+      throw new UnauthorizedException('المستخدم غير موجود.');
+    }
+
+    // Update user's last login time and active status
+    user.lastLoginAt = new Date();
+    user.isActive = true;
+    await this.userRepository.save(user);
+
+    // Generate JWT token
+    const payload: JwtPayload = {
+      sub: user.id,
+      telegramId: user.telegramId,
+      username: user.username,
+    };
+    const accessToken = this.jwtService.sign(payload);
+
+    // Log login activity
+    await this.logUserActivity(
+      user.id,
+      ActivityType.LOGIN,
+      ipAddress,
+      userAgent,
+      { method: 'telegram-otp' }
+    );
+
+    // Clear the used OTP
+    this.otpStore.delete(telegramIdentifier);
+
+    // Send login success notification via bot
+    await this.sendLoginSuccessNotification(user.telegramId);
+
+    return {
+      success: true,
+      message: 'تم تسجيل الدخول بنجاح',
+      token: accessToken,
+      user: {
+        id: user.id,
+        telegramId: user.telegramId,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        totalCoins: user.totalCoins,
+        miningRate: user.miningRate,
+        level: user.level,
+        referralCode: user.referralCode,
+      },
+    };
   }
 
   /**
@@ -226,7 +343,7 @@ export class AuthService {
   /**
    * إرسال رسالة ترحيب عبر البوت
    */
-  private async sendWelcomeMessage(telegramId: number, firstName: string) {
+  private async sendWelcomeMessage(telegramId: string | number, firstName: string) {
     try {
       const message = `🎉 مرحباً ${firstName}!\n\nتم تسجيل حسابك بنجاح في SmartCoin!\n\n💰 حصلت على 100 عملة SM كمكافأة تسجيل\n🚀 ابدأ التعدين الآن واحصل على المزيد من العملات!`;
 
@@ -239,7 +356,7 @@ export class AuthService {
   /**
    * إرسال إشعار تسجيل دخول ناجح
    */
-  private async sendLoginSuccessNotification(telegramId: number) {
+  private async sendLoginSuccessNotification(telegramId: string | number) {
     try {
       const message = `✅ تم تسجيل دخولك بنجاح!\n\n🚀 يمكنك الآن الوصول إلى جميع ميزات SmartCoin`;
 
@@ -252,7 +369,7 @@ export class AuthService {
   /**
    * إرسال إشعار الإحالة
    */
-  private async sendReferralNotification(telegramId: string, referralName: string, bonus: number) {
+  private async sendReferralNotification(telegramId: string | number, referralName: string, bonus: number) {
     try {
       const message = `👥 إحالة جديدة!\n\n🎉 انضم ${referralName} عبر رابط الإحالة الخاص بك\n💰 حصلت على ${bonus} عملة SM كمكافأة\n\n🔗 شارك رابطك مع المزيد من الأصدقاء!`;
 
@@ -265,12 +382,12 @@ export class AuthService {
   /**
    * إرسال رسالة عبر تليجرام
    */
-  private async sendTelegramMessage(telegramId: string | number, message: string) {
+  public async sendTelegramMessage(chatId: string | number, message: string) {
     try {
       const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
 
       await axios.post(url, {
-        chat_id: telegramId,
+        chat_id: chatId,
         text: message,
         parse_mode: 'Markdown'
       });

@@ -14,8 +14,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { TelegramAuthDto } from './dto/telegram-auth.dto';
-import { VerifyCodeDto } from './dto/verify-code.dto';
+import { GenerateOtpDto } from './dto/generate-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { User } from '../../entities/user.entity';
 import { GetUser } from '../../common/decorators/get-user.decorator';
 
@@ -24,17 +24,26 @@ import { GetUser } from '../../common/decorators/get-user.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  @Post('telegram-login')
+  @Post('telegram/generate-otp')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'تسجيل الدخول/التسجيل عبر تليجرام (للبوت والواجهة الأمامية)' })
-  @ApiResponse({ status: 200, description: 'تم تسجيل الدخول/التسجيل بنجاح' })
+  @ApiOperation({ summary: 'إنشاء رمز تحقق لتسجيل الدخول عبر تليجرام' })
+  @ApiResponse({ status: 200, description: 'تم إرسال رمز التحقق بنجاح' })
   @ApiResponse({ status: 400, description: 'بيانات غير صالحة' })
-  async telegramLogin(@Body() telegramAuthDto: TelegramAuthDto, @Req() req: any) {
+  async generateTelegramOtp(@Body() generateOtpDto: GenerateOtpDto) {
+    return await this.authService.generateTelegramOtp(generateOtpDto.telegramIdentifier);
+  }
+
+  @Post('telegram/verify-otp')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'التحقق من رمز OTP لتسجيل الدخول عبر تليجرام' })
+  @ApiResponse({ status: 200, description: 'تم تسجيل الدخول بنجاح' })
+  @ApiResponse({ status: 400, description: 'رمز تحقق غير صالح أو منتهي الصلاحية' })
+  async verifyTelegramOtp(@Body() verifyOtpDto: VerifyOtpDto, @Req() req: any) {
     const ipAddress = req.ip;
     const userAgent = req.get('User-Agent');
-
-    return await this.authService.telegramLogin(
-      telegramAuthDto,
+    return await this.authService.verifyTelegramOtp(
+      verifyOtpDto.telegramIdentifier,
+      verifyOtpDto.otp,
       ipAddress,
       userAgent,
     );
