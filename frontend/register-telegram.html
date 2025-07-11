@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,8 @@
     <link rel="stylesheet" href="css/3d-animations.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script async src="https://telegram.org/js/telegram-widget.js?2" data-telegram-login="SMAR1TCOINbot"
+        data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
     <style>
         .auth-container {
             min-height: 100vh;
@@ -27,7 +30,7 @@
             padding: 40px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 
+            box-shadow:
                 0 20px 40px rgba(0, 0, 0, 0.5),
                 0 0 50px var(--sc-gold-glow),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -51,8 +54,13 @@
         }
 
         @keyframes borderGlow {
-            0% { opacity: 0.5; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         @keyframes slideInUp {
@@ -60,6 +68,7 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -84,8 +93,15 @@
         }
 
         @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .auth-logo i {
@@ -164,8 +180,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         .telegram-icon {
@@ -183,8 +206,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .verification-title {
@@ -349,12 +377,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 1;
             }
+
             90% {
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
@@ -383,6 +414,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- جزيئات متحركة -->
     <div class="particles" id="particles"></div>
@@ -402,45 +434,9 @@
 
             <!-- قسم تسجيل الدخول عبر تليجرام -->
             <div class="telegram-login-section" id="loginSection">
-                <button class="telegram-login-btn" id="telegramLoginBtn">
-                    <i class="fab fa-telegram-plane telegram-icon"></i>
-                    <span>تسجيل الدخول عبر تليجرام</span>
-                </button>
-                
+                <script async src="https://telegram.org/js/telegram-widget.js?2" data-telegram-login="SMAR1TCOINbot"
+                    data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
                 <div class="status-message" id="statusMessage" style="display: none;"></div>
-            </div>
-
-            <!-- قسم التحقق من الرمز -->
-            <div class="verification-section" id="verificationSection">
-                <h3 class="verification-title">
-                    <i class="fas fa-shield-alt"></i>
-                    رمز التحقق
-                </h3>
-                <p class="verification-description">
-                    تم إرسال رمز التحقق إلى حسابك على تليجرام.<br>
-                    يرجى إدخال الرمز المكون من 6 أرقام:
-                </p>
-                
-                <form id="verificationForm">
-                    <input 
-                        type="text" 
-                        id="verificationCode" 
-                        class="verification-code-input"
-                        placeholder="000000"
-                        maxlength="6"
-                        pattern="[0-9]{6}"
-                        required
-                    >
-                    
-                    <button type="submit" class="verify-btn" id="verifyBtn">
-                        <i class="fas fa-check"></i>
-                        تأكيد الرمز
-                    </button>
-                    
-                    <button type="button" class="resend-code-btn" id="resendCodeBtn">
-                        إعادة إرسال الرمز
-                    </button>
-                </form>
             </div>
 
             <!-- قائمة الميزات -->
@@ -475,10 +471,10 @@
         }
 
         // تشغيل الجزيئات عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             createParticles();
         });
     </script>
 </body>
-</html>
 
+</html>

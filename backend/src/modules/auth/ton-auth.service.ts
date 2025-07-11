@@ -1,16 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import * as nacl from 'tweetnacl';
 import * as base64 from 'tweetnacl-util';
 import { firstValueFrom } from 'rxjs';
+
+import { User } from '../../entities/user.entity';
+import { WalletsService } from '../wallets/wallets.service';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 
 @Injectable()
 export class TonAuthService {
   constructor(
     private readonly httpService: HttpService,
-  ) {}
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly walletsService: WalletsService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) { }
 
   /**
    * التحقق من توقيع محفظة TON
@@ -50,13 +63,61 @@ export class TonAuthService {
         return { success: false, message: 'توقيع غير صالح' };
       }
 
-      // تم إزالة UsersService و WalletsService من هذا الملف، لذا يجب التعامل مع منطق المستخدم والمحفظة هنا مباشرةً أو إعادة هيكلة الوحدات.
-      // For now, returning success: false as the user/wallet logic is missing.
-      return { success: false, message: 'وظيفة المستخدم والمحفظة غير متوفرة في TonAuthService' };
+      let user = await this.userRepository.findOne({
+        where: { tonWalletAddress: data.walletAddress },
+      });
+
+      if (!user) {
+        user = new User();
+        user.tonWalletAddress = data.walletAddress;
+        user.publicKey = data.publicKey;
+        user.username = `ton_user_${data.walletAddress.substring(0, 8)}`;
+        user.loginMethod = 'ton';
+        user.registeredAt = new Date();
+        user.lastLoginAt = new Date();
+        user.isActive = true;
+        user.totalCoins = 0; // Or some initial amount
+        user.miningRate = 0; // Or some initial rate
+        user.level = 1;
+        user.referralCode = this.generateReferralCode();
+        await this.userRepository.save(user);
+
+        await this.walletsService.createWallet(user.id, data.walletAddress);
+      } else {
+        user.lastLoginAt = new Date();
+        user.isActive = true;
+        await this.userRepository.save(user);
+      }
+
+      const payload: JwtPayload = {
+        sub: user.id,
+        telegramId: user.telegramId,
+        username: user.username,
+      };
+      const accessToken = this.jwtService.sign(payload);
+
+      return {
+        success: true,
+        message: 'تم التحقق من التوقيع بنجاح',
+        user: {
+          id: user.id,
+          tonWalletAddress: user.tonWalletAddress,
+          username: user.username,
+          totalCoins: user.totalCoins,
+        },
+        token: accessToken,
+      };
     } catch (error) {
       console.error('خطأ في التحقق من توقيع TON:', error);
       return { success: false, message: 'حدث خطأ أثناء التحقق من التوقيع' };
     }
+  }
+
+  /**
+   * إنشاء كود إحالة فريد
+   */
+  private generateReferralCode(): string {
+    return crypto.randomBytes(4).toString('hex').toUpperCase();
   }
 
   /**
@@ -187,16 +248,57 @@ export class TonAuthService {
     walletAddress: string;
     publicKey: string;
     timestamp: number;
-  }): Promise<{ success: boolean; user?: any; message?: string }> {
+  }): Promise<{ success: boolean; user?: any; message?: string; token?: string }> {
     try {
       // التحقق من صحة البيانات
       if (!data.walletAddress || !data.publicKey) {
         return { success: false, message: 'بيانات غير كاملة' };
       }
 
-      // تم إزالة UsersService و WalletsService من هذا الملف، لذا يجب التعامل مع منطق المستخدم والمحفظة هنا مباشرةً أو إعادة هيكلة الوحدات.
-      // For now, returning success: false as the user/wallet logic is missing.
-      return { success: false, message: 'وظيفة المستخدم والمحفظة غير متوفرة في TonAuthService' };
+      let user = await this.userRepository.findOne({
+        where: { tonWalletAddress: data.walletAddress },
+      });
+
+      if (!user) {
+        user = new User();
+        user.tonWalletAddress = data.walletAddress;
+        user.publicKey = data.publicKey;
+        user.username = `ton_user_${data.walletAddress.substring(0, 8)}`;
+        user.loginMethod = 'ton';
+        user.registeredAt = new Date();
+        user.lastLoginAt = new Date();
+        user.isActive = true;
+        user.totalCoins = 0; // Or some initial amount
+        user.miningRate = 0; // Or some initial rate
+        user.level = 1;
+        user.referralCode = this.generateReferralCode();
+        await this.userRepository.save(user);
+
+        await this.walletsService.createWallet(user.id, data.walletAddress);
+      } else {
+        user.lastLoginAt = new Date();
+        user.isActive = true;
+        await this.userRepository.save(user);
+      }
+
+      const payload: JwtPayload = {
+        sub: user.id,
+        telegramId: user.telegramId,
+        username: user.username,
+      };
+      const accessToken = this.jwtService.sign(payload);
+
+      return {
+        success: true,
+        message: 'تم الاتصال بالمحفظة بنجاح',
+        user: {
+          id: user.id,
+          tonWalletAddress: user.tonWalletAddress,
+          username: user.username,
+          totalCoins: user.totalCoins,
+        },
+        token: accessToken,
+      };
     } catch (error) {
       console.error('خطأ في معالجة اتصال TON:', error);
       return { success: false, message: 'حدث خطأ أثناء معالجة الاتصال' };

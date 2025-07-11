@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -21,55 +22,22 @@ import { GetUser } from '../../common/decorators/get-user.decorator';
 @ApiTags('المصادقة')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  @Post('telegram')
+  @Post('telegram-login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'تسجيل الدخول عبر تليجرام' })
-  @ApiResponse({ status: 200, description: 'تم تسجيل الدخول بنجاح' })
-  @ApiResponse({ status: 401, description: 'بيانات مصادقة غير صالحة' })
-  async telegramAuth(@Body() telegramAuthDto: TelegramAuthDto, @Req() req: any) {
+  @ApiOperation({ summary: 'تسجيل الدخول/التسجيل عبر تليجرام (للبوت والواجهة الأمامية)' })
+  @ApiResponse({ status: 200, description: 'تم تسجيل الدخول/التسجيل بنجاح' })
+  @ApiResponse({ status: 400, description: 'بيانات غير صالحة' })
+  async telegramLogin(@Body() telegramAuthDto: TelegramAuthDto, @Req() req: any) {
     const ipAddress = req.ip;
     const userAgent = req.get('User-Agent');
 
-    return await this.authService.authenticateWithTelegram(
+    return await this.authService.telegramLogin(
       telegramAuthDto,
       ipAddress,
       userAgent,
     );
-  }
-
-  @Post('verify-code')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'التحقق من رمز التحقق من تليجرام' })
-  @ApiResponse({ status: 200, description: 'تم التحقق بنجاح وتسجيل الدخول' })
-  @ApiResponse({ status: 401, description: 'رمز التحقق غير صحيح أو منتهي الصلاحية' })
-  @ApiResponse({ status: 404, description: 'المستخدم غير موجود' })
-  async verifyTelegramCode(@Body() verifyCodeDto: VerifyCodeDto, @Req() req: any) {
-    const ipAddress = req.ip;
-    const userAgent = req.get('User-Agent');
-
-    return await this.authService.verifyTelegramCode(
-      verifyCodeDto,
-      ipAddress,
-      userAgent,
-    );
-  }
-
-  @Get('check-code')
-  @ApiOperation({ summary: 'فحص حالة رمز التحقق' })
-  @ApiQuery({ name: 'code', description: 'رمز التحقق', required: true })
-  @ApiResponse({ status: 200, description: 'حالة الرمز' })
-  async checkVerificationCode(@Query('code') code: string) {
-    return await this.authService.checkVerificationCodeStatus(code);
-  }
-
-  @Post('telegram-webhook')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'استقبال تحديثات من بوت تليجرام' })
-  @ApiResponse({ status: 200, description: 'تم معالجة التحديث بنجاح' })
-  async telegramWebhook(@Body() update: any, @Req() req: any) {
-    return await this.authService.handleTelegramWebhook(update);
   }
 
   @Get('profile')
@@ -121,27 +89,12 @@ export class AuthController {
     };
   }
 
-  @Get('stats')
-  @ApiOperation({ summary: 'إحصائيات المنصة العامة' })
-  @ApiResponse({ status: 200, description: 'إحصائيات المنصة' })
-  async getPlatformStats() {
-    return await this.authService.getPlatformStats();
-  }
-
-  @Post('register-from-bot')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'تسجيل مستخدم جديد من البوت' })
-  @ApiResponse({ status: 200, description: 'تم التسجيل بنجاح' })
-  @ApiResponse({ status: 400, description: 'خطأ في البيانات' })
-  async registerFromBot(@Body() userData: any, @Req() req: any) {
-    const ipAddress = req.ip;
-    const userAgent = req.get('User-Agent');
-
-    return await this.authService.registerUserFromBot(
-      userData,
-      ipAddress,
-      userAgent,
-    );
+  @Get('stats/:telegramId')
+  @ApiOperation({ summary: 'الحصول على إحصائيات مستخدم معين' })
+  @ApiResponse({ status: 200, description: 'إحصائيات المستخدم' })
+  @ApiResponse({ status: 404, description: 'المستخدم غير موجود' })
+  async getUserStats(@Param('telegramId') telegramId: string) {
+    return await this.authService.getUserStats(telegramId);
   }
 }
 

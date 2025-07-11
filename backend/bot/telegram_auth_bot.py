@@ -8,17 +8,15 @@
 import asyncio
 import logging
 import sqlite3
-import json
 import hashlib
 import time
 import uuid
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 import aiohttp
-import requests
-
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebApp
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
+from telegram.request import Request
 
 from bot_config import BotConfig
 
@@ -41,9 +39,29 @@ class TelegramAuthBot:
         self.webapp_url = BotConfig.WEBAPP_URL
         self.api_base_url = BotConfig.API_BASE_URL
         self.db_path = BotConfig.DATABASE_PATH
-        self.application = None
+        self.application = self._build_application()
         self.init_database()
+
+    def _build_application(self):
+        """Build the Telegram application."""
+        request = request(connect_timeout=10, read_timeout=10)
+        application = Application.builder().token(self.token).request(request).build()
         
+        # Add command handlers
+        application.add_handler(CommandHandler("start", self.start_command))
+        application.add_handler(CommandHandler("login", self.login_command))
+        application.add_handler(CommandHandler("logout", self.logout_command))
+        application.add_handler(CommandHandler("stats", self.stats_command))
+        application.add_handler(CommandHandler("help", self.help_command))
+        
+        # Add callback query handler
+        application.add_handler(CallbackQueryHandler(self.button_callback))
+        
+        # Add message handler
+        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
+        
+        return application
+
     def init_database(self):
         """تهيئة قاعدة البيانات"""
         try:
@@ -96,10 +114,10 @@ class TelegramAuthBot:
             
             conn.commit()
             conn.close()
-            logger.info("تم تهيئة قاعدة البيانات بنجاح")
+            logger.info("Database initialized successfully.")
             
         except Exception as e:
-            logger.error(f"خطأ في تهيئة قاعدة البيانات: {e}")
+            logger.error(f"Error initializing database: {e}")
     
     def generate_auth_token(self, user_id: int) -> str:
         """إنشاء رمز مصادقة آمن"""
@@ -135,7 +153,7 @@ class TelegramAuthBot:
             return True
             
         except Exception as e:
-            logger.error(f"خطأ في حفظ المستخدم: {e}")
+            logger.error(f"Error saving user: {e}")
             return False
     
     def create_auth_session(self, user_id: int) -> Optional[Dict[str, str]]:
@@ -171,7 +189,7 @@ class TelegramAuthBot:
             }
             
         except Exception as e:
-            logger.error(f"خطأ في إنشاء جلسة المصادقة: {e}")
+            logger.error(f"Error creating auth session: {e}")
             return None
     
     def create_verification_code(self, user_id: int) -> Optional[str]:
@@ -202,7 +220,7 @@ class TelegramAuthBot:
             return code
             
         except Exception as e:
-            logger.error(f"خطأ في إنشاء رمز التحقق: {e}")
+            logger.error(f"Error creating verification code: {e}")
             return None
     
     def verify_code(self, code: str) -> Optional[int]:
@@ -233,7 +251,7 @@ class TelegramAuthBot:
             return None
             
         except Exception as e:
-            logger.error(f"خطأ في التحقق من الرمز: {e}")
+            logger.error(f"Error verifying code: {e}")
             return None
     
     def get_user_data(self, user_id: int) -> Optional[Dict[str, Any]]:
@@ -266,7 +284,7 @@ class TelegramAuthBot:
             return None
             
         except Exception as e:
-            logger.error(f"خطأ في الحصول على بيانات المستخدم: {e}")
+            logger.error(f"Error getting user data: {e}")
             return None
     
     async def send_to_api(self, endpoint: str, data: Dict[str, Any]) -> bool:
@@ -278,22 +296,21 @@ class TelegramAuthBot:
                 async with session.post(url, json=data) as response:
                     if response.status == 200:
                         result = await response.json()
-                        logger.info(f"تم إرسال البيانات بنجاح إلى {endpoint}: {result}")
+                        logger.info(f"Successfully sent data to {endpoint}: {result}")
                         return True
                     else:
-                        logger.error(f"فشل في إرسال البيانات إلى {endpoint}: {response.status}")
+                        logger.error(f"Failed to send data to {endpoint}: {response.status}")
                         return False
                         
         except Exception as e:
-            logger.error(f"خطأ في إرسال البيانات إلى API: {e}")
+            logger.error(f"Error sending data to API: {e}")
             return False
     
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """معالج أمر /start"""
         user = update.effective_user
-        chat_id = update.effective_chat.id
         
-        logger.info(f"المستخدم {user.id} ({user.first_name}) بدأ استخدام البوت")
+        logger.info(f"User {user.id} ({user.first_name}) started the bot.")
         
         # حفظ بيانات المستخدم
         user_data = {
@@ -309,10 +326,10 @@ class TelegramAuthBot:
         
         # إنشاء لوحة مفاتيح
         keyboard = [
-            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-            [InlineKeyboardButton("🔐 تسجيل الدخول", callback_data="login")],
-            [InlineKeyboardButton("📊 الإحصائيات", callback_data="stats")],
-            [InlineKeyboardButton("🆘 المساعدة", callback_data="help")]
+            [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+            [InlineKeyboardButton("🔐 Login", callback_data="login")],
+            [InlineKeyboardButton("📊 Stats", callback_data="stats")],
+            [InlineKeyboardButton("🆘 Help", callback_data="help")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -324,20 +341,15 @@ class TelegramAuthBot:
             reply_markup=reply_markup,
             parse_mode='Markdown'
         )
-    
-    async def login_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """معالج أمر /login"""
-        user = update.effective_user
-        
-        # إنشاء رمز تحقق
+
+    async def _send_login_message(self, update_or_query, user):
+        """إرسال رسالة تسجيل الدخول"""
         verification_code = self.create_verification_code(user.id)
         
         if verification_code:
-            # إنشاء جلسة مصادقة
             session = self.create_auth_session(user.id)
             
             if session:
-                # إرسال البيانات إلى API
                 await self.send_to_api('auth/telegram-login', {
                     'user_id': user.id,
                     'username': user.username,
@@ -348,30 +360,50 @@ class TelegramAuthBot:
                 })
                 
                 keyboard = [
-                    [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-                    [InlineKeyboardButton("🔄 تحديث الحالة", callback_data="check_login")]
+                    [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+                    [InlineKeyboardButton("🔄 Check Status", callback_data="check_login")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
-                await update.message.reply_text(
-                    f"✅ **تم إنشاء جلسة تسجيل الدخول بنجاح!**\n\n"
-                    f"🔑 **رمز التحقق:** `{verification_code}`\n\n"
-                    f"📱 **الخطوات التالية:**\n"
-                    f"1. اضغط على 'فتح SmartCoin' أدناه\n"
-                    f"2. أدخل رمز التحقق في الموقع\n"
-                    f"3. استمتع بجميع ميزات SmartCoin!\n\n"
-                    f"⏰ **صالح لمدة 10 دقائق**",
-                    reply_markup=reply_markup,
-                    parse_mode='Markdown'
+                message_text = (
+                    f"✅ **Login session created successfully!**\n\n"
+                    f"🔑 **Verification Code:** `{verification_code}`\n\n"
+                    f"📱 **Next Steps:**\n"
+                    f"1. Click 'Open SmartCoin' below\n"
+                    f"2. Enter the verification code on the website\n"
+                    f"3. Enjoy all the features of SmartCoin!\n\n"
+                    f"⏰ **Expires in 10 minutes**"
                 )
+
+                if isinstance(update_or_query, Update):
+                    await update_or_query.message.reply_text(
+                        message_text,
+                        reply_markup=reply_markup,
+                        parse_mode='Markdown'
+                    )
+                else: 
+                     await update_or_query.edit_message_text(
+                        message_text,
+                        reply_markup=reply_markup,
+                        parse_mode='Markdown'
+                    )
             else:
-                await update.message.reply_text(
-                    "❌ حدث خطأ في إنشاء جلسة تسجيل الدخول. يرجى المحاولة مرة أخرى."
-                )
+                 error_message = "❌ Error creating login session. Please try again."
+                 if isinstance(update_or_query, Update):
+                     await update_or_query.message.reply_text(error_message)
+                 else:
+                     await update_or_query.edit_message_text(error_message)
+
         else:
-            await update.message.reply_text(
-                "❌ حدث خطأ في إنشاء رمز التحقق. يرجى المحاولة مرة أخرى."
-            )
+            error_message = "❌ Error creating verification code. Please try again."
+            if isinstance(update_or_query, Update):
+                await update_or_query.message.reply_text(error_message)
+            else:
+                await update_or_query.edit_message_text(error_message)
+
+    async def login_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """معالج أمر /login"""
+        await self._send_login_message(update, update.effective_user)
     
     async def logout_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """معالج أمر /logout"""
@@ -398,9 +430,9 @@ class TelegramAuthBot:
             await update.message.reply_text(BotConfig.get_message('logout_success'))
             
         except Exception as e:
-            logger.error(f"خطأ في تسجيل الخروج: {e}")
+            logger.error(f"Error during logout: {e}")
             await update.message.reply_text(
-                "❌ حدث خطأ في تسجيل الخروج. يرجى المحاولة مرة أخرى."
+                "❌ Error during logout. Please try again."
             )
     
     async def stats_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -418,7 +450,8 @@ class TelegramAuthBot:
             )
             
             keyboard = [
-                [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))]
+                [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+                [InlineKeyboardButton("🔙 Back", callback_data="back_to_main")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -429,7 +462,7 @@ class TelegramAuthBot:
             )
         else:
             await update.message.reply_text(
-                "❌ لم يتم العثور على بياناتك. يرجى استخدام /start أولاً."
+                "❌ Your data was not found. Please use /start first."
             )
     
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -437,8 +470,9 @@ class TelegramAuthBot:
         help_message = BotConfig.get_message('help')
         
         keyboard = [
-            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-            [InlineKeyboardButton("🔐 تسجيل الدخول", callback_data="login")]
+            [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+            [InlineKeyboardButton("🔐 Login", callback_data="login")],
+            [InlineKeyboardButton("🔙 Back", callback_data="back_to_main")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -457,48 +491,32 @@ class TelegramAuthBot:
         data = query.data
         
         if data == "login":
-            await self.handle_login_callback(query, user)
+            await self._send_login_message(query, user)
         elif data == "stats":
             await self.handle_stats_callback(query, user)
         elif data == "help":
             await self.handle_help_callback(query, user)
         elif data == "check_login":
             await self.handle_check_login_callback(query, user)
-    
-    async def handle_login_callback(self, query, user):
-        """معالج زر تسجيل الدخول"""
-        verification_code = self.create_verification_code(user.id)
-        
-        if verification_code:
-            session = self.create_auth_session(user.id)
-            
-            if session:
-                await self.send_to_api('auth/telegram-login', {
-                    'user_id': user.id,
-                    'username': user.username,
-                    'first_name': user.first_name,
-                    'verification_code': verification_code,
-                    'session_id': session['session_id'],
-                    'auth_token': session['auth_token']
-                })
-                
-                keyboard = [
-                    [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-                    [InlineKeyboardButton("🔄 تحديث الحالة", callback_data="check_login")]
-                ]
-                reply_markup = InlineKeyboardMarkup(keyboard)
-                
-                await query.edit_message_text(
-                    f"✅ **تم إنشاء جلسة تسجيل الدخول بنجاح!**\n\n"
-                    f"🔑 **رمز التحقق:** `{verification_code}`\n\n"
-                    f"📱 **الخطوات التالية:**\n"
-                    f"1. اضغط على 'فتح SmartCoin' أدناه\n"
-                    f"2. أدخل رمز التحقق في الموقع\n"
-                    f"3. استمتع بجميع ميزات SmartCoin!\n\n"
-                    f"⏰ **صالح لمدة 10 دقائق**",
-                    reply_markup=reply_markup,
-                    parse_mode='Markdown'
-                )
+        elif data == "back_to_main":
+            await self.show_main_menu(query, user)
+
+    async def show_main_menu(self, query, user):
+        """แสดงเมนูหลัก"""
+        keyboard = [
+            [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+            [InlineKeyboardButton("🔐 Login", callback_data="login")],
+            [InlineKeyboardButton("📊 Stats", callback_data="stats")],
+            [InlineKeyboardButton("🆘 Help", callback_data="help")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        welcome_message = BotConfig.get_message('welcome', first_name=user.first_name)
+        await query.edit_message_text(
+            welcome_message,
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )
+
     
     async def handle_stats_callback(self, query, user):
         """معالج زر الإحصائيات"""
@@ -514,8 +532,8 @@ class TelegramAuthBot:
             )
             
             keyboard = [
-                [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-                [InlineKeyboardButton("🔙 العودة", callback_data="back_to_main")]
+                [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+                [InlineKeyboardButton("🔙 Back", callback_data="back_to_main")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -530,8 +548,8 @@ class TelegramAuthBot:
         help_message = BotConfig.get_message('help')
         
         keyboard = [
-            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-            [InlineKeyboardButton("🔙 العودة", callback_data="back_to_main")]
+            [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+            [InlineKeyboardButton("🔙 Back", callback_data="back_to_main")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -558,29 +576,29 @@ class TelegramAuthBot:
             
             if result:
                 keyboard = [
-                    [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))]
+                    [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await query.edit_message_text(
-                    "✅ **أنت مسجل دخول بنجاح!**\n\n"
-                    "🚀 يمكنك الآن الوصول إلى جميع ميزات SmartCoin.\n\n"
-                    "اضغط على الزر أدناه لفتح التطبيق:",
+                    "✅ **You are logged in successfully!**\n\n"
+                    "🚀 You can now access all SmartCoin features.\n\n"
+                    "Click the button below to open the app:",
                     reply_markup=reply_markup,
                     parse_mode='Markdown'
                 )
             else:
-                await query.answer("❌ لم يتم تسجيل الدخول بعد. يرجى المحاولة مرة أخرى.", show_alert=True)
+                await query.answer("❌ Not logged in yet. Please try again.", show_alert=True)
                 
         except Exception as e:
-            logger.error(f"خطأ في فحص حالة تسجيل الدخول: {e}")
-            await query.answer("❌ حدث خطأ في فحص الحالة.", show_alert=True)
+            logger.error(f"Error checking login status: {e}")
+            await query.answer("❌ Error checking status.", show_alert=True)
     
     async def send_notification(self, user_id: int, message: str, notification_type: str = "general"):
         """إرسال إشعار للمستخدم"""
         try:
             keyboard = [
-                [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))]
+                [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -591,41 +609,27 @@ class TelegramAuthBot:
                 parse_mode='Markdown'
             )
             
-            logger.info(f"تم إرسال إشعار {notification_type} للمستخدم {user_id}")
+            logger.info(f"Notification '{notification_type}' sent to user {user_id}")
             return True
             
         except Exception as e:
-            logger.error(f"خطأ في إرسال الإشعار للمستخدم {user_id}: {e}")
+            logger.error(f"Error sending notification to user {user_id}: {e}")
             return False
     
-    def run(self):
+    async def run(self):
         """تشغيل البوت"""
-        try:
-            # إنشاء التطبيق
-            self.application = Application.builder().token(self.token).build()
-            
-            # إضافة معالجات الأوامر
-            self.application.add_handler(CommandHandler("start", self.start_command))
-            self.application.add_handler(CommandHandler("login", self.login_command))
-            self.application.add_handler(CommandHandler("logout", self.logout_command))
-            self.application.add_handler(CommandHandler("stats", self.stats_command))
-            self.application.add_handler(CommandHandler("help", self.help_command))
-            
-            # إضافة معالج الأزرار
-            self.application.add_handler(CallbackQueryHandler(self.button_callback))
-            
-            # إضافة معالج الرسائل العامة
-            self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
-            
-            logger.info("🚀 بدء تشغيل بوت SmartCoin للمصادقة...")
-            logger.info(f"🔗 رابط التطبيق: {self.webapp_url}")
-            
-            # تشغيل البوت
-            self.application.run_polling(allowed_updates=Update.ALL_TYPES)
-            
-        except Exception as e:
-            logger.error(f"خطأ في تشغيل البوت: {e}")
-    
+        logger.info("Starting SmartCoin authentication bot...")
+        logger.info(f"Webapp URL: {self.webapp_url}")
+        
+        async with self.application:
+            await self.application.initialize()
+            await self.application.updater.start_polling(allowed_updates=Update.ALL_TYPES)
+            await self.application.start()
+            logger.info("Bot started and polling.")
+            # Keep the bot running
+            while True:
+                await asyncio.sleep(60)
+
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """معالج الرسائل العامة"""
         user = update.effective_user
@@ -636,14 +640,14 @@ class TelegramAuthBot:
             user_id = self.verify_code(message_text)
             if user_id and user_id == user.id:
                 keyboard = [
-                    [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))]
+                    [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(
-                    "✅ **تم التحقق من الرمز بنجاح!**\n\n"
-                    "🎉 مرحباً بك في SmartCoin!\n"
-                    "🚀 يمكنك الآن الوصول إلى جميع الميزات.",
+                    "✅ **Code verified successfully!**\n\n"
+                    "🎉 Welcome to SmartCoin!\n"
+                    "🚀 You can now access all features.",
                     reply_markup=reply_markup,
                     parse_mode='Markdown'
                 )
@@ -651,22 +655,13 @@ class TelegramAuthBot:
         
         # رد عام
         keyboard = [
-            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=self.webapp_url))],
-            [InlineKeyboardButton("🆘 المساعدة", callback_data="help")]
+            [InlineKeyboardButton("🚀 Open SmartCoin", web_app=WebAppInfo(url=self.webapp_url))],
+            [InlineKeyboardButton("🆘 Help", callback_data="help")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await update.message.reply_text(
-            "👋 مرحباً! استخدم الأزرار أدناه للتفاعل مع SmartCoin.\n\n"
-            "💡 **نصيحة:** استخدم /help للحصول على قائمة الأوامر المتاحة.",
+            "👋 Hello! Use the buttons below to interact with SmartCoin.\n\n"
+            "💡 **Tip:** Use /help to get a list of available commands.",
             reply_markup=reply_markup
         )
-
-def main():
-    """الدالة الرئيسية"""
-    bot = TelegramAuthBot()
-    bot.run()
-
-if __name__ == "__main__":
-    main()
-

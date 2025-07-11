@@ -7,9 +7,9 @@
 .wallet-container h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;
-    color: #AEFF6A;
+    color: var(--color-accent);
     text-align: center;
-    text-shadow: 0 0 10px rgba(174, 255, 106, 0.5);
+    text-shadow: 0 0 10px var(--color-accent-shadow);
 }
 
 /* بطاقات المحفظة */
@@ -23,10 +23,10 @@
 .wallet-card {
     flex: 1;
     min-width: 300px;
-    background: linear-gradient(145deg, #1a1a1d 0%, #27272a 100%);
+    background: linear-gradient(145deg, var(--color-background-dark) 0%, var(--color-background-medium) 100%);
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 20px var(--color-shadow-dark);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -39,7 +39,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(174, 255, 106, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    background: radial-gradient(circle, var(--color-accent-transparent) 0%, rgba(0, 0, 0, 0) 70%);
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
@@ -52,7 +52,7 @@
 
 .wallet-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 30px var(--color-shadow-darker);
 }
 
 .wallet-card-header {
@@ -66,7 +66,7 @@
 
 .wallet-card-header h2 {
     font-size: 1.5rem;
-    color: #fff;
+    color: var(--color-text-light);
     margin: 0;
 }
 
@@ -78,8 +78,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #18181b;
-    box-shadow: 0 0 10px rgba(174, 255, 106, 0.5);
+    background-color: var(--color-background-darker);
+    box-shadow: 0 0 10px var(--color-accent-shadow);
 }
 
 .wallet-logo img {
@@ -101,7 +101,7 @@
 .balance-label {
     display: block;
     font-size: 0.9rem;
-    color: #a1a1aa;
+    color: var(--color-text-muted);
     margin-bottom: 5px;
 }
 
@@ -109,8 +109,8 @@
     display: block;
     font-size: 2rem;
     font-weight: bold;
-    color: #AEFF6A;
-    text-shadow: 0 0 5px rgba(174, 255, 106, 0.5);
+    color: var(--color-accent);
+    text-shadow: 0 0 5px var(--color-accent-shadow);
 }
 
 .wallet-address {
@@ -120,15 +120,15 @@
 .address-label {
     display: block;
     font-size: 0.9rem;
-    color: #a1a1aa;
+    color: var(--color-text-muted);
     margin-bottom: 5px;
 }
 
 .address-value {
     display: block;
     font-size: 0.9rem;
-    color: #fff;
-    background-color: #18181b;
+    color: var(--color-text-light);
+    background-color: var(--color-background-darker);
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -140,8 +140,8 @@
     position: absolute;
     top: 30px;
     left: 10px;
-    background-color: #AEFF6A;
-    color: #18181b;
+    background-color: var(--color-accent);
+    color: var(--color-background-darker);
     border: none;
     border-radius: 3px;
     padding: 3px 8px;
@@ -151,7 +151,7 @@
 }
 
 .copy-btn:hover {
-    background-color: #8bff2a;
+    background-color: var(--color-accent-hover);
 }
 
 .wallet-card-footer {
@@ -170,35 +170,35 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    background-color: #27272a;
-    color: #fff;
+    background-color: var(--color-background-medium);
+    color: var(--color-text-light);
 }
 
 .deposit-btn {
-    background-color: #AEFF6A;
-    color: #18181b;
+    background-color: var(--color-accent);
+    color: var(--color-background-darker);
 }
 
 .deposit-btn:hover {
-    background-color: #8bff2a;
+    background-color: var(--color-accent-hover);
 }
 
 .withdraw-btn {
-    background-color: #3f3f46;
+    background-color: var(--color-background-light);
 }
 
 .withdraw-btn:hover {
-    background-color: #52525b;
+    background-color: var(--color-background-light-hover);
 }
 
 .connect-btn {
-    background-color: #AEFF6A;
-    color: #18181b;
+    background-color: var(--color-accent);
+    color: var(--color-background-darker);
     width: 100%;
 }
 
 .connect-btn:hover {
-    background-color: #8bff2a;
+    background-color: var(--color-accent-hover);
 }
 
 /* العمليات الأخيرة */
@@ -209,11 +209,11 @@
 .wallet-actions h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #fff;
+    color: var(--color-text-light);
 }
 
 .transactions-list {
-    background-color: #27272a;
+    background-color: var(--color-background-medium);
     border-radius: 10px;
     padding: 10px;
     max-height: 300px;
@@ -224,7 +224,7 @@
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #3f3f46;
+    border-bottom: 1px solid var(--color-border);
     transition: all 0.2s ease;
 }
 
@@ -233,14 +233,14 @@
 }
 
 .transaction-item:hover {
-    background-color: #3f3f46;
+    background-color: var(--color-background-light);
 }
 
 .transaction-icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #18181b;
+    background-color: var(--color-background-darker);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -259,13 +259,13 @@
 
 .transaction-title {
     font-size: 1rem;
-    color: #fff;
+    color: var(--color-text-light);
     margin-bottom: 5px;
 }
 
 .transaction-date {
     font-size: 0.8rem;
-    color: #a1a1aa;
+    color: var(--color-text-muted);
 }
 
 .transaction-amount {
@@ -274,17 +274,17 @@
 }
 
 .transaction-amount.positive {
-    color: #AEFF6A;
+    color: var(--color-accent);
 }
 
 .transaction-amount.negative {
-    color: #ef4444;
+    color: var(--color-error);
 }
 
 .no-transactions {
     text-align: center;
     padding: 20px;
-    color: #a1a1aa;
+    color: var(--color-text-muted);
     font-style: italic;
 }
 
@@ -292,7 +292,7 @@
 .wallet-info h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #fff;
+    color: var(--color-text-light);
 }
 
 .info-cards {
@@ -304,21 +304,21 @@
 .info-card {
     flex: 1;
     min-width: 300px;
-    background-color: #27272a;
+    background-color: var(--color-background-medium);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px var(--color-shadow-light);
 }
 
 .info-card h3 {
     font-size: 1.2rem;
-    color: #AEFF6A;
+    color: var(--color-accent);
     margin-bottom: 10px;
 }
 
 .info-card p {
     font-size: 1rem;
-    color: #d4d4d8;
+    color: var(--color-text-secondary);
     line-height: 1.6;
 }
 
@@ -329,7 +329,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--color-overlay);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -337,13 +337,13 @@
 }
 
 .popup {
-    background-color: #27272a;
+    background-color: var(--color-background-medium);
     border-radius: 10px;
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px var(--color-shadow-medium);
 }
 
 .popup-header {
@@ -351,26 +351,26 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid #3f3f46;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .popup-header h3 {
     font-size: 1.5rem;
-    color: #AEFF6A;
+    color: var(--color-accent);
     margin: 0;
 }
 
 .popup-close {
     background: none;
     border: none;
-    color: #a1a1aa;
+    color: var(--color-text-muted);
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .popup-close:hover {
-    color: #ef4444;
+    color: var(--color-error);
 }
 
 .popup-content {
@@ -382,17 +382,16 @@
     .wallet-cards {
         flex-direction: column;
     }
-    
+
     .wallet-card {
         min-width: 100%;
     }
-    
+
     .info-cards {
         flex-direction: column;
     }
-    
+
     .info-card {
         min-width: 100%;
     }
 }
-

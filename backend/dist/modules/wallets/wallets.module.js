@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletsModule = void 0;
 const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
+const typeorm_1 = require("@nestjs/typeorm");
 const wallets_controller_1 = require("./wallets.controller");
 const wallets_service_1 = require("./wallets.service");
-const wallet_schema_1 = require("./schemas/wallet.schema");
+const wallet_entity_1 = require("../../entities/wallet.entity");
 const auth_module_1 = require("../auth/auth.module");
 let WalletsModule = class WalletsModule {
 };
@@ -19,8 +19,8 @@ exports.WalletsModule = WalletsModule;
 exports.WalletsModule = WalletsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: wallet_schema_1.Wallet.name, schema: wallet_schema_1.WalletSchema }]),
-            auth_module_1.AuthModule,
+            typeorm_1.TypeOrmModule.forFeature([wallet_entity_1.Wallet]),
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [wallets_controller_1.WalletsController],
         providers: [wallets_service_1.WalletsService],

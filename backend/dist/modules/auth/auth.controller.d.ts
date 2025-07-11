@@ -1,15 +1,40 @@
 import { AuthService } from './auth.service';
 import { TelegramAuthDto } from './dto/telegram-auth.dto';
-import { VerifyCodeDto } from './dto/verify-code.dto';
 import { User } from '../../entities/user.entity';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    telegramAuth(telegramAuthDto: TelegramAuthDto, req: any): Promise<any>;
-    verifyTelegramCode(verifyCodeDto: VerifyCodeDto, req: any): Promise<any>;
-    checkVerificationCode(code: string): Promise<any>;
-    telegramWebhook(update: any, req: any): Promise<any>;
-    getProfile(user: User): Promise<any>;
+    telegramLogin(telegramAuthDto: TelegramAuthDto, req: any): Promise<{
+        success: boolean;
+        message: string;
+        token: string;
+        user: {
+            id: string;
+            telegramId: string;
+            username: string;
+            firstName: string;
+            lastName: string;
+            totalCoins: number;
+            miningRate: number;
+            level: number;
+            referralCode: string;
+        };
+    }>;
+    getProfile(user: User): Promise<{
+        id: string;
+        telegramId: string;
+        username: string;
+        firstName: string;
+        lastName: string;
+        totalCoins: number;
+        miningRate: number;
+        level: number;
+        referralCode: string;
+        registeredAt: Date;
+        lastLoginAt: Date;
+        isActive: boolean;
+        referralCount: number;
+    }>;
     logout(user: User, req: any): Promise<{
         message: string;
     }>;
@@ -28,6 +53,11 @@ export declare class AuthController {
             isActive: boolean;
         };
     }>;
-    getPlatformStats(): Promise<any>;
-    registerFromBot(userData: any, req: any): Promise<any>;
+    getUserStats(telegramId: string): Promise<{
+        balance: number;
+        mining_count: number;
+        completed_tasks: number;
+        referrals: number;
+        level: number;
+    }>;
 }

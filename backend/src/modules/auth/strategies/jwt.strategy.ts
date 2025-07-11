@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    const user = await this.authService.validateJwtPayload(payload);
+    const user = await this.authService.verifyToken(payload);
 
     if (!user) {
       throw new UnauthorizedException('مستخدم غير مصرح له');

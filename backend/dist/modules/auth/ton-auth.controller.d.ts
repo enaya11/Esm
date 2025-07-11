@@ -21,6 +21,7 @@ export declare class TonAuthController {
         success: boolean;
         user?: any;
         message?: string;
+        token?: string;
     }>;
     validateSession(data: {
         session_id: string;

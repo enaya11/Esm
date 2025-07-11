@@ -1,4 +1,4 @@
-/* Enhanced SmartCoin Styles with Amazing Animations */
+/* SmartCoin Enhanced Styles */
 
 :root {
   --sc-black: #000000;
@@ -20,6 +20,16 @@
   --sc-purple: #9C27B0;
   --sc-cyan: #00BCD4;
   --sc-orange: #FF9800;
+
+  /* Modern UI Variables */
+  --border-radius-sm: 8px;
+  --border-radius-md: 15px;
+  --border-radius-lg: 25px;
+  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
+  --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.3);
+  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --transition-speed: 0.3s;
+  --transition-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 * {
@@ -29,15 +39,8 @@
   font-family: 'Tajawal', 'Cairo', 'Arial', sans-serif;
 }
 
-@font-face {
-  font-family: 'Tajawal';
-  src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-}
-
-@font-face {
-  font-family: 'Cairo';
-  src: url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-}
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 html {
   scroll-behavior: smooth;
@@ -62,7 +65,7 @@ body::before {
   width: 100%;
   height: 100%;
   z-index: -2;
-  background: 
+  background:
     radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(0, 188, 212, 0.1) 0%, transparent 50%);
@@ -70,10 +73,13 @@ body::before {
 }
 
 @keyframes backgroundShift {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
     opacity: 0.3;
   }
+
   50% {
     transform: scale(1.1) rotate(180deg);
     opacity: 0.6;
@@ -89,7 +95,7 @@ body::after {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20px 30px, var(--sc-gold), transparent),
     radial-gradient(2px 2px at 40px 70px, var(--sc-purple), transparent),
     radial-gradient(1px 1px at 90px 40px, var(--sc-cyan), transparent),
@@ -104,6 +110,7 @@ body::after {
   0% {
     transform: translateY(0px) translateX(0px);
   }
+
   100% {
     transform: translateY(-200px) translateX(100px);
   }
@@ -233,6 +240,7 @@ body::after {
   0% {
     left: -100%;
   }
+
   100% {
     left: 100%;
   }
@@ -258,9 +266,12 @@ body::after {
 }
 
 @keyframes logoFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-20px) rotate(5deg);
   }
@@ -275,7 +286,7 @@ body::after {
   align-items: center;
   justify-content: center;
   border: 3px solid var(--sc-gold);
-  box-shadow: 
+  box-shadow:
     0 0 30px var(--sc-gold-glow),
     inset 0 0 30px rgba(255, 215, 0, 0.1);
   position: relative;
@@ -284,13 +295,16 @@ body::after {
 }
 
 @keyframes logoGlow {
-  0%, 100% {
-    box-shadow: 
+
+  0%,
+  100% {
+    box-shadow:
       0 0 30px var(--sc-gold-glow),
       inset 0 0 30px rgba(255, 215, 0, 0.1);
   }
+
   50% {
-    box-shadow: 
+    box-shadow:
       0 0 50px rgba(255, 215, 0, 0.8),
       inset 0 0 50px rgba(255, 215, 0, 0.3);
   }
@@ -312,6 +326,7 @@ body::after {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -338,9 +353,12 @@ body::after {
 }
 
 @keyframes titleGradient {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -360,6 +378,7 @@ body::after {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -378,6 +397,7 @@ body::after {
     opacity: 0;
     transform: translateY(50px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -418,9 +438,12 @@ body::after {
 }
 
 @keyframes underlineGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 10px var(--sc-gold-glow);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
   }
@@ -440,7 +463,7 @@ body::after {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.1);
@@ -460,7 +483,7 @@ body::after {
 
 .feature-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(255, 215, 0, 0.3);
   border-color: rgba(255, 215, 0, 0.3);
@@ -482,9 +505,12 @@ body::after {
 }
 
 @keyframes iconBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -526,7 +552,7 @@ body::after {
   width: 100%;
   max-width: 320px;
   position: relative;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.1);
@@ -539,6 +565,7 @@ body::after {
     opacity: 0;
     transform: translateY(50px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -547,7 +574,7 @@ body::after {
 
 .step-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(255, 215, 0, 0.2);
 }
@@ -566,16 +593,19 @@ body::after {
   font-weight: bold;
   color: var(--sc-text-dark);
   font-size: 1.2rem;
-  box-shadow: 
+  box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(255, 215, 0, 0.5);
   animation: numberPulse 2s ease-in-out infinite;
 }
 
 @keyframes numberPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
@@ -592,9 +622,12 @@ body::after {
 }
 
 @keyframes iconFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
+
   50% {
     transform: translateY(-8px) rotate(5deg);
   }
@@ -610,7 +643,7 @@ body::after {
   display: flex;
   justify-content: space-around;
   padding: 0.75rem 0;
-  box-shadow: 
+  box-shadow:
     0 -4px 20px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   z-index: 100;
@@ -667,9 +700,12 @@ body::after {
 }
 
 @keyframes activeIndicator {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(-50%) scale(1);
   }
+
   50% {
     transform: translateX(-50%) scale(1.2);
   }
@@ -713,6 +749,7 @@ body::after {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -726,6 +763,7 @@ body::after {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -746,6 +784,7 @@ body::after {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -770,6 +809,7 @@ body::after {
     transform: translateX(100%);
     opacity: 0;
   }
+
   100% {
     transform: translateX(0);
     opacity: 1;
@@ -930,9 +970,12 @@ body::after {
 }
 
 @keyframes contactIconFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
+
   50% {
     transform: translateY(-10px) rotate(10deg);
   }
@@ -1056,31 +1099,31 @@ body::after {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .features-container {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .steps-container {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .cta-buttons {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .contact-methods {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .social-links {
     gap: 1rem;
   }
-  
+
   .footer-links {
     flex-direction: column;
     gap: 1rem;
@@ -1102,9 +1145,12 @@ body::after {
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   }
+
   50% {
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
   }
@@ -1122,15 +1168,19 @@ body::after {
   from {
     width: 0;
   }
+
   to {
     width: 100%;
   }
 }
 
 @keyframes blink-caret {
-  from, to {
+
+  from,
+  to {
     border-color: transparent;
   }
+
   50% {
     border-color: var(--sc-gold);
   }
@@ -1146,6 +1196,7 @@ body::after {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -1161,6 +1212,7 @@ body::after {
     opacity: 0;
     transform: translateX(-50px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -1176,6 +1228,7 @@ body::after {
     opacity: 0;
     transform: translateX(50px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -1192,9 +1245,9 @@ body::after {
     opacity: 0;
     transform: scale(0.8);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
   }
 }
-

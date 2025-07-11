@@ -1,9 +1,9 @@
-import { Model } from 'mongoose';
-import { Wallet } from './schemas/wallet.schema';
+import { Repository } from 'typeorm';
+import { Wallet } from '../../entities/wallet.entity';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 export declare class WalletsService {
-    private readonly walletModel;
-    constructor(walletModel: Model<Wallet>);
+    private readonly walletRepository;
+    constructor(walletRepository: Repository<Wallet>);
     createWallet(userId: string, tonAddress: string): Promise<Wallet>;
     getWalletByUserId(userId: string): Promise<Wallet | null>;
     getWalletByTonAddress(tonAddress: string): Promise<Wallet | null>;

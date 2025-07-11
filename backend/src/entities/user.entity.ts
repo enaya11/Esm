@@ -5,12 +5,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
   Index,
 } from 'typeorm';
 import { Order } from './order.entity';
 import { ActivatedPackage } from './activated-package.entity';
 import { Referral } from './referral.entity';
 import { UserActivity } from './user-activity.entity';
+import { Wallet } from './wallet.entity';
 
 @Entity('users')
 @Index(['telegramId'], { unique: true })
@@ -21,6 +23,12 @@ export class User {
 
   @Column({ name: 'telegram_id', type: 'varchar', unique: true, nullable: true })
   telegramId: string;
+
+  @Column({ name: 'ton_wallet_address', type: 'varchar', unique: true, nullable: true })
+  tonWalletAddress: string;
+
+  @Column({ name: 'public_key', type: 'varchar', nullable: true })
+  publicKey: string;
 
   @Column({ nullable: true })
   username: string;
@@ -74,6 +82,9 @@ export class User {
   updatedAt: Date;
 
   // العلاقات
+  @OneToOne(() => Wallet, wallet => wallet.user)
+  wallet: Wallet;
+
   @OneToMany(() => Order, order => order.user)
   orders: Order[];
 
@@ -93,30 +104,30 @@ export class User {
 
   canClaim(): boolean {
     if (!this.lastClaim) return true;
-    
+
     const now = new Date();
     const lastClaim = new Date(this.lastClaim);
     const hoursSinceLastClaim = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
-    
+
     return hoursSinceLastClaim >= 24; // يمكن المطالبة كل 24 ساعة
   }
 
   calculateClaimAmount(): number {
     const baseAmount = this.miningRate;
     const hoursMultiplier = this.getHoursSinceLastClaim();
-    
+
     // الحد الأقصى 24 ساعة
     const maxHours = Math.min(hoursMultiplier, 24);
-    
+
     return Math.floor(baseAmount * maxHours);
   }
 
   private getHoursSinceLastClaim(): number {
     if (!this.lastClaim) return 24; // إذا لم يطالب من قبل، اعطه 24 ساعة
-    
+
     const now = new Date();
     const lastClaim = new Date(this.lastClaim);
-    
+
     return (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
   }
 }

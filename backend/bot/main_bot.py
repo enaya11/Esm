@@ -4,16 +4,12 @@
 بوت SmartCoin المحسن مع نظام الإشعارات المتقدم
 """
 
-import os
-import sys
 import json
 import logging
-import asyncio
-import aiohttp
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Dict
 import sqlite3
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebApp
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
 # استيراد الوحدات المحلية
@@ -123,7 +119,7 @@ class EnhancedSmartCoinBot:
             
         # إنشاء لوحة المفاتيح
         keyboard = [
-            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebApp(url=BotConfig.WEBAPP_URL))],
+            [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebAppInfo(url=BotConfig.WEBAPP_URL))],
             [
                 InlineKeyboardButton("📊 إحصائياتي", callback_data="stats"),
                 InlineKeyboardButton("⚙️ الإعدادات", callback_data="settings")
@@ -571,92 +567,109 @@ class EnhancedSmartCoinBot:
         except Exception as e:
             logger.error(f"خطأ في تحديث إحصائيات التعدين: {e}")
             
-    def run(self):
-        """تشغيل البوت المحسن"""
-        # بدء جدولة الإشعارات
-        self.notification_scheduler.start_scheduler()
-        
-        application = Application.builder().token(BotConfig.BOT_TOKEN).build()
-        
-        # إضافة معالجات الأوامر
-        application.add_handler(CommandHandler("start", self.start_command))
-        application.add_handler(CallbackQueryHandler(self.button_callback))
-        
-        # معالج الرسائل العامة
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
-        
-        logger.info("🤖 بدء تشغيل بوت SmartCoin المحسن...")
-        
-        try:
-            application.run_polling()
-        except KeyboardInterrupt:
-            logger.info("إيقاف البوت...")
-        finally:
-            # إيقاف جدولة الإشعارات
-            self.notification_scheduler.stop_scheduler()
+        async def login_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+            """معالج أمر /login لتوجيه المستخدم إلى واجهة الويب"""
+            user = update.effective_user
+            telegram_id = user.id
+    
+            await self.log_interaction(telegram_id, 'login_command', {'user_data': user.to_dict()})
+    
+            login_message = BotConfig.get_message('already_logged_in')
             
-    async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """معالج الرسائل العامة"""
-        message_text = update.message.text.lower()
-        telegram_id = update.effective_user.id
-        
-        # تسجيل التفاعل
-        await self.log_interaction(telegram_id, 'message', {'text': message_text})
-        
-        if any(word in message_text for word in ["مساعدة", "help", "ساعدني"]):
-            help_message = BotConfig.get_message('help')
-            await update.message.reply_text(help_message)
-        elif any(word in message_text for word in ["إحصائيات", "stats", "رصيد"]):
-            await self.show_user_stats_message(update, context)
-        elif any(word in message_text for word in ["تعدين", "mining", "mine"]):
-            await self.quick_mining_message(update, context)
-        else:
-            await update.message.reply_text("👋 مرحباً! استخدم الأمر /start للبدء أو اكتب 'مساعدة' للحصول على المساعدة.")
+            keyboard = [
+                [InlineKeyboardButton("🚀 فتح SmartCoin", web_app=WebAppInfo(url=BotConfig.WEBAPP_URL))]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
             
-    async def show_user_stats_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """عرض الإحصائيات كرسالة"""
-        telegram_id = update.effective_user.id
-        
-        try:
-            async with APIIntegration() as api:
-                stats = await api.get_user_stats(telegram_id)
+            await update.message.reply_text(login_message, reply_markup=reply_markup)
+    
+        def run(self):
+            """تشغيل البوت المحسن"""
+            # بدء جدولة الإشعارات
+            self.notification_scheduler.start_scheduler()
+            
+            application = Application.builder().token(BotConfig.BOT_TOKEN).build()
+            
+            # إضافة معالجات الأوامر
+            application.add_handler(CommandHandler("start", self.start_command))
+            application.add_handler(CommandHandler("login", self.login_command))
+            application.add_handler(CallbackQueryHandler(self.button_callback))
+            
+            # معالج الرسائل العامة
+            application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
+            
+            logger.info("🤖 بدء تشغيل بوت SmartCoin المحسن...")
+            
+            try:
+                application.run_polling()
+            except KeyboardInterrupt:
+                logger.info("إيقاف البوت...")
+            finally:
+                # إيقاف جدولة الإشعارات
+                self.notification_scheduler.stop_scheduler()
                 
-            local_stats = await self.get_local_user_stats(telegram_id)
-            combined_stats = {**stats, **local_stats}
+        async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+            """معالج الرسائل العامة"""
+            message_text = update.message.text.lower()
+            telegram_id = update.effective_user.id
             
-            stats_message = BotConfig.get_message('stats_template', **combined_stats)
-            await update.message.reply_text(stats_message)
+            # تسجيل التفاعل
+            await self.log_interaction(telegram_id, 'message', {'text': message_text})
             
-        except Exception as e:
-            logger.error(f"خطأ في عرض الإحصائيات: {e}")
-            await update.message.reply_text("❌ حدث خطأ في جلب الإحصائيات.")
-            
-    async def quick_mining_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """تعدين سريع كرسالة"""
-        telegram_id = update.effective_user.id
-        
-        can_mine = await self.check_mining_eligibility(telegram_id)
-        
-        if not can_mine['eligible']:
-            await update.message.reply_text(f"⏰ {can_mine['message']}")
-            return
-            
-        try:
-            async with APIIntegration() as api:
-                mining_result = await api.process_mining(telegram_id)
-                
-            if mining_result.get('success'):
-                amount = mining_result.get('amount', 0)
-                await self.update_mining_stats(telegram_id, amount)
-                
-                success_message = f"🔨 تم التعدين بنجاح! حصلت على {amount} عملة SM"
-                await update.message.reply_text(success_message)
+            if any(word in message_text for word in ["مساعدة", "help", "ساعدني"]):
+                help_message = BotConfig.get_message('help')
+                await update.message.reply_text(help_message)
+            elif any(word in message_text for word in ["إحصائيات", "stats", "رصيد"]):
+                await self.show_user_stats_message(update, context)
+            elif any(word in message_text for word in ["تعدين", "mining", "mine"]):
+                await self.quick_mining_message(update, context)
             else:
-                await update.message.reply_text("❌ فشل في التعدين. يرجى المحاولة مرة أخرى.")
+                await update.message.reply_text("👋 مرحباً! استخدم الأمر /start للبدء أو اكتب 'مساعدة' للحصول على المساعدة.")
                 
-        except Exception as e:
-            logger.error(f"خطأ في التعدين: {e}")
-            await update.message.reply_text("❌ حدث خطأ في التعدين.")
+        async def show_user_stats_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+            """عرض الإحصائيات كرسالة"""
+            telegram_id = update.effective_user.id
+            
+            try:
+                async with APIIntegration() as api:
+                    stats = await api.get_user_stats(telegram_id)
+                    
+                local_stats = await self.get_local_user_stats(telegram_id)
+                combined_stats = {**stats, **local_stats}
+                
+                stats_message = BotConfig.get_message('stats_template', **combined_stats)
+                await update.message.reply_text(stats_message)
+                
+            except Exception as e:
+                logger.error(f"خطأ في عرض الإحصائيات: {e}")
+                await update.message.reply_text("❌ حدث خطأ في جلب الإحصائيات.")
+                
+        async def quick_mining_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+            """تعدين سريع كرسالة"""
+            telegram_id = update.effective_user.id
+            
+            can_mine = await self.check_mining_eligibility(telegram_id)
+            
+            if not can_mine['eligible']:
+                await update.message.reply_text(f"⏰ {can_mine['message']}")
+                return
+                
+            try:
+                async with APIIntegration() as api:
+                    mining_result = await api.process_mining(telegram_id)
+                    
+                if mining_result.get('success'):
+                    amount = mining_result.get('amount', 0)
+                    await self.update_mining_stats(telegram_id, amount)
+                    
+                    success_message = f"🔨 تم التعدين بنجاح! حصلت على {amount} عملة SM"
+                    await update.message.reply_text(success_message)
+                else:
+                    await update.message.reply_text("❌ فشل في التعدين. يرجى المحاولة مرة أخرى.")
+                    
+            except Exception as e:
+                logger.error(f"خطأ في التعدين: {e}")
+                await update.message.reply_text("❌ حدث خطأ في التعدين.")
 
 if __name__ == "__main__":
     bot = EnhancedSmartCoinBot()

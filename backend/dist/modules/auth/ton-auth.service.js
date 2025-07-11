@@ -8,17 +8,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TonAuthService = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("@nestjs/axios");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
 const crypto = require("crypto");
 const nacl = require("tweetnacl");
 const rxjs_1 = require("rxjs");
+const user_entity_1 = require("../../entities/user.entity");
+const wallets_service_1 = require("../wallets/wallets.service");
 let TonAuthService = class TonAuthService {
     httpService;
-    constructor(httpService) {
+    userRepository;
+    walletsService;
+    jwtService;
+    configService;
+    constructor(httpService, userRepository, walletsService, jwtService, configService) {
         this.httpService = httpService;
+        this.userRepository = userRepository;
+        this.walletsService = walletsService;
+        this.jwtService = jwtService;
+        this.configService = configService;
     }
     async verifyTonSignature(data) {
         try {
@@ -37,12 +54,55 @@ let TonAuthService = class TonAuthService {
             if (!isValidSignature) {
                 return { success: false, message: 'توقيع غير صالح' };
             }
-            return { success: false, message: 'وظيفة المستخدم والمحفظة غير متوفرة في TonAuthService' };
+            let user = await this.userRepository.findOne({
+                where: { tonWalletAddress: data.walletAddress },
+            });
+            if (!user) {
+                user = new user_entity_1.User();
+                user.tonWalletAddress = data.walletAddress;
+                user.publicKey = data.publicKey;
+                user.username = `ton_user_${data.walletAddress.substring(0, 8)}`;
+                user.loginMethod = 'ton';
+                user.registeredAt = new Date();
+                user.lastLoginAt = new Date();
+                user.isActive = true;
+                user.totalCoins = 0;
+                user.miningRate = 0;
+                user.level = 1;
+                user.referralCode = this.generateReferralCode();
+                await this.userRepository.save(user);
+                await this.walletsService.createWallet(user.id, data.walletAddress);
+            }
+            else {
+                user.lastLoginAt = new Date();
+                user.isActive = true;
+                await this.userRepository.save(user);
+            }
+            const payload = {
+                sub: user.id,
+                telegramId: user.telegramId,
+                username: user.username,
+            };
+            const accessToken = this.jwtService.sign(payload);
+            return {
+                success: true,
+                message: 'تم التحقق من التوقيع بنجاح',
+                user: {
+                    id: user.id,
+                    tonWalletAddress: user.tonWalletAddress,
+                    username: user.username,
+                    totalCoins: user.totalCoins,
+                },
+                token: accessToken,
+            };
         }
         catch (error) {
             console.error('خطأ في التحقق من توقيع TON:', error);
             return { success: false, message: 'حدث خطأ أثناء التحقق من التوقيع' };
         }
+    }
+    generateReferralCode() {
+        return crypto.randomBytes(4).toString('hex').toUpperCase();
     }
     validateTonAddress(address) {
         if (!address.startsWith('EQ') && !address.startsWith('UQ')) {
@@ -115,7 +175,47 @@ let TonAuthService = class TonAuthService {
             if (!data.walletAddress || !data.publicKey) {
                 return { success: false, message: 'بيانات غير كاملة' };
             }
-            return { success: false, message: 'وظيفة المستخدم والمحفظة غير متوفرة في TonAuthService' };
+            let user = await this.userRepository.findOne({
+                where: { tonWalletAddress: data.walletAddress },
+            });
+            if (!user) {
+                user = new user_entity_1.User();
+                user.tonWalletAddress = data.walletAddress;
+                user.publicKey = data.publicKey;
+                user.username = `ton_user_${data.walletAddress.substring(0, 8)}`;
+                user.loginMethod = 'ton';
+                user.registeredAt = new Date();
+                user.lastLoginAt = new Date();
+                user.isActive = true;
+                user.totalCoins = 0;
+                user.miningRate = 0;
+                user.level = 1;
+                user.referralCode = this.generateReferralCode();
+                await this.userRepository.save(user);
+                await this.walletsService.createWallet(user.id, data.walletAddress);
+            }
+            else {
+                user.lastLoginAt = new Date();
+                user.isActive = true;
+                await this.userRepository.save(user);
+            }
+            const payload = {
+                sub: user.id,
+                telegramId: user.telegramId,
+                username: user.username,
+            };
+            const accessToken = this.jwtService.sign(payload);
+            return {
+                success: true,
+                message: 'تم الاتصال بالمحفظة بنجاح',
+                user: {
+                    id: user.id,
+                    tonWalletAddress: user.tonWalletAddress,
+                    username: user.username,
+                    totalCoins: user.totalCoins,
+                },
+                token: accessToken,
+            };
         }
         catch (error) {
             console.error('خطأ في معالجة اتصال TON:', error);
@@ -126,6 +226,11 @@ let TonAuthService = class TonAuthService {
 exports.TonAuthService = TonAuthService;
 exports.TonAuthService = TonAuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService])
+    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [axios_1.HttpService,
+        typeorm_2.Repository,
+        wallets_service_1.WalletsService,
+        jwt_1.JwtService,
+        config_1.ConfigService])
 ], TonAuthService);
 //# sourceMappingURL=ton-auth.service.js.map

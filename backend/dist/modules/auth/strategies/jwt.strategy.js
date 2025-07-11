@@ -32,7 +32,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         this.configService = configService;
     }
     async validate(payload) {
-        const user = await this.authService.validateJwtPayload(payload);
+        const user = await this.authService.verifyToken(payload);
         if (!user) {
             throw new common_1.UnauthorizedException('مستخدم غير مصرح له');
         }

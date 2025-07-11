@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - SmartCoin</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/enhanced-style.css">
     <link rel="stylesheet" href="css/auth.css">
     <link rel="stylesheet" href="css/3d-animations.css">
     <link rel="stylesheet" href="css/3d-effects-extra.css">
@@ -13,59 +14,64 @@
     <!-- تحميل مكتبة TON Connect UI -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js" defer></script>
 </head>
+
 <body>
     <!-- شاشة التحميل -->
-    <div id="loading-screen" class="loading-screen">
+    <div id="loading-screen" class="loading-screen" style="display: none;">
         <div class="loading-container">
             <div class="logo-container">
-                <img src="img/logo.png" alt="SmartCoin Logo" class="logo">
+                <img src="assets/images/logo.png" alt="SmartCoin Logo" class="logo">
             </div>
             <h1 class="welcome-title">مرحباً بك في <span class="highlight">SmartCoin</span></h1>
             <p class="welcome-subtitle">منصة العملات الرقمية المستقبلية بدعم رأس مال 350 مليون دولار!</p>
-            
+
             <div class="login-container">
                 <h2 class="login-title">تسجيل الدخول</h2>
-                
+
                 <div class="login-methods">
-                    <!-- تسجيل الدخول عبر تليجرام -->
+                    <!-- تسجيل الدخول عبر تليجرام (الودجت الرسمي) -->
                     <div class="login-method telegram-login">
-                        <button id="telegram-login-btn" class="login-btn telegram">
-                            <img src="img/telegram-icon.png" alt="Telegram" class="login-icon">
-                            <span>تسجيل الدخول عبر تليجرام</span>
-                        </button>
+                        <div class="telegram-login-container" id="telegram-login-widget">
+                            <script async src="https://telegram.org/js/telegram-widget.js?22"
+                                data-telegram-login="SMARTCOINAPPbot" data-size="large" data-radius="10"
+                                data-request-access="write" data-userpic="false"
+                                data-auth-url="/api/auth/telegram-login" data-onauth="onTelegramAuth(user)"></script>
+                        </div>
                     </div>
-                    
+
                     <!-- تسجيل الدخول عبر محفظة TON -->
                     <div class="login-method ton-login">
                         <button id="ton-login-btn" class="login-btn ton">
-                            <img src="img/ton-icon.png" alt="TON Wallet" class="login-icon">
+                            <img src="assets/images/ton-icon.png" alt="TON Wallet" class="login-icon">
                             <span>تسجيل الدخول عبر محفظة TON</span>
                         </button>
                         <!-- عنصر TON Connect UI -->
                         <div id="ton-connect"></div>
                     </div>
                 </div>
-                
+
                 <div class="login-info">
                     <p>قم بتسجيل الدخول للوصول إلى جميع ميزات المنصة</p>
                     <p style="margin-top: 10px;">
-                        ليس لديك حساب؟ 
-                        <a href="register.html" style="color: var(--sc-gold); text-decoration: none; font-weight: bold;">
+                        ليس لديك حساب؟
+                        <a href="register.html"
+                            style="color: var(--sc-gold); text-decoration: none; font-weight: bold;">
                             إنشاء حساب جديد
                         </a>
                     </p>
-                    <p class="small">بالتسجيل، أنت توافق على <a href="#">شروط الاستخدام</a> و <a href="#">سياسة الخصوصية</a></p>
+                    <p class="small">بالتسجيل، أنت توافق على <a href="#">شروط الاستخدام</a> و <a href="#">سياسة
+                            الخصوصية</a></p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- المحتوى الرئيسي (سيظهر بعد تسجيل الدخول) -->
-    <div id="main-content" style="display: none;">
+    <div id="main-content">
         <header>
             <div class="header-container">
                 <div class="logo">
-                    <img src="img/logo.png" alt="SmartCoin Logo">
+                    <img src="assets/images/logo.png" alt="SmartCoin Logo">
                 </div>
                 <nav>
                     <ul>
@@ -93,18 +99,18 @@
                 <div class="welcome-back">
                     <h1>مرحباً بعودتك، <span id="welcome-user-name">مستخدم</span>!</h1>
                     <p>تم تسجيل دخولك بنجاح. يمكنك الآن الوصول إلى جميع ميزات المنصة.</p>
-                    
+
                     <div class="quick-actions">
                         <a href="earn-enhanced.html" class="action-btn">
-                            <img src="img/mining-icon.png" alt="Mining">
+                            <img src="assets/images/mining-icon.png" alt="Mining">
                             <span>بدء التعدين</span>
                         </a>
                         <a href="tasks-enhanced.html" class="action-btn">
-                            <img src="img/tasks-icon.png" alt="Tasks">
+                            <img src="assets/images/tasks-icon.png" alt="Tasks">
                             <span>إكمال المهام</span>
                         </a>
                         <a href="referrals-enhanced.html" class="action-btn">
-                            <img src="img/referral-icon.png" alt="Referrals">
+                            <img src="assets/images/referral-icon.png" alt="Referrals">
                             <span>دعوة الأصدقاء</span>
                         </a>
                     </div>
@@ -128,24 +134,57 @@
 
     <!-- سكريبت المصادقة -->
     <script src="js/auth.js"></script>
-    <!-- سكريبت مصادقة تليجرام -->
-    <script src="js/telegram-auth.js"></script>
     <!-- سكريبت مصادقة TON المحسن -->
     <script src="js/ton-connect-enhanced.js"></script>
     <!-- سكريبت الأتمتة ثلاثية الأبعاد -->
     <script src="js/3d-automation.js"></script>
     <!-- سكريبت التطبيق الرئيسي -->
     <script src="js/app.js"></script>
-    
+
     <script>
+        // دالة التحقق من بيانات المستخدم المرسلة من تيليجرام
+        async function onTelegramAuth(user) {
+            // إظهار مؤشر التحميل
+            document.getElementById('loading-screen').style.display = 'block';
+
+            // إرسال بيانات المستخدم إلى الخادم للتحقق والمصادقة
+            try {
+                const response = await fetch('/api/auth/telegram-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // تخزين التوكن وبيانات المستخدم
+                    localStorage.setItem('smartcoin_auth_token', result.token);
+                    localStorage.setItem('smartcoin_user', JSON.stringify(result.user));
+                    localStorage.setItem('smartcoin_login_time', Date.now().toString());
+
+                    // تحويل المستخدم إلى صفحة التعدين
+                    window.location.href = 'earn-enhanced.html';
+                } else {
+                    alert(result.message || 'فشل تسجيل الدخول عبر تيليجرام. يرجى المحاولة مرة أخرى.');
+                    document.getElementById('loading-screen').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error during Telegram authentication:', error);
+                alert('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+                document.getElementById('loading-screen').style.display = 'none';
+            }
+        }
+
         // تهيئة TON Connect UI
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // إنشاء مثيل TON Connect UI
             const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'tonconnect-manifest.json',
                 buttonRootId: 'ton-connect'
             });
-            
+
             // تخصيص الخيارات
             tonConnectUI.uiOptions = {
                 language: 'en', // اللغة الافتراضية
@@ -153,82 +192,83 @@
                 uiPreferences: {
                     colorsSet: {
                         // تخصيص الألوان
-                        accent: '#AEFF6A',
+                        accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim(),
                         background: {
-                            primary: '#18181B',
-                            secondary: '#27272A'
+                            primary: getComputedStyle(document.documentElement).getPropertyValue('--color-background-darker').trim(),
+                            secondary: getComputedStyle(document.documentElement).getPropertyValue('--color-background-medium').trim()
                         }
                     }
                 }
             };
-            
+
             // إضافة مستمع للاتصال الناجح
             tonConnectUI.onStatusChange(wallet => {
                 if (wallet) {
                     console.log('تم الاتصال بالمحفظة:', wallet);
-                    
+
                     // تحديث معالج محفظة TON
                     if (window.tonWalletHandler) {
                         window.tonWalletHandler.walletAddress = wallet.account.address;
                         window.tonWalletHandler.publicKey = wallet.account.publicKey;
                         window.tonWalletHandler.isConnected = true;
-                        
+
                         // معالجة الاتصال الناجح
                         window.tonWalletHandler.handleSuccessfulConnection(wallet);
                     }
                 }
             });
-            
+
             // حفظ مثيل TON Connect UI في نطاق عام
             window.tonConnectUI = tonConnectUI;
         });
-        
+
         // التبديل بين شاشة تسجيل الدخول والمحتوى الرئيسي
         function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('smartcoin_auth_token') || 
-                              localStorage.getItem('smartcoin_wallet');
-            
+            const isLoggedIn = localStorage.getItem('smartcoin_auth_token') ||
+                localStorage.getItem('smartcoin_wallet');
+
             if (isLoggedIn) {
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                
+
                 // تحديث بيانات المستخدم
                 const userData = JSON.parse(localStorage.getItem('smartcoin_user') || '{}');
-                document.getElementById('user-name').textContent = userData.name || 'مستخدم';
-                document.getElementById('welcome-user-name').textContent = userData.name || 'مستخدم';
-                document.getElementById('user-balance').textContent = userData.balance || 0;
+                document.getElementById('user-name').textContent = userData.firstName || 'مستخدم';
+                document.getElementById('welcome-user-name').textContent = userData.firstName || 'مستخدم';
+                document.getElementById('user-balance').textContent = userData.totalCoins || 0;
             } else {
+                // If not logged in, show the login form (which is inside loading-screen)
                 document.getElementById('loading-screen').style.display = 'flex';
                 document.getElementById('main-content').style.display = 'none';
             }
         }
-        
+
         // تسجيل الخروج
-        document.getElementById('logout-btn')?.addEventListener('click', function(e) {
+        document.getElementById('logout-btn')?.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             // تسجيل الخروج من تليجرام
             if (window.telegramAuth) {
                 window.telegramAuth.logout();
             }
-            
+
             // تسجيل الخروج من محفظة TON
             if (window.tonWalletHandler) {
                 window.tonWalletHandler.disconnectWallet();
             }
-            
+
             // تسجيل الخروج من TON Connect UI
             if (window.tonConnectUI) {
                 window.tonConnectUI.disconnect();
             }
-            
+
             // إعادة تحميل الصفحة
             window.location.reload();
         });
-        
+
         // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', checkLoginStatus);
     </script>
 </body>
-</html>
 
+</html>

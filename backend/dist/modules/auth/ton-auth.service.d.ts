@@ -1,7 +1,16 @@
 import { HttpService } from '@nestjs/axios';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { User } from '../../entities/user.entity';
+import { WalletsService } from '../wallets/wallets.service';
 export declare class TonAuthService {
     private readonly httpService;
-    constructor(httpService: HttpService);
+    private readonly userRepository;
+    private readonly walletsService;
+    private readonly jwtService;
+    private readonly configService;
+    constructor(httpService: HttpService, userRepository: Repository<User>, walletsService: WalletsService, jwtService: JwtService, configService: ConfigService);
     verifyTonSignature(data: {
         walletAddress: string;
         publicKey: string;
@@ -13,6 +22,7 @@ export declare class TonAuthService {
         token?: string;
         message?: string;
     }>;
+    private generateReferralCode;
     private validateTonAddress;
     private validatePublicKey;
     private verifySignature;
@@ -27,5 +37,6 @@ export declare class TonAuthService {
         success: boolean;
         user?: any;
         message?: string;
+        token?: string;
     }>;
 }

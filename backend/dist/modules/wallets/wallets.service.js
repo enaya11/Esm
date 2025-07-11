@@ -14,30 +14,28 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletsService = void 0;
 const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 const crypto = require("crypto");
-const wallet_schema_1 = require("./schemas/wallet.schema");
+const wallet_entity_1 = require("../../entities/wallet.entity");
 let WalletsService = class WalletsService {
-    walletModel;
-    constructor(walletModel) {
-        this.walletModel = walletModel;
+    walletRepository;
+    constructor(walletRepository) {
+        this.walletRepository = walletRepository;
     }
     async createWallet(userId, tonAddress) {
         try {
             const internalAddress = this.generateInternalAddress();
             const { publicKey, privateKey } = this.generateWalletKeys();
-            const newWallet = new this.walletModel({
+            const newWallet = this.walletRepository.create({
                 userId,
                 tonAddress,
                 internalAddress,
                 publicKey,
                 privateKey: this.encryptPrivateKey(privateKey),
                 balance: 0,
-                createdAt: new Date(),
-                updatedAt: new Date(),
             });
-            return await newWallet.save();
+            return await this.walletRepository.save(newWallet);
         }
         catch (error) {
             console.error('خطأ في إنشاء محفظة جديدة:', error);
@@ -46,7 +44,7 @@ let WalletsService = class WalletsService {
     }
     async getWalletByUserId(userId) {
         try {
-            return await this.walletModel.findOne({ userId }).exec();
+            return await this.walletRepository.findOne({ where: { userId } });
         }
         catch (error) {
             console.error('خطأ في الحصول على محفظة المستخدم:', error);
@@ -55,7 +53,7 @@ let WalletsService = class WalletsService {
     }
     async getWalletByTonAddress(tonAddress) {
         try {
-            return await this.walletModel.findOne({ tonAddress }).exec();
+            return await this.walletRepository.findOne({ where: { tonAddress } });
         }
         catch (error) {
             console.error('خطأ في الحصول على محفظة بواسطة عنوان TON:', error);
@@ -64,15 +62,12 @@ let WalletsService = class WalletsService {
     }
     async updateWallet(userId, updateWalletDto) {
         try {
-            const wallet = await this.walletModel.findOne({ userId }).exec();
+            const wallet = await this.walletRepository.findOne({ where: { userId } });
             if (!wallet) {
                 throw new Error('المحفظة غير موجودة');
             }
-            Object.assign(wallet, {
-                ...updateWalletDto,
-                updatedAt: new Date(),
-            });
-            return await wallet.save();
+            Object.assign(wallet, updateWalletDto);
+            return await this.walletRepository.save(wallet);
         }
         catch (error) {
             console.error('خطأ في تحديث محفظة المستخدم:', error);
@@ -81,13 +76,12 @@ let WalletsService = class WalletsService {
     }
     async updateBalance(userId, amount) {
         try {
-            const wallet = await this.walletModel.findOne({ userId }).exec();
+            const wallet = await this.walletRepository.findOne({ where: { userId } });
             if (!wallet) {
                 throw new Error('المحفظة غير موجودة');
             }
             wallet.balance += amount;
-            wallet.updatedAt = new Date();
-            return await wallet.save();
+            return await this.walletRepository.save(wallet);
         }
         catch (error) {
             console.error('خطأ في تحديث رصيد المحفظة:', error);
@@ -135,7 +129,7 @@ let WalletsService = class WalletsService {
 exports.WalletsService = WalletsService;
 exports.WalletsService = WalletsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(wallet_schema_1.Wallet.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(0, (0, typeorm_1.InjectRepository)(wallet_entity_1.Wallet)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], WalletsService);
 //# sourceMappingURL=wallets.service.js.map

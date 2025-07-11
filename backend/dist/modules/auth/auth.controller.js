@@ -18,7 +18,6 @@ const passport_1 = require("@nestjs/passport");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const telegram_auth_dto_1 = require("./dto/telegram-auth.dto");
-const verify_code_dto_1 = require("./dto/verify-code.dto");
 const user_entity_1 = require("../../entities/user.entity");
 const get_user_decorator_1 = require("../../common/decorators/get-user.decorator");
 let AuthController = class AuthController {
@@ -26,21 +25,10 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async telegramAuth(telegramAuthDto, req) {
+    async telegramLogin(telegramAuthDto, req) {
         const ipAddress = req.ip;
         const userAgent = req.get('User-Agent');
-        return await this.authService.authenticateWithTelegram(telegramAuthDto, ipAddress, userAgent);
-    }
-    async verifyTelegramCode(verifyCodeDto, req) {
-        const ipAddress = req.ip;
-        const userAgent = req.get('User-Agent');
-        return await this.authService.verifyTelegramCode(verifyCodeDto, ipAddress, userAgent);
-    }
-    async checkVerificationCode(code) {
-        return await this.authService.checkVerificationCodeStatus(code);
-    }
-    async telegramWebhook(update, req) {
-        return await this.authService.handleTelegramWebhook(update);
+        return await this.authService.telegramLogin(telegramAuthDto, ipAddress, userAgent);
     }
     async getProfile(user) {
         return await this.authService.getUserProfile(user.id);
@@ -68,62 +56,23 @@ let AuthController = class AuthController {
             },
         };
     }
-    async getPlatformStats() {
-        return await this.authService.getPlatformStats();
-    }
-    async registerFromBot(userData, req) {
-        const ipAddress = req.ip;
-        const userAgent = req.get('User-Agent');
-        return await this.authService.registerUserFromBot(userData, ipAddress, userAgent);
+    async getUserStats(telegramId) {
+        return await this.authService.getUserStats(telegramId);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)('telegram'),
+    (0, common_1.Post)('telegram-login'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'تسجيل الدخول عبر تليجرام' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'تم تسجيل الدخول بنجاح' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'بيانات مصادقة غير صالحة' }),
+    (0, swagger_1.ApiOperation)({ summary: 'تسجيل الدخول/التسجيل عبر تليجرام (للبوت والواجهة الأمامية)' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'تم تسجيل الدخول/التسجيل بنجاح' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'بيانات غير صالحة' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [telegram_auth_dto_1.TelegramAuthDto, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "telegramAuth", null);
-__decorate([
-    (0, common_1.Post)('verify-code'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'التحقق من رمز التحقق من تليجرام' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'تم التحقق بنجاح وتسجيل الدخول' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'رمز التحقق غير صحيح أو منتهي الصلاحية' }),
-    (0, swagger_1.ApiResponse)({ status: 404, description: 'المستخدم غير موجود' }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [verify_code_dto_1.VerifyCodeDto, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "verifyTelegramCode", null);
-__decorate([
-    (0, common_1.Get)('check-code'),
-    (0, swagger_1.ApiOperation)({ summary: 'فحص حالة رمز التحقق' }),
-    (0, swagger_1.ApiQuery)({ name: 'code', description: 'رمز التحقق', required: true }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'حالة الرمز' }),
-    __param(0, (0, common_1.Query)('code')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "checkVerificationCode", null);
-__decorate([
-    (0, common_1.Post)('telegram-webhook'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'استقبال تحديثات من بوت تليجرام' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'تم معالجة التحديث بنجاح' }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "telegramWebhook", null);
+], AuthController.prototype, "telegramLogin", null);
 __decorate([
     (0, common_1.Get)('profile'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
@@ -162,25 +111,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyToken", null);
 __decorate([
-    (0, common_1.Get)('stats'),
-    (0, swagger_1.ApiOperation)({ summary: 'إحصائيات المنصة العامة' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'إحصائيات المنصة' }),
+    (0, common_1.Get)('stats/:telegramId'),
+    (0, swagger_1.ApiOperation)({ summary: 'الحصول على إحصائيات مستخدم معين' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'إحصائيات المستخدم' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'المستخدم غير موجود' }),
+    __param(0, (0, common_1.Param)('telegramId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "getPlatformStats", null);
-__decorate([
-    (0, common_1.Post)('register-from-bot'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'تسجيل مستخدم جديد من البوت' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'تم التسجيل بنجاح' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'خطأ في البيانات' }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "registerFromBot", null);
+], AuthController.prototype, "getUserStats", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('المصادقة'),
     (0, common_1.Controller)('auth'),

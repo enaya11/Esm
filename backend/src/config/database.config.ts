@@ -1,15 +1,16 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
 
-export const getDatabaseConfig = (): TypeOrmModuleOptions => {
-  // القيم ثابتة هنا بدون قراءة من env
-  const url = 'postgresql://postgres.aqunpkwwvslnmuqvotyl:enayabasmaji12@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOptions => {
+  const url = configService.get<string>('DATABASE_URL');
+
+  if (!url) {
+    throw new Error('DATABASE_URL is not defined in environment variables.');
+  }
 
   return {
     type: 'postgres',
     url,
-    ssl: {
-      rejectUnauthorized: false,
-    },
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     synchronize: false, // خليه false في التجربة عشان ما يعدل الداتا
     logging: false,
@@ -20,6 +21,9 @@ export const getDatabaseConfig = (): TypeOrmModuleOptions => {
     },
     retryAttempts: 5,
     retryDelay: 3000,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   };
 };
 

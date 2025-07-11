@@ -19,7 +19,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    background: linear-gradient(45deg, transparent, var(--color-gold-transparent-light), transparent);
     transform: rotate(45deg);
     animation: lightSweep 4s ease-in-out infinite;
 }
@@ -31,7 +31,7 @@
     width: 100px;
     height: 100px;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
+    background: radial-gradient(circle, var(--color-gold-transparent-dark), transparent);
     border-radius: 50%;
     animation: glowPulse 3s ease-in-out infinite;
 }
@@ -56,7 +56,7 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--color-white-transparent-light);
     transform: translate(-50%, -50%);
     transition: width 0.6s ease, height 0.6s ease;
 }
@@ -82,7 +82,7 @@
     position: absolute;
     width: 4px;
     height: 4px;
-    background: #FFD700;
+    background: var(--color-gold-light);
     border-radius: 50%;
     animation: buttonParticleFloat 2s ease-in-out infinite;
 }
@@ -102,19 +102,38 @@
     position: absolute;
     width: 3px;
     height: 3px;
-    background: #4CAF50;
+    background: var(--color-green);
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
     animation: progressParticleMove 3s linear infinite;
-    box-shadow: 0 0 6px rgba(76, 175, 80, 0.8);
+    box-shadow: 0 0 6px var(--color-green-shadow-medium);
 }
 
-.progress-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-.progress-particle:nth-child(2) { left: 30%; animation-delay: 0.6s; }
-.progress-particle:nth-child(3) { left: 50%; animation-delay: 1.2s; }
-.progress-particle:nth-child(4) { left: 70%; animation-delay: 1.8s; }
-.progress-particle:nth-child(5) { left: 90%; animation-delay: 2.4s; }
+.progress-particle:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.progress-particle:nth-child(2) {
+    left: 30%;
+    animation-delay: 0.6s;
+}
+
+.progress-particle:nth-child(3) {
+    left: 50%;
+    animation-delay: 1.2s;
+}
+
+.progress-particle:nth-child(4) {
+    left: 70%;
+    animation-delay: 1.8s;
+}
+
+.progress-particle:nth-child(5) {
+    left: 90%;
+    animation-delay: 2.4s;
+}
 
 /* شريط تقدم التعدين */
 .mining-progress-container {
@@ -123,9 +142,9 @@
     left: 50%;
     transform: translateX(-50%);
     width: 250px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--color-black-transparent-medium);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-white-transparent-darker);
     border-radius: 15px;
     padding: 1rem;
     text-align: center;
@@ -133,7 +152,7 @@
 }
 
 .mining-progress-label {
-    color: #FFD700;
+    color: var(--color-gold-light);
     font-size: 0.9rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -141,7 +160,7 @@
 }
 
 .mining-progress-text {
-    color: #fff;
+    color: var(--color-white);
     font-size: 0.8rem;
     margin-top: 0.5rem;
     font-family: 'Tajawal', 'Cairo', sans-serif;
@@ -154,7 +173,7 @@
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
     z-index: 10000;
-    background: rgba(0, 0, 0, 0.9);
+    background: var(--color-black-transparent-dark);
     backdrop-filter: blur(20px);
     border: 2px solid;
     border-radius: 20px;
@@ -164,7 +183,7 @@
     font-size: 1.2rem;
     font-weight: bold;
     min-width: 300px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 40px var(--color-shadow-medium);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -173,20 +192,20 @@
 }
 
 .floating-message-success {
-    color: #4CAF50;
-    border-color: #4CAF50;
-    background: radial-gradient(circle, rgba(76, 175, 80, 0.1), rgba(0, 0, 0, 0.9));
+    color: var(--color-green);
+    border-color: var(--color-green);
+    background: radial-gradient(circle, var(--color-green-transparent-light), var(--color-black-transparent-dark));
 }
 
 .floating-message-error {
-    color: #F44336;
-    border-color: #F44336;
-    background: radial-gradient(circle, rgba(244, 67, 54, 0.1), rgba(0, 0, 0, 0.9));
+    color: var(--color-red);
+    border-color: var(--color-red);
+    background: radial-gradient(circle, var(--color-red-transparent-light), var(--color-black-transparent-dark));
 }
 
 .floating-message-content div {
     margin: 0.5rem 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 4px var(--color-shadow-medium);
 }
 
 /* تأثير الانفجار للنجاح */
@@ -207,17 +226,17 @@
     left: 50%;
     width: 8px;
     height: 8px;
-    background: linear-gradient(45deg, #FFD700, #FFA000);
+    background: linear-gradient(45deg, var(--color-gold-light), var(--color-gold-medium));
     border-radius: 50%;
     transform: translate(-50%, -50%);
     animation: explode 1.5s ease-out forwards;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 10px var(--color-gold-shadow-dark);
 }
 
 /* تحديث الرصيد */
 .balance-updated {
     animation: balanceGlow 2s ease-in-out;
-    color: #4CAF50 !important;
+    color: var(--color-green) !important;
 }
 
 /* مؤشر عدم الاتصال */
@@ -225,15 +244,15 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #F44336, #D32F2F);
-    color: white;
+    background: linear-gradient(135deg, var(--color-red), var(--color-red-dark));
+    color: var(--color-white);
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
     font-size: 0.9rem;
     font-weight: bold;
     z-index: 10001;
     display: none;
-    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    box-shadow: 0 4px 12px var(--color-red-shadow);
     animation: slideInRight 0.3s ease-out;
     font-family: 'Tajawal', 'Cairo', sans-serif;
 }
@@ -284,7 +303,7 @@
     left: 50%;
     width: 50px;
     height: 50px;
-    border: 2px solid rgba(255, 215, 0, 0.5);
+    border: 2px solid var(--color-gold-transparent-medium);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     animation: soundWaveExpand 1s ease-out infinite;
@@ -292,10 +311,13 @@
 
 /* الرسوم المتحركة */
 @keyframes lightSweep {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateX(-100%) translateY(-100%) rotate(45deg);
         opacity: 0;
     }
+
     50% {
         transform: translateX(100%) translateY(100%) rotate(45deg);
         opacity: 1;
@@ -303,10 +325,13 @@
 }
 
 @keyframes glowPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.2;
         transform: translate(-50%, -50%) scale(1);
     }
+
     50% {
         opacity: 0.6;
         transform: translate(-50%, -50%) scale(1.5);
@@ -314,10 +339,13 @@
 }
 
 @keyframes buttonParticleFloat {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0) scale(1);
         opacity: 0.7;
     }
+
     50% {
         transform: translateY(-10px) scale(1.2);
         opacity: 1;
@@ -329,9 +357,11 @@
         transform: translateY(-50%) translateX(-20px);
         opacity: 0;
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         transform: translateY(-50%) translateX(20px);
         opacity: 0;
@@ -343,6 +373,7 @@
         transform: translateX(-50%) translateY(20px);
         opacity: 0;
     }
+
     100% {
         transform: translateX(-50%) translateY(0);
         opacity: 1;
@@ -354,6 +385,7 @@
         transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0) scale(1);
         opacity: 1;
     }
+
     100% {
         transform: translate(-50%, -50%) rotate(var(--angle)) translateX(150px) scale(0);
         opacity: 0;
@@ -361,10 +393,13 @@
 }
 
 @keyframes balanceGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         text-shadow: 0 0 5px currentColor;
         transform: scale(1);
     }
+
     50% {
         text-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
         transform: scale(1.1);
@@ -376,6 +411,7 @@
         transform: translate(-50%, -50%) scale(0);
         opacity: 1;
     }
+
     100% {
         transform: translate(-50%, -50%) scale(3);
         opacity: 0;
@@ -395,12 +431,11 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.1), 
-        rgba(255, 0, 255, 0.1), 
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            var(--color-cyan-transparent-light),
+            var(--color-magenta-transparent-light),
+            transparent);
     animation: hologramScan 3s ease-in-out infinite;
 }
 
@@ -408,6 +443,7 @@
     0% {
         left: -100%;
     }
+
     100% {
         left: 100%;
     }
@@ -415,7 +451,7 @@
 
 /* تأثيرات النيون */
 .neon-glow {
-    text-shadow: 
+    text-shadow:
         0 0 5px currentColor,
         0 0 10px currentColor,
         0 0 15px currentColor,
@@ -424,9 +460,12 @@
 }
 
 @keyframes neonFlicker {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.8;
     }
@@ -447,7 +486,7 @@
 .matrix-column {
     position: absolute;
     top: -100%;
-    color: #00ff00;
+    color: var(--color-matrix-green);
     font-family: 'Courier New', monospace;
     font-size: 14px;
     animation: matrixFall 10s linear infinite;
@@ -457,6 +496,7 @@
     0% {
         top: -100%;
     }
+
     100% {
         top: 100%;
     }
@@ -474,9 +514,12 @@
 }
 
 @keyframes gravityBounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -488,17 +531,21 @@
 }
 
 @keyframes magneticSpin {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: rotate(0deg) scale(1);
     }
+
     25% {
         transform: rotate(90deg) scale(1.1);
     }
+
     50% {
         transform: rotate(180deg) scale(1);
     }
+
     75% {
         transform: rotate(270deg) scale(1.1);
     }
 }
-

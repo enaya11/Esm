@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRedisConfig = exports.getDatabaseConfig = void 0;
-const getDatabaseConfig = () => {
-    const url = 'postgresql://postgres.aqunpkwwvslnmuqvotyl:enayabasmaji12@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+const getDatabaseConfig = (configService) => {
+    const url = configService.get('DATABASE_URL');
+    if (!url) {
+        throw new Error('DATABASE_URL is not defined in environment variables.');
+    }
     return {
         type: 'postgres',
         url,
-        ssl: {
-            rejectUnauthorized: false,
-        },
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: false,
         logging: false,
@@ -19,6 +19,9 @@ const getDatabaseConfig = () => {
         },
         retryAttempts: 5,
         retryDelay: 3000,
+        ssl: {
+            rejectUnauthorized: false,
+        },
     };
 };
 exports.getDatabaseConfig = getDatabaseConfig;

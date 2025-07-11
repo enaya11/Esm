@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-export declare const getDatabaseConfig: () => TypeOrmModuleOptions;
+import { ConfigService } from '@nestjs/config';
+export declare const getDatabaseConfig: (configService: ConfigService) => TypeOrmModuleOptions;
 export declare const getRedisConfig: () => {
     host: string;
     port: number;

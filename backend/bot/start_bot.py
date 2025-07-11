@@ -5,9 +5,9 @@
 """
 
 import sys
-import os
 import logging
 import argparse
+import asyncio
 from pathlib import Path
 
 # إضافة مجلد البوت إلى المسار
@@ -19,21 +19,21 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('bot.log'),
+        logging.FileHandler('bot.log', encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 
 logger = logging.getLogger(__name__)
 
-def main():
+async def main():
     """الدالة الرئيسية لتشغيل البوت"""
     parser = argparse.ArgumentParser(description='تشغيل بوت SmartCoin')
     parser.add_argument(
         '--mode',
-        choices=['basic', 'enhanced'],
-        default='enhanced',
-        help='وضع تشغيل البوت (basic أو enhanced)'
+        choices=['auth', 'basic', 'enhanced'],
+        default='auth',
+        help='وضع تشغيل البوت (auth, basic, أو enhanced)'
     )
     parser.add_argument(
         '--config',
@@ -57,18 +57,23 @@ def main():
         logger.info(f"استخدام ملف الإعدادات: {args.config}")
         # يمكن إضافة منطق تحميل الإعدادات المخصصة هنا
     
+    bot = None
     try:
-        if args.mode == 'enhanced':
-            logger.info("بدء تشغيل البوت المحسن...")
-            from enhanced_bot import EnhancedSmartCoinBot
+        if args.mode == 'main':
+            logger.info("بدء تشغيل البوت الرئيسي...")
+            from main_bot import EnhancedSmartCoinBot
             bot = EnhancedSmartCoinBot()
         else:
-            logger.info("بدء تشغيل البوت الأساسي...")
-            from telegramBot import SmartCoinBot
-            bot = SmartCoinBot()
+            logger.error("وضع تشغيل البوت غير صالح. يرجى استخدام 'main'.")
+            sys.exit(1)
         
         # تشغيل البوت
-        bot.run()
+        if bot:
+            # التحقق مما إذا كان للبوت دالة `run` غير متزامنة
+            if asyncio.iscoroutinefunction(bot.run):
+                await bot.run()
+            else:
+                bot.run()
         
     except KeyboardInterrupt:
         logger.info("تم إيقاف البوت بواسطة المستخدم")
@@ -77,5 +82,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
-
+    asyncio.run(main())

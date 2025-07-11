@@ -20,6 +20,7 @@ const typeorm_2 = require("typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const crypto = require("crypto");
+const axios_1 = require("axios");
 const user_entity_1 = require("../../entities/user.entity");
 const user_activity_entity_1 = require("../../entities/user-activity.entity");
 const referral_entity_1 = require("../../entities/referral.entity");
@@ -30,42 +31,49 @@ let AuthService = AuthService_1 = class AuthService {
     jwtService;
     configService;
     logger = new common_1.Logger(AuthService_1.name);
-    verificationCodes = new Map();
+    botToken;
     constructor(userRepository, activityRepository, referralRepository, jwtService, configService) {
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
         this.referralRepository = referralRepository;
         this.jwtService = jwtService;
         this.configService = configService;
-        setInterval(() => {
-            this.cleanupExpiredCodes();
-        }, 5 * 60 * 1000);
+        this.botToken = this.configService.get('TELEGRAM_BOT_TOKEN');
+        if (!this.botToken) {
+            this.logger.error('TELEGRAM_BOT_TOKEN is not defined in configuration.');
+            throw new Error('TELEGRAM_BOT_TOKEN is not defined.');
+        }
     }
-    async authenticateWithTelegram(telegramAuthDto, ipAddress, userAgent) {
+    async telegramLogin(telegramData, ipAddress, userAgent) {
         try {
-            if (!this.verifyTelegramAuth(telegramAuthDto)) {
-                throw new common_1.UnauthorizedException('بيانات مصادقة تليجرام غير صالحة');
+            this.logger.log(`محاولة تسجيل دخول عبر تليجرام للمستخدم: ${telegramData.telegram_id}`);
+            if (!telegramData.telegram_id) {
+                throw new common_1.BadRequestException('معرف التليجرام مطلوب');
             }
             let user = await this.userRepository.findOne({
-                where: { telegramId: telegramAuthDto.id.toString() },
+                where: { telegramId: telegramData.telegram_id.toString() },
             });
             if (user) {
-                user = await this.updateExistingUser(user, telegramAuthDto);
+                user = await this.updateExistingUser(user, telegramData);
+                this.logger.log(`تم تحديث بيانات المستخدم الموجود: ${user.telegramId}`);
             }
             else {
-                user = await this.createNewUser(telegramAuthDto);
+                user = await this.createNewUser(telegramData);
+                this.logger.log(`تم إنشاء مستخدم جديد: ${user.telegramId}`);
+                await this.sendWelcomeMessage(telegramData.telegram_id, telegramData.first_name);
             }
-            await this.logActivity(user.id, user_activity_entity_1.ActivityType.LOGIN, 'تسجيل دخول عبر تليجرام', ipAddress, userAgent);
             const payload = {
                 sub: user.id,
                 telegramId: user.telegramId,
                 username: user.username,
             };
             const accessToken = this.jwtService.sign(payload);
+            await this.logUserActivity(user.id, user_activity_entity_1.ActivityType.LOGIN, ipAddress, userAgent, { method: 'telegram' });
+            await this.sendLoginSuccessNotification(telegramData.telegram_id);
             return {
                 success: true,
                 message: 'تم تسجيل الدخول بنجاح',
-                accessToken,
+                token: accessToken,
                 user: {
                     id: user.id,
                     telegramId: user.telegramId,
@@ -74,388 +82,238 @@ let AuthService = AuthService_1 = class AuthService {
                     lastName: user.lastName,
                     totalCoins: user.totalCoins,
                     miningRate: user.miningRate,
-                    level: user.level || 1,
+                    level: user.level,
                     referralCode: user.referralCode,
-                    isActive: user.isActive,
                 },
             };
         }
         catch (error) {
-            this.logger.error('خطأ في مصادقة تليجرام:', error);
+            this.logger.error(`خطأ في تسجيل الدخول عبر تليجرام: ${error.message}`, error.stack);
             throw error;
         }
     }
-    async verifyTelegramCode(verifyCodeDto, ipAddress, userAgent) {
-        try {
-            const { code } = verifyCodeDto;
-            const verificationData = this.verificationCodes.get(code);
-            if (!verificationData) {
-                throw new common_1.UnauthorizedException('رمز التحقق غير صحيح أو غير موجود');
-            }
-            if (new Date() > verificationData.expiresAt) {
-                this.verificationCodes.delete(code);
-                throw new common_1.UnauthorizedException('رمز التحقق منتهي الصلاحية');
-            }
-            if (verificationData.isUsed) {
-                throw new common_1.UnauthorizedException('رمز التحقق مستخدم بالفعل');
-            }
-            let user = await this.userRepository.findOne({
-                where: { telegramId: verificationData.telegramId },
-            });
-            if (!user) {
-                user = await this.createUserFromVerification(verificationData, verifyCodeDto);
-            }
-            else {
-                user = await this.updateUserFromVerification(user, verificationData, verifyCodeDto);
-            }
-            verificationData.isUsed = true;
-            this.verificationCodes.set(code, verificationData);
-            await this.logActivity(user.id, user_activity_entity_1.ActivityType.LOGIN, 'تسجيل دخول عبر رمز التحقق', ipAddress, userAgent);
-            const payload = {
-                sub: user.id,
-                telegramId: user.telegramId,
-                username: user.username,
-            };
-            const accessToken = this.jwtService.sign(payload);
-            setTimeout(() => {
-                this.verificationCodes.delete(code);
-            }, 5000);
-            return {
-                success: true,
-                message: 'تم تسجيل الدخول بنجاح',
-                accessToken,
-                user: {
-                    id: user.id,
-                    telegramId: user.telegramId,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    totalCoins: user.totalCoins,
-                    miningRate: user.miningRate,
-                    level: user.level || 1,
-                    referralCode: user.referralCode,
-                    isActive: user.isActive,
-                    isNewUser: !user.lastLoginAt,
-                },
-            };
-        }
-        catch (error) {
-            this.logger.error('خطأ في التحقق من الرمز:', error);
-            throw error;
-        }
-    }
-    async checkVerificationCodeStatus(code) {
-        const verificationData = this.verificationCodes.get(code);
-        if (!verificationData) {
-            return {
-                exists: false,
-                message: 'رمز التحقق غير موجود',
-            };
-        }
-        const isExpired = new Date() > verificationData.expiresAt;
-        const timeLeft = Math.max(0, verificationData.expiresAt.getTime() - new Date().getTime());
-        return {
-            exists: true,
-            isUsed: verificationData.isUsed,
-            isExpired,
-            timeLeft: Math.floor(timeLeft / 1000),
-            createdAt: verificationData.createdAt,
-            expiresAt: verificationData.expiresAt,
-        };
-    }
-    async handleTelegramWebhook(update) {
-        try {
-            this.logger.log('تم استلام تحديث من بوت تليجرام:', JSON.stringify(update));
-            if (update.message) {
-                const message = update.message;
-                const user = message.from;
-                const text = message.text;
-                if (text === '/start' || text === '/login') {
-                    return await this.handleLoginRequest(user);
-                }
-                if (text && text.length === 8 && /^[A-Z0-9]+$/.test(text)) {
-                    return await this.handleVerificationCodeFromBot(user, text);
-                }
-            }
-            return { success: true, message: 'تم معالجة التحديث' };
-        }
-        catch (error) {
-            this.logger.error('خطأ في معالجة webhook:', error);
-            return { success: false, error: error.message };
-        }
-    }
-    async handleLoginRequest(telegramUser) {
-        const code = this.generateVerificationCode();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-        const verificationData = {
-            telegramId: telegramUser.id.toString(),
-            code,
-            userData: telegramUser,
-            createdAt: new Date(),
-            expiresAt,
-            isUsed: false,
-        };
-        this.verificationCodes.set(code, verificationData);
-        this.logger.log(`تم إنشاء رمز تحقق ${code} للمستخدم ${telegramUser.id}`);
-        return {
-            success: true,
-            code,
-            expiresAt,
-            message: 'تم إنشاء رمز التحقق بنجاح',
-        };
-    }
-    async handleVerificationCodeFromBot(telegramUser, code) {
-        const verificationData = this.verificationCodes.get(code);
-        if (verificationData && verificationData.telegramId === telegramUser.id.toString()) {
-            verificationData.userData = { ...verificationData.userData, ...telegramUser };
-            this.verificationCodes.set(code, verificationData);
-            return {
-                success: true,
-                message: 'تم التحقق من الرمز، يمكنك الآن تسجيل الدخول في الموقع',
-            };
-        }
-        return {
-            success: false,
-            message: 'رمز التحقق غير صحيح أو منتهي الصلاحية',
-        };
-    }
-    async registerUserFromBot(userData, ipAddress, userAgent) {
-        try {
-            let user = await this.userRepository.findOne({
-                where: { telegramId: userData.telegramId || userData.id?.toString() },
-            });
-            if (!user) {
-                user = await this.createNewUserFromBot(userData);
-                await this.logActivity(user.id, user_activity_entity_1.ActivityType.ACCOUNT_CREATED, 'تسجيل مستخدم جديد من البوت', ipAddress, userAgent);
-            }
-            return {
-                success: true,
-                message: 'تم تسجيل المستخدم بنجاح',
-                user: {
-                    id: user.id,
-                    telegramId: user.telegramId,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    referralCode: user.referralCode,
-                },
-            };
-        }
-        catch (error) {
-            this.logger.error('خطأ في تسجيل المستخدم من البوت:', error);
-            throw new common_1.BadRequestException('فشل في تسجيل المستخدم');
-        }
-    }
-    async createUserFromVerification(verificationData, verifyCodeDto) {
-        const userData = verificationData.userData || {};
-        const user = this.userRepository.create({
-            telegramId: verificationData.telegramId,
-            username: verifyCodeDto.username || userData.username,
-            firstName: verifyCodeDto.firstName || userData.firstName,
-            lastName: verifyCodeDto.lastName || userData.lastName,
-            languageCode: verifyCodeDto.languageCode || userData.language_code || 'ar',
-            totalCoins: 100,
-            miningRate: 1.0,
-            level: 1,
-            referralCode: this.generateReferralCode(),
-            isActive: true,
-            registeredAt: new Date(),
-            lastLoginAt: new Date(),
-        });
-        return await this.userRepository.save(user);
-    }
-    async updateUserFromVerification(user, verificationData, verifyCodeDto) {
-        const userData = verificationData.userData || {};
-        if (verifyCodeDto.username || userData.username) {
-            user.username = verifyCodeDto.username || userData.username;
-        }
-        if (verifyCodeDto.firstName || userData.firstName) {
-            user.firstName = verifyCodeDto.firstName || userData.firstName;
-        }
-        if (verifyCodeDto.lastName || userData.lastName) {
-            user.lastName = verifyCodeDto.lastName || userData.lastName;
-        }
-        if (verifyCodeDto.languageCode || userData.language_code) {
-            user.languageCode = verifyCodeDto.languageCode || userData.language_code;
-        }
+    async updateExistingUser(user, telegramData) {
+        user.username = telegramData.username || user.username;
+        user.firstName = telegramData.first_name || user.firstName;
+        user.lastName = telegramData.last_name || user.lastName;
+        user.languageCode = telegramData.language_code || user.languageCode;
         user.lastLoginAt = new Date();
         user.isActive = true;
         return await this.userRepository.save(user);
     }
-    async createNewUserFromBot(userData) {
-        const user = this.userRepository.create({
-            telegramId: userData.telegramId || userData.id?.toString(),
-            username: userData.username,
-            firstName: userData.firstName || userData.firstName,
-            lastName: userData.lastName || userData.lastName,
-            languageCode: userData.languageCode || userData.language_code || 'ar',
-            totalCoins: 100,
-            miningRate: 1.0,
-            level: 1,
-            isActive: true,
-            referralCode: this.generateReferralCode(),
-            registeredAt: new Date(),
-            lastLoginAt: new Date(),
-        });
-        return await this.userRepository.save(user);
-    }
-    generateVerificationCode() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < 8; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-    }
-    generateReferralCode() {
-        return 'SC' + Math.random().toString(36).substr(2, 6).toUpperCase();
-    }
-    cleanupExpiredCodes() {
-        const now = new Date();
-        const expiredCodes = [];
-        this.verificationCodes.forEach((data, code) => {
-            if (now > data.expiresAt) {
-                expiredCodes.push(code);
-            }
-        });
-        expiredCodes.forEach(code => {
-            this.verificationCodes.delete(code);
-        });
-        if (expiredCodes.length > 0) {
-            this.logger.log(`تم حذف ${expiredCodes.length} رمز تحقق منتهي الصلاحية`);
-        }
-    }
-    async getPlatformStats() {
-        try {
-            const totalUsers = await this.userRepository.count();
-            const activeUsers = await this.userRepository.count({ where: { isActive: true } });
-            const totalCoins = await this.userRepository
-                .createQueryBuilder('user')
-                .select('SUM(user.totalCoins)', 'total')
-                .getRawOne();
-            return {
-                totalUsers,
-                activeUsers,
-                totalCoinsInCirculation: totalCoins?.total || 0,
-                platformCapital: '350,000,000',
-                supportedLanguages: ['ar', 'en'],
-                features: [
-                    'تعدين ذكي',
-                    'استثمار مربح',
-                    'نظام إحالات',
-                    'مهام يومية',
-                    'عجلة الحظ',
-                ],
-            };
-        }
-        catch (error) {
-            this.logger.error('خطأ في الحصول على إحصائيات المنصة:', error);
-            throw new common_1.BadRequestException('فشل في الحصول على الإحصائيات');
-        }
-    }
-    verifyTelegramAuth(data) {
-        const botToken = this.configService.get('TELEGRAM_BOT_TOKEN');
-        if (!botToken) {
-            this.logger.warn('TELEGRAM_BOT_TOKEN غير محدد');
-            return true;
-        }
-        const { hash, ...authData } = data;
-        const dataCheckString = Object.keys(authData)
-            .sort()
-            .map(key => `${key}=${authData[key]}`)
-            .join('\n');
-        const secretKey = crypto.createHash('sha256').update(botToken).digest();
-        const calculatedHash = crypto
-            .createHmac('sha256', secretKey)
-            .update(dataCheckString)
-            .digest('hex');
-        return calculatedHash === hash;
-    }
-    async updateExistingUser(user, telegramAuthDto) {
-        user.username = telegramAuthDto.username || user.username;
-        user.firstName = telegramAuthDto.first_name || user.firstName;
-        user.lastName = telegramAuthDto.last_name || user.lastName;
-        user.languageCode = telegramAuthDto.language_code || user.languageCode;
+    async createNewUser(telegramData) {
+        const user = new user_entity_1.User();
+        user.telegramId = telegramData.telegram_id.toString();
+        user.username = telegramData.username;
+        user.firstName = telegramData.first_name;
+        user.lastName = telegramData.last_name;
+        user.languageCode = telegramData.language_code || 'ar';
+        user.totalCoins = 100;
+        user.miningRate = 1.0;
+        user.level = 1;
+        user.referralCode = this.generateReferralCode();
+        user.registeredAt = new Date();
         user.lastLoginAt = new Date();
         user.isActive = true;
-        return await this.userRepository.save(user);
-    }
-    async createNewUser(telegramAuthDto) {
-        const user = this.userRepository.create({
-            telegramId: telegramAuthDto.id.toString(),
-            username: telegramAuthDto.username,
-            firstName: telegramAuthDto.first_name,
-            lastName: telegramAuthDto.last_name,
-            languageCode: telegramAuthDto.language_code || 'ar',
-            totalCoins: 100,
-            miningRate: 1.0,
-            level: 1,
-            referralCode: this.generateReferralCode(),
-            isActive: true,
-            registeredAt: new Date(),
-            lastLoginAt: new Date(),
-        });
-        return await this.userRepository.save(user);
-    }
-    async getUserProfile(userId) {
-        const user = await this.userRepository.findOne({
-            where: { id: userId },
-            relations: ['activities', 'referrals'],
-        });
-        if (!user) {
-            throw new common_1.NotFoundException('المستخدم غير موجود');
+        const savedUser = await this.userRepository.save(user);
+        if (telegramData.referral_code) {
+            await this.processReferral(savedUser, telegramData.referral_code);
         }
-        const referralCount = await this.referralRepository.count({
-            where: { referrerId: userId },
-        });
-        return {
-            id: user.id,
-            telegramId: user.telegramId,
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            totalCoins: user.totalCoins,
-            miningRate: user.miningRate,
-            level: user.level || 1,
-            referralCode: user.referralCode,
-            referralCount,
-            registeredAt: user.registeredAt,
-            lastLoginAt: user.lastLoginAt,
-            isActive: user.isActive,
-        };
+        return savedUser;
     }
-    async logout(userId, ipAddress, userAgent) {
-        await this.logActivity(userId, user_activity_entity_1.ActivityType.LOGOUT, 'تسجيل خروج', ipAddress, userAgent);
-    }
-    async logActivity(userId, type, description, ipAddress, userAgent) {
+    async processReferral(newUser, referralCode) {
         try {
-            const activity = this.activityRepository.create({
-                userId: userId,
-                activityType: type,
-                description,
-                ipAddress,
-                userAgent,
-                createdAt: new Date(),
+            const referrer = await this.userRepository.findOne({
+                where: { referralCode: referralCode },
             });
+            if (referrer && referrer.id !== newUser.id) {
+                const referral = new referral_entity_1.Referral();
+                referral.referrerId = referrer.id;
+                referral.referredId = newUser.id;
+                referral.rewardAmount = 50;
+                referral.createdAt = new Date();
+                await this.referralRepository.save(referral);
+                referrer.totalCoins += 50;
+                await this.userRepository.save(referrer);
+                await this.sendReferralNotification(referrer.telegramId, newUser.firstName || newUser.username, 50);
+                this.logger.log(`تمت معالجة إحالة جديدة: ${referrer.telegramId} -> ${newUser.telegramId}`);
+            }
+        }
+        catch (error) {
+            this.logger.error(`خطأ في معالجة الإحالة: ${error.message}`);
+        }
+    }
+    async logUserActivity(userId, activityType, ipAddress, userAgent, metadata) {
+        try {
+            const activity = new user_activity_entity_1.UserActivity();
+            activity.userId = userId.toString();
+            activity.activityType = activityType;
+            if (ipAddress)
+                activity.ipAddress = ipAddress;
+            if (userAgent)
+                activity.userAgent = userAgent;
+            activity.metadata = metadata;
+            activity.createdAt = new Date();
             await this.activityRepository.save(activity);
         }
         catch (error) {
-            this.logger.error('خطأ في تسجيل النشاط:', error);
+            this.logger.error(`خطأ في تسجيل النشاط: ${error.message}`);
         }
     }
-    async validateJwtPayload(payload) {
+    generateReferralCode() {
+        return crypto.randomBytes(4).toString('hex').toUpperCase();
+    }
+    async sendWelcomeMessage(telegramId, firstName) {
+        try {
+            const message = `🎉 مرحباً ${firstName}!\n\nتم تسجيل حسابك بنجاح في SmartCoin!\n\n💰 حصلت على 100 عملة SM كمكافأة تسجيل\n🚀 ابدأ التعدين الآن واحصل على المزيد من العملات!`;
+            await this.sendTelegramMessage(telegramId, message);
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال رسالة الترحيب: ${error.message}`);
+        }
+    }
+    async sendLoginSuccessNotification(telegramId) {
+        try {
+            const message = `✅ تم تسجيل دخولك بنجاح!\n\n🚀 يمكنك الآن الوصول إلى جميع ميزات SmartCoin`;
+            await this.sendTelegramMessage(telegramId, message);
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال إشعار تسجيل الدخول: ${error.message}`);
+        }
+    }
+    async sendReferralNotification(telegramId, referralName, bonus) {
+        try {
+            const message = `👥 إحالة جديدة!\n\n🎉 انضم ${referralName} عبر رابط الإحالة الخاص بك\n💰 حصلت على ${bonus} عملة SM كمكافأة\n\n🔗 شارك رابطك مع المزيد من الأصدقاء!`;
+            await this.sendTelegramMessage(telegramId, message);
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال إشعار الإحالة: ${error.message}`);
+        }
+    }
+    async sendTelegramMessage(telegramId, message) {
+        try {
+            const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
+            await axios_1.default.post(url, {
+                chat_id: telegramId,
+                text: message,
+                parse_mode: 'Markdown'
+            });
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال رسالة تليجرام: ${error.message}`);
+        }
+    }
+    async logout(userId, ipAddress, userAgent) {
+        try {
+            await this.logUserActivity(userId, user_activity_entity_1.ActivityType.LOGOUT, ipAddress, userAgent);
+            this.logger.log(`تم تسجيل خروج المستخدم: ${userId}`);
+            return {
+                success: true,
+                message: 'تم تسجيل الخروج بنجاح'
+            };
+        }
+        catch (error) {
+            this.logger.error(`خطأ في تسجيل الخروج: ${error.message}`, error.stack);
+            throw error;
+        }
+    }
+    async getUserProfile(userId) {
         try {
             const user = await this.userRepository.findOne({
-                where: { id: payload.sub },
+                where: { id: userId },
+                relations: ['referrals', 'activities']
             });
-            if (!user || !user.isActive) {
-                return null;
+            if (!user) {
+                throw new common_1.UnauthorizedException('المستخدم غير موجود');
+            }
+            return {
+                id: user.id,
+                telegramId: user.telegramId,
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                totalCoins: user.totalCoins,
+                miningRate: user.miningRate,
+                level: user.level,
+                referralCode: user.referralCode,
+                registeredAt: user.registeredAt,
+                lastLoginAt: user.lastLoginAt,
+                isActive: user.isActive,
+                referralCount: user.referrals?.length || 0,
+            };
+        }
+        catch (error) {
+            this.logger.error(`خطأ في الحصول على ملف المستخدم: ${error.message}`, error.stack);
+            throw error;
+        }
+    }
+    async verifyToken(payload) {
+        try {
+            const user = await this.userRepository.findOne({
+                where: { id: payload.sub, isActive: true },
+            });
+            if (!user) {
+                throw new common_1.UnauthorizedException('المستخدم غير موجود أو غير نشط');
             }
             return user;
         }
         catch (error) {
-            this.logger.error(`خطأ في التحقق من JWT: ${error.message}`);
-            return null;
+            this.logger.error(`خطأ في التحقق من التوكن: ${error.message}`, error.stack);
+            throw new common_1.UnauthorizedException('توكن غير صالح');
+        }
+    }
+    async getUserStats(telegramId) {
+        try {
+            const user = await this.userRepository.findOne({
+                where: { telegramId: telegramId },
+                relations: ['referrals', 'activities']
+            });
+            if (!user) {
+                return {
+                    balance: 0,
+                    mining_count: 0,
+                    completed_tasks: 0,
+                    referrals: 0,
+                    level: 1
+                };
+            }
+            const miningCount = user.activities?.filter(activity => activity.activityType === user_activity_entity_1.ActivityType.MINING).length || 0;
+            const completedTasks = user.activities?.filter(activity => activity.activityType === user_activity_entity_1.ActivityType.TASK_COMPLETED).length || 0;
+            return {
+                balance: user.totalCoins,
+                mining_count: miningCount,
+                completed_tasks: completedTasks,
+                referrals: user.referrals?.length || 0,
+                level: user.level
+            };
+        }
+        catch (error) {
+            this.logger.error(`خطأ في الحصول على إحصائيات المستخدم: ${error.message}`);
+            return {
+                balance: 0,
+                mining_count: 0,
+                completed_tasks: 0,
+                referrals: 0,
+                level: 1
+            };
+        }
+    }
+    async sendMiningNotification(telegramId, amount) {
+        try {
+            const message = `🔨 تم التعدين بنجاح!\n\n💰 حصلت على ${amount} عملة SM\n\n🚀 استمر في التعدين يومياً للحصول على المزيد!`;
+            await this.sendTelegramMessage(telegramId, message);
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال إشعار التعدين: ${error.message}`);
+        }
+    }
+    async sendTaskCompletionNotification(telegramId, taskName, reward) {
+        try {
+            const message = `🎯 مهمة مكتملة!\n\n✅ أكملت مهمة: ${taskName}\n💰 حصلت على ${reward} عملة SM\n\n🏆 تابع إكمال المهام للحصول على المزيد من المكافآت!`;
+            await this.sendTelegramMessage(telegramId, message);
+        }
+        catch (error) {
+            this.logger.error(`خطأ في إرسال إشعار إكمال المهمة: ${error.message}`);
         }
     }
 };

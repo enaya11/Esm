@@ -11,6 +11,7 @@ import { getDatabaseConfig } from './config/database.config';
 
 // الوحدات
 import { AuthModule } from './modules/auth/auth.module';
+import { WalletsModule } from './modules/wallets/wallets.module';
 
 // الكيانات
 import { User } from './entities/user.entity';
@@ -19,6 +20,7 @@ import { ConfirmedTransaction } from './entities/confirmed-transaction.entity';
 import { ActivatedPackage } from './entities/activated-package.entity';
 import { Referral } from './entities/referral.entity';
 import { UserActivity } from './entities/user-activity.entity';
+import { Wallet } from './entities/wallet.entity';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { UserActivity } from './entities/user-activity.entity';
       useFactory: getDatabaseConfig,
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User, Order, ConfirmedTransaction, ActivatedPackage, Referral, UserActivity, Wallet]),
 
     // حماية من الهجمات (Rate Limiting) - الإصلاح هنا
     ThrottlerModule.forRootAsync({
@@ -53,6 +56,7 @@ import { UserActivity } from './entities/user-activity.entity';
 
     // وحدات التطبيق
     AuthModule,
+    WalletsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

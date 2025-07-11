@@ -15,6 +15,14 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const database_config_1 = require("./config/database.config");
 const auth_module_1 = require("./modules/auth/auth.module");
+const wallets_module_1 = require("./modules/wallets/wallets.module");
+const user_entity_1 = require("./entities/user.entity");
+const order_entity_1 = require("./entities/order.entity");
+const confirmed_transaction_entity_1 = require("./entities/confirmed-transaction.entity");
+const activated_package_entity_1 = require("./entities/activated-package.entity");
+const referral_entity_1 = require("./entities/referral.entity");
+const user_activity_entity_1 = require("./entities/user-activity.entity");
+const wallet_entity_1 = require("./entities/wallet.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -30,6 +38,7 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: database_config_1.getDatabaseConfig,
                 inject: [config_1.ConfigService],
             }),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, order_entity_1.Order, confirmed_transaction_entity_1.ConfirmedTransaction, activated_package_entity_1.ActivatedPackage, referral_entity_1.Referral, user_activity_entity_1.UserActivity, wallet_entity_1.Wallet]),
             throttler_1.ThrottlerModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: (configService) => {
@@ -45,6 +54,7 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
             }),
             auth_module_1.AuthModule,
+            wallets_module_1.WalletsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -7,7 +7,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    background: linear-gradient(135deg, var(--sc-black) 0%, var(--sc-dark-gray) 50%, var(--sc-black) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,13 +22,13 @@
 
 .loading-spinner {
     font-size: 3rem;
-    color: #FFD700;
+    color: var(--sc-gold);
     margin-bottom: 1rem;
 }
 
 .loading-text {
     font-size: 1.2rem;
-    color: #ccc;
+    color: var(--sc-text-gray);
     font-family: 'Tajawal', 'Cairo', sans-serif;
 }
 
@@ -43,6 +43,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Keep as rgba for transparency */
     animation: slideInRight 0.3s ease-out;
 }
 
@@ -89,27 +90,33 @@
 
 /* أنواع الرسائل */
 .auth-message-loading {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
-    color: #FFD700;
-    border-color: rgba(255, 215, 0, 0.3);
+    background: linear-gradient(135deg, var(--sc-gold-glow), rgba(255, 215, 0, 0.05));
+    color: var(--sc-gold);
+    border-color: var(--sc-gold-glow);
 }
 
 .auth-message-success {
     background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
-    color: #4CAF50;
+    /* Keep as rgba for transparency */
+    color: var(--sc-success);
     border-color: rgba(76, 175, 80, 0.3);
+    /* Keep as rgba for transparency */
 }
 
 .auth-message-error {
     background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
-    color: #F44336;
+    /* Keep as rgba for transparency */
+    color: var(--sc-error);
     border-color: rgba(244, 67, 54, 0.3);
+    /* Keep as rgba for transparency */
 }
 
 .auth-message-info {
     background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
-    color: #2196F3;
+    /* Keep as rgba for transparency */
+    color: var(--sc-info);
     border-color: rgba(33, 150, 243, 0.3);
+    /* Keep as rgba for transparency */
 }
 
 /* تعليمات التليجرام */
@@ -120,7 +127,7 @@
 
 .telegram-instructions h3 {
     margin: 0 0 1rem 0;
-    color: #FFD700;
+    color: var(--sc-gold);
     font-size: 1.1rem;
 }
 
@@ -138,10 +145,10 @@
 .telegram-instructions .btn {
     margin-top: 1rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #FFD700, #FFA000);
-    color: #000;
+    background: var(--sc-gold-gradient);
+    color: var(--sc-text-dark);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -150,12 +157,13 @@
 
 .telegram-instructions .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px var(--sc-gold-glow);
 }
 
 /* تحسينات للصفحة المحمية */
 #main-content {
-    display: none; /* مخفي افتراضياً حتى يتم التحقق من المصادقة */
+    display: none;
+    /* مخفي افتراضياً حتى يتم التحقق من المصادقة */
 }
 
 .protected-page #main-content {
@@ -178,7 +186,7 @@
 
 /* تنسيقات خاصة لصفحة تسجيل الدخول */
 .login-page {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    background: linear-gradient(135deg, var(--sc-black) 0%, var(--sc-dark-gray) 50%, var(--sc-black) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -188,28 +196,28 @@
 }
 
 .login-container {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--sc-gray);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    border-radius: var(--border-radius-lg);
     padding: 3rem;
     text-align: center;
     max-width: 400px;
     width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-strong);
 }
 
 .login-logo {
     width: 80px;
     height: 80px;
     margin: 0 auto 2rem;
-    background: linear-gradient(135deg, #FFD700, #FFA000);
+    background: var(--sc-gold-gradient);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
-    color: #000;
+    color: var(--sc-text-dark);
     font-weight: bold;
 }
 
@@ -217,14 +225,14 @@
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #FFD700, #FFA000);
+    background: var(--sc-gold-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .login-subtitle {
-    color: #ccc;
+    color: var(--sc-text-gray);
     margin-bottom: 2rem;
     font-size: 1rem;
 }
@@ -233,9 +241,10 @@
     width: 100%;
     padding: 1rem;
     background: linear-gradient(135deg, #0088cc, #0066aa);
+    /* Telegram blue, keep as is */
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
@@ -250,6 +259,7 @@
 .telegram-login-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 136, 204, 0.3);
+    /* Keep as rgba for specific blue glow */
 }
 
 .telegram-login-btn:active {
@@ -260,37 +270,8 @@
     font-size: 1.3rem;
 }
 
-/* الرسوم المتحركة */
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes backgroundShift {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-    }
-    50% {
-        transform: scale(1.1) rotate(180deg);
-    }
-}
+/* الرسوم المتحركة - إزالة التكرار */
+/* @keyframes slideInRight, fadeIn, backgroundShift are defined in enhanced-style.css */
 
 /* تحسينات للأجهزة المحمولة */
 @media (max-width: 768px) {
@@ -299,16 +280,16 @@
         left: 10px;
         max-width: none;
     }
-    
+
     .login-container {
         padding: 2rem;
         margin: 1rem;
     }
-    
+
     .login-title {
         font-size: 1.5rem;
     }
-    
+
     .telegram-login-btn {
         padding: 0.875rem;
         font-size: 1rem;
@@ -319,7 +300,9 @@
 @media (prefers-color-scheme: dark) {
     .auth-message {
         background: rgba(0, 0, 0, 0.8);
+        /* Keep as rgba for transparency */
         border-color: rgba(255, 255, 255, 0.2);
+        /* Keep as rgba for transparency */
     }
 }
 
@@ -331,6 +314,7 @@
 .auth-message:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    /* Keep as rgba for transparency */
 }
 
 /* حالة عدم الاتصال */
@@ -338,10 +322,10 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: rgba(244, 67, 54, 0.9);
+    background: var(--sc-error);
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     font-size: 0.9rem;
     z-index: 10001;
     display: none;
@@ -351,4 +335,3 @@
     display: block;
     animation: slideInRight 0.3s ease-out;
 }
-

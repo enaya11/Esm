@@ -15,9 +15,12 @@ const order_entity_1 = require("./order.entity");
 const activated_package_entity_1 = require("./activated-package.entity");
 const referral_entity_1 = require("./referral.entity");
 const user_activity_entity_1 = require("./user-activity.entity");
+const wallet_entity_1 = require("./wallet.entity");
 let User = class User {
     id;
     telegramId;
+    tonWalletAddress;
+    publicKey;
     username;
     firstName;
     lastName;
@@ -35,6 +38,7 @@ let User = class User {
     level;
     createdAt;
     updatedAt;
+    wallet;
     orders;
     activatedPackages;
     referrals;
@@ -73,6 +77,14 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'telegram_id', type: 'varchar', unique: true, nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "telegramId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'ton_wallet_address', type: 'varchar', unique: true, nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "tonWalletAddress", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'public_key', type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "publicKey", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
@@ -141,6 +153,10 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ name: 'updated_at' }),
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => wallet_entity_1.Wallet, wallet => wallet.user),
+    __metadata("design:type", wallet_entity_1.Wallet)
+], User.prototype, "wallet", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => order_entity_1.Order, order => order.user),
     __metadata("design:type", Array)

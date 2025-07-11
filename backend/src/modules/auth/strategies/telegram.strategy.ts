@@ -16,7 +16,7 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
     const ipAddress = req.ip;
     const userAgent = req.get('User-Agent');
 
-    return await this.authService.authenticateWithTelegram(
+    return await this.authService.telegramLogin(
       telegramAuthDto,
       ipAddress,
       userAgent,

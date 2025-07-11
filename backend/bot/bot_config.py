@@ -11,11 +11,11 @@ class BotConfig:
     """فئة إعدادات البوت"""
     
     # إعدادات البوت الأساسية
-    BOT_TOKEN = "7782763042:AAHNKGl9Y65n4Q8JgVQbQvtlLvg_toT2MwA"
-    BOT_USERNAME = "@smartcoin_official_bot"  # يجب تحديثه بالاسم الفعلي
+    BOT_TOKEN = "7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8"
+    BOT_USERNAME = "@SMAR1TCOINbot"
     
     # إعدادات التطبيق
-    WEBAPP_URL = "https://smartcoin-app.com"  # سيتم تحديثه عند النشر
+    WEBAPP_URL = "https://esm-e3c3.vercel.app/"  # سيتم تحديثه عند النشر
     API_BASE_URL = "http://localhost:3000/api"
     
     # إعدادات قاعدة البيانات

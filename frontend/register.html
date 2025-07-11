@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,16 +22,16 @@
         }
 
         .register-card {
-            background: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(30, 30, 30, 0.95));
-            border: 2px solid var(--sc-gold);
+            background: linear-gradient(135deg, var(--color-background-darker-transparent), var(--color-background-dark-transparent));
+            border: 2px solid var(--color-gold);
             border-radius: 20px;
             padding: 40px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                0 0 50px var(--sc-gold-glow),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 20px 40px var(--color-shadow-medium),
+                0 0 50px var(--color-gold-glow),
+                inset 0 1px 0 var(--color-white-transparent-darker);
             backdrop-filter: blur(20px);
             position: relative;
             animation: slideInUp 0.8s ease-out;
@@ -43,15 +44,20 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: var(--sc-gold-gradient);
+            background: var(--color-gold-gradient);
             border-radius: 22px;
             z-index: -1;
             animation: borderGlow 3s ease-in-out infinite alternate;
         }
 
         @keyframes borderGlow {
-            0% { opacity: 0.5; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         @keyframes slideInUp {
@@ -59,6 +65,7 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -74,35 +81,42 @@
             width: 80px;
             height: 80px;
             margin: 0 auto 20px;
-            background: var(--sc-gold-gradient);
+            background: var(--color-gold-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 30px var(--sc-gold-glow);
+            box-shadow: 0 10px 30px var(--color-gold-glow);
             animation: logoFloat 3s ease-in-out infinite;
         }
 
         @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .register-logo i {
             font-size: 40px;
-            color: var(--sc-black);
+            color: var(--color-black);
         }
 
         .register-title {
             font-size: 28px;
             font-weight: 700;
-            color: var(--sc-gold);
+            color: var(--color-gold);
             margin-bottom: 10px;
-            text-shadow: 0 0 20px var(--sc-gold-glow);
+            text-shadow: 0 0 20px var(--color-gold-glow);
         }
 
         .register-subtitle {
-            color: var(--sc-text-gray);
+            color: var(--color-text-muted);
             font-size: 16px;
             line-height: 1.5;
         }
@@ -114,7 +128,7 @@
 
         .form-label {
             display: block;
-            color: var(--sc-gold);
+            color: var(--color-gold);
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
@@ -123,10 +137,10 @@
         .form-input {
             width: 100%;
             padding: 15px 20px;
-            background: rgba(30, 30, 30, 0.8);
-            border: 2px solid rgba(255, 215, 0, 0.3);
+            background: var(--color-background-dark-transparent);
+            border: 2px solid var(--color-gold-transparent-light);
             border-radius: 12px;
-            color: var(--sc-text-light);
+            color: var(--color-text-light);
             font-size: 16px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
@@ -134,13 +148,13 @@
 
         .form-input:focus {
             outline: none;
-            border-color: var(--sc-gold);
-            box-shadow: 0 0 20px var(--sc-gold-glow);
+            border-color: var(--color-gold);
+            box-shadow: 0 0 20px var(--color-gold-glow);
             transform: translateY(-2px);
         }
 
         .form-input::placeholder {
-            color: var(--sc-text-gray);
+            color: var(--color-text-muted);
         }
 
         .password-toggle {
@@ -150,24 +164,24 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--sc-gold);
+            color: var(--color-gold);
             cursor: pointer;
             font-size: 18px;
             transition: all 0.3s ease;
         }
 
         .password-toggle:hover {
-            color: var(--sc-gold-light);
+            color: var(--color-gold-light);
             transform: translateY(-50%) scale(1.1);
         }
 
         .register-btn {
             width: 100%;
             padding: 18px;
-            background: var(--sc-gold-gradient);
+            background: var(--color-gold-gradient);
             border: none;
             border-radius: 12px;
-            color: var(--sc-black);
+            color: var(--color-black);
             font-size: 18px;
             font-weight: 700;
             cursor: pointer;
@@ -184,7 +198,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(90deg, transparent, var(--color-white-transparent-light), transparent);
             transition: left 0.5s ease;
         }
 
@@ -194,7 +208,7 @@
 
         .register-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 35px var(--sc-gold-glow);
+            box-shadow: 0 15px 35px var(--color-gold-glow);
         }
 
         .register-btn:active {
@@ -218,9 +232,9 @@
         }
 
         .divider span {
-            background: var(--sc-gray);
+            background: var(--color-background-gray);
             padding: 0 20px;
-            color: var(--sc-text-gray);
+            color: var(--color-text-muted);
             font-size: 14px;
         }
 
@@ -247,10 +261,10 @@
         }
 
         .social-btn:hover {
-            border-color: var(--sc-gold);
-            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--color-gold);
+            background: var(--color-gold-transparent-darker);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px var(--color-shadow-dark);
         }
 
         .social-btn i {
@@ -258,11 +272,11 @@
         }
 
         .telegram-btn {
-            color: #0088cc;
+            color: var(--color-telegram-blue);
         }
 
         .ton-btn {
-            color: var(--sc-cyan);
+            color: var(--color-cyan);
         }
 
         .login-link {
@@ -271,15 +285,15 @@
         }
 
         .login-link a {
-            color: var(--sc-gold);
+            color: var(--color-gold);
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .login-link a:hover {
-            color: var(--sc-gold-light);
-            text-shadow: 0 0 10px var(--sc-gold-glow);
+            color: var(--color-gold-light);
+            text-shadow: 0 0 10px var(--color-gold-glow);
         }
 
         .terms-checkbox {
@@ -293,11 +307,11 @@
         .terms-checkbox input[type="checkbox"] {
             width: 20px;
             height: 20px;
-            accent-color: var(--sc-gold);
+            accent-color: var(--color-gold);
         }
 
         .terms-checkbox a {
-            color: var(--sc-gold);
+            color: var(--color-gold);
             text-decoration: none;
         }
 
@@ -320,7 +334,7 @@
             position: absolute;
             width: 4px;
             height: 4px;
-            background: var(--sc-gold);
+            background: var(--color-gold);
             border-radius: 50%;
             animation: particleFloat 15s linear infinite;
         }
@@ -330,12 +344,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 1;
             }
+
             90% {
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
@@ -359,6 +376,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- جزيئات متحركة -->
     <div class="particles" id="particles"></div>
@@ -376,12 +394,14 @@
             <form id="registerForm" class="register-form">
                 <div class="form-group">
                     <label class="form-label" for="fullName">الاسم الكامل</label>
-                    <input type="text" id="fullName" name="fullName" class="form-input" placeholder="أدخل اسمك الكامل" required>
+                    <input type="text" id="fullName" name="fullName" class="form-input" placeholder="أدخل اسمك الكامل"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="email">البريد الإلكتروني</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="أدخل بريدك الإلكتروني" required>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="أدخل بريدك الإلكتروني"
+                        required>
                 </div>
 
                 <div class="form-group">
@@ -392,7 +412,8 @@
                 <div class="form-group">
                     <label class="form-label" for="password">كلمة المرور</label>
                     <div style="position: relative;">
-                        <input type="password" id="password" name="password" class="form-input" placeholder="أدخل كلمة مرور قوية" required>
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="أدخل كلمة مرور قوية" required>
                         <button type="button" class="password-toggle" onclick="togglePassword('password')">
                             <i class="fas fa-eye" id="passwordIcon"></i>
                         </button>
@@ -402,7 +423,8 @@
                 <div class="form-group">
                     <label class="form-label" for="confirmPassword">تأكيد كلمة المرور</label>
                     <div style="position: relative;">
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="أعد إدخال كلمة المرور" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input"
+                            placeholder="أعد إدخال كلمة المرور" required>
                         <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
                             <i class="fas fa-eye" id="confirmPasswordIcon"></i>
                         </button>
@@ -411,13 +433,15 @@
 
                 <div class="form-group">
                     <label class="form-label" for="referralCode">كود الإحالة (اختياري)</label>
-                    <input type="text" id="referralCode" name="referralCode" class="form-input" placeholder="أدخل كود الإحالة إن وجد">
+                    <input type="text" id="referralCode" name="referralCode" class="form-input"
+                        placeholder="أدخل كود الإحالة إن وجد">
                 </div>
 
                 <div class="terms-checkbox">
                     <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                     <label for="agreeTerms">
-                        أوافق على <a href="#" target="_blank">الشروط والأحكام</a> و <a href="#" target="_blank">سياسة الخصوصية</a>
+                        أوافق على <a href="#" target="_blank">الشروط والأحكام</a> و <a href="#" target="_blank">سياسة
+                            الخصوصية</a>
                     </label>
                 </div>
 
@@ -468,7 +492,7 @@
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(inputId + 'Icon');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.className = 'fas fa-eye-slash';
@@ -482,43 +506,43 @@
         function validateForm() {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (password !== confirmPassword) {
                 alert('كلمات المرور غير متطابقة');
                 return false;
             }
-            
+
             if (password.length < 8) {
                 alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
                 return false;
             }
-            
+
             return true;
         }
 
         // معالجة إرسال النموذج
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             if (!validateForm()) {
                 return;
             }
-            
+
             // هنا يمكن إضافة منطق التسجيل
             const formData = new FormData(this);
             const userData = Object.fromEntries(formData);
-            
+
             console.log('بيانات التسجيل:', userData);
-            
+
             // محاكاة عملية التسجيل
             const registerBtn = document.querySelector('.register-btn');
             registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إنشاء الحساب...';
             registerBtn.disabled = true;
-            
+
             setTimeout(() => {
                 // محاكاة إنشاء رمز مميز
                 const token = 'smartcoin_token_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                
+
                 // حفظ بيانات المستخدم
                 const user = {
                     id: Date.now(),
@@ -527,7 +551,7 @@
                     phone: userData.phone,
                     registrationDate: new Date().toISOString()
                 };
-                
+
                 // استخدام نظام الحماية لتسجيل الدخول
                 if (window.AuthGuard) {
                     AuthGuard.onLoginSuccess(token, user);
@@ -542,24 +566,24 @@
         });
 
         // تسجيل عبر تليجرام
-        document.getElementById('telegramRegister').addEventListener('click', function(e) {
+        document.getElementById('telegramRegister').addEventListener('click', function (e) {
             e.preventDefault();
             alert('سيتم توجيهك لتسجيل الدخول عبر تليجرام');
             // هنا يمكن إضافة منطق التسجيل عبر تليجرام
         });
 
         // تسجيل عبر محفظة TON
-        document.getElementById('tonRegister').addEventListener('click', function(e) {
+        document.getElementById('tonRegister').addEventListener('click', function (e) {
             e.preventDefault();
             alert('سيتم توجيهك لتسجيل الدخول عبر محفظة TON');
             // هنا يمكن إضافة منطق التسجيل عبر محفظة TON
         });
 
         // تشغيل الجزيئات عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             createParticles();
         });
     </script>
 </body>
-</html>
 
+</html>

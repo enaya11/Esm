@@ -1,0 +1,344 @@
+2025-07-08 15:08:33,075 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-08 15:08:33,843 - __main__ - ERROR - Œÿ√ ›Ì  ‘€Ì· «·»Ê : No module named 'aiohttp'
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 63, in main
+    from telegram_auth_bot import TelegramAuthBot
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 17, in <module>
+    import aiohttp
+ModuleNotFoundError: No module named 'aiohttp'
+2025-07-08 15:20:50,907 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-08 15:20:53,159 - __main__ - ERROR - Œÿ√ ›Ì  ‘€Ì· «·»Ê : cannot import name 'WebApp' from 'telegram' (C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\telegram\__init__.py)
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 63, in main
+    from telegram_auth_bot import TelegramAuthBot
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 20, in <module>
+    from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebApp
+ImportError: cannot import name 'WebApp' from 'telegram' (C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\telegram\__init__.py)
+2025-07-08 15:23:31,029 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-08 15:23:32,571 - telegram_auth_bot - INFO -  „  ÂÌ∆… ﬁ«⁄œ… «·»Ì«‰«  »‰Ã«Õ
+2025-07-08 15:23:36,189 - telegram_auth_bot - ERROR - Œÿ√ ›Ì  ‘€Ì· «·»Ê : 'Updater' object has no attribute '_Updater__polling_cleanup_cb' and no __dict__ for setting new attributes
+2025-07-08 15:24:56,450 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-08 15:24:58,239 - telegram_auth_bot - INFO -  „  ÂÌ∆… ﬁ«⁄œ… «·»Ì«‰«  »‰Ã«Õ
+2025-07-09 04:04:03,541 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-09 04:04:06,344 - telegram_auth_bot - INFO -  „  ÂÌ∆… ﬁ«⁄œ… «·»Ì«‰«  »‰Ã«Õ
+2025-07-09 04:04:07,586 - __main__ - ERROR - Œÿ√ ›Ì  ‘€Ì· «·»Ê : 'Updater' object has no attribute '_Updater__polling_cleanup_cb' and no __dict__ for setting new attributes
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 80, in main
+    await bot.run()
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 604, in run
+    self.application = Application.builder().token(self.token).build()
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_applicationbuilder.py", line 312, in build
+    updater = Updater(bot=bot, update_queue=update_queue)
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 128, in __init__
+    self.__polling_cleanup_cb: Optional[Callable[[], Coroutine[Any, Any, None]]] = None
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Updater' object has no attribute '_Updater__polling_cleanup_cb' and no __dict__ for setting new attributes
+2025-07-09 04:07:49,564 - __main__ - INFO - »œ¡  ‘€Ì· »Ê  «·„’«œﬁ…...
+2025-07-09 04:07:51,050 - telegram_auth_bot - INFO -  „  ÂÌ∆… ﬁ«⁄œ… «·»Ì«‰«  »‰Ã«Õ
+2025-07-09 04:07:52,642 - __main__ - ERROR - Œÿ√ ›Ì  ‘€Ì· «·»Ê : Cannot close a running event loop
+Traceback (most recent call last):
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 1047, in __run
+    loop.run_until_complete(self._bootstrap_initialize(max_retries=bootstrap_retries))
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 701, in run_until_complete
+    self._check_running()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 637, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 1072, in __run
+    loop.run_until_complete(self.shutdown())
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 701, in run_until_complete
+    self._check_running()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 637, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 80, in main
+    await bot.run()
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 623, in run
+    await self.application.run_polling(allowed_updates=Update.ALL_TYPES)
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 837, in run_polling
+    return self.__run(
+           ~~~~~~~~~~^
+        updater_coroutine=self.updater.start_polling(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        close_loop=close_loop,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 1077, in __run
+    loop.close()
+    ~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\proactor_events.py", line 684, in close
+    raise RuntimeError("Cannot close a running event loop")
+RuntimeError: Cannot close a running event loop
+2025-07-09 04:14:09,974 - __main__ - INFO - ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ ÿßŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:14:14,508 - telegram_auth_bot - INFO - ÿ™ŸÖ ÿ™ŸáŸäÿ¶ÿ© ŸÇÿßÿπÿØÿ© ÿßŸÑÿ®ŸäÿßŸÜÿßÿ™ ÿ®ŸÜÿ¨ÿßÿ≠
+2025-07-09 04:14:14,508 - telegram_auth_bot - INFO - üöÄ ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ SmartCoin ŸÑŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:14:14,509 - telegram_auth_bot - INFO - üîó ÿ±ÿßÿ®ÿ∑ ÿßŸÑÿ™ÿ∑ÿ®ŸäŸÇ: https://smartcoin-app.com
+2025-07-09 04:14:25,719 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getMe "HTTP/1.1 200 OK"
+2025-07-09 04:14:25,721 - telegram.ext.Application - INFO - Application started
+2025-07-09 04:14:26,980 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/deleteWebhook "HTTP/1.1 200 OK"
+2025-07-09 04:14:45,108 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:14:48,847 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:14:48,850 - telegram_auth_bot - INFO - ÿßŸÑŸÖÿ≥ÿ™ÿÆÿØŸÖ 7061181190 (üêæSEEDraad) ÿ®ÿØÿ£ ÿßÿ≥ÿ™ÿÆÿØÿßŸÖ ÿßŸÑÿ®Ÿàÿ™
+2025-07-09 04:14:53,896 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "C:\Python313\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\http_proxy.py", line 288, in handle_async_request
+    connect_response = await self._connection.handle_async_request(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        connect_request
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\http11.py", line 136, in handle_async_request
+    raise exc
+  File "C:\Python313\Lib\site-packages\httpcore\_async\http11.py", line 106, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\http11.py", line 177, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\httpcore\_async\http11.py", line 217, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.READ_NUM_BYTES, timeout=timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\httpcore\_backends\anyio.py", line 32, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Python313\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\site-packages\telegram\request\_httpxrequest.py", line 273, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Al_Fares\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 1309, in process_update
+    await coroutine
+  File "C:\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 338, in start_command
+    await update.message.reply_text(
+    ...<3 lines>...
+    )
+  File "C:\Python313\Lib\site-packages\telegram\_message.py", line 1851, in reply_text
+    return await self.get_bot().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<19 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_extbot.py", line 2988, in send_message
+    return await super().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<21 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\_bot.py", line 1099, in send_message
+    return await self._send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<19 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_extbot.py", line 629, in _send_message
+    result = await super()._send_message(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<21 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\_bot.py", line 809, in _send_message
+    result = await self._post(
+             ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\_bot.py", line 697, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_extbot.py", line 369, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\_bot.py", line 726, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\request\_baserequest.py", line 197, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\request\_baserequest.py", line 304, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\telegram\request\_httpxrequest.py", line 290, in do_request
+    raise TimedOut from err
+telegram.error.TimedOut: Timed out
+2025-07-09 04:15:25,714 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:15:39,446 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:15:51,431 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:16:03,461 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:16:16,108 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:16:29,197 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:16:40,591 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:16:52,190 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:17:04,527 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:17:15,501 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:17:26,830 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:17:38,209 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:17:49,633 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:18:00,962 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:18:13,003 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:18:24,980 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:18:36,827 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:18:48,411 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:19:00,094 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:19:11,994 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:19:24,275 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:19:36,347 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:19:48,491 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot7874091797:AAF4fic7zZchK9XORS4SWlpMADt3LW42Um8/getUpdates "HTTP/1.1 200 OK"
+2025-07-09 04:35:08,627 - __main__ - ERROR - ÿÆÿ∑ÿ£ ŸÅŸä ÿ™ÿ¥ÿ∫ŸäŸÑ ÿßŸÑÿ®Ÿàÿ™: This Application is still running!
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 628, in run
+    await self.application.start()
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\tasks.py", line 718, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 80, in main
+    await bot.run()
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 623, in run
+    logger.info(f"Webapp URL: {self.webapp_url}")
+               ^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 385, in __aexit__
+    await self.shutdown()
+  File "C:\Python313\Lib\site-packages\telegram\ext\_application.py", line 535, in shutdown
+    raise RuntimeError("This Application is still running!")
+RuntimeError: This Application is still running!
+2025-07-09 04:35:41,823 - __main__ - INFO - ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ ÿßŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:35:43,332 - __main__ - ERROR - ÿÆÿ∑ÿ£ ŸÅŸä ÿ™ÿ¥ÿ∫ŸäŸÑ ÿßŸÑÿ®Ÿàÿ™: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py)
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 65, in main
+    from telegram_auth_bot import TelegramAuthBot
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 20, in <module>
+    from telegram.request import Request
+ImportError: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py). Did you mean: 'request'?
+2025-07-09 04:37:34,770 - __main__ - INFO - ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ ÿßŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:37:35,786 - __main__ - ERROR - ÿÆÿ∑ÿ£ ŸÅŸä ÿ™ÿ¥ÿ∫ŸäŸÑ ÿßŸÑÿ®Ÿàÿ™: ExtBot.__init__() got an unexpected keyword argument 'read_timeout'
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 66, in main
+    bot = TelegramAuthBot()
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 42, in __init__
+    self.application = self._build_application()
+                       ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 47, in _build_application
+    bot = ExtBot(self.token, read_timeout=10, connect_timeout=10)
+TypeError: ExtBot.__init__() got an unexpected keyword argument 'read_timeout'
+2025-07-09 04:40:23,706 - __main__ - INFO - ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ ÿßŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:40:24,770 - __main__ - ERROR - ÿÆÿ∑ÿ£ ŸÅŸä ÿ™ÿ¥ÿ∫ŸäŸÑ ÿßŸÑÿ®Ÿàÿ™: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py)
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 65, in main
+    from telegram_auth_bot import TelegramAuthBot
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 20, in <module>
+    from telegram.request import Request
+ImportError: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py). Did you mean: 'request'?
+2025-07-09 04:45:02,285 - __main__ - INFO - ÿ®ÿØÿ° ÿ™ÿ¥ÿ∫ŸäŸÑ ÿ®Ÿàÿ™ ÿßŸÑŸÖÿµÿßÿØŸÇÿ©...
+2025-07-09 04:45:03,766 - __main__ - ERROR - ÿÆÿ∑ÿ£ ŸÅŸä ÿ™ÿ¥ÿ∫ŸäŸÑ ÿßŸÑÿ®Ÿàÿ™: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py)
+Traceback (most recent call last):
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\start_bot.py", line 65, in main
+    from telegram_auth_bot import TelegramAuthBot
+  File "C:\Users\Al_Fares\OneDrive\Desktop\smartcoin_final\backend\bot\telegram_auth_bot.py", line 20, in <module>
+    from telegram.request import Request
+ImportError: cannot import name 'Request' from 'telegram.request' (C:\Python313\Lib\site-packages\telegram\request\__init__.py). Did you mean: 'request'?

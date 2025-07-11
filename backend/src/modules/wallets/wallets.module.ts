@@ -1,18 +1,18 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module, forwardRef } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { WalletsController } from './wallets.controller';
 import { WalletsService } from './wallets.service';
-import { Wallet, WalletSchema } from './schemas/wallet.schema';
+import { Wallet } from '../../entities/wallet.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Wallet.name, schema: WalletSchema }]),
-    AuthModule,
+    TypeOrmModule.forFeature([Wallet]),
+    forwardRef(() => AuthModule),
   ],
   controllers: [WalletsController],
   providers: [WalletsService],
   exports: [WalletsService],
 })
-export class WalletsModule {}
+export class WalletsModule { }
 

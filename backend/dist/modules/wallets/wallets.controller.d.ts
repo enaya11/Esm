@@ -6,24 +6,24 @@ export declare class WalletsController {
     constructor(walletsService: WalletsService);
     createWallet(createWalletDto: CreateWalletDto): Promise<{
         success: boolean;
-        wallet: import("./schemas/wallet.schema").Wallet;
+        wallet: import("../../entities/wallet.entity").Wallet;
     }>;
     getWalletByUserId(userId: string): Promise<{
         success: boolean;
-        wallet: import("./schemas/wallet.schema").Wallet;
+        wallet: import("../../entities/wallet.entity").Wallet;
     }>;
     getWalletByTonAddress(tonAddress: string): Promise<{
         success: boolean;
-        wallet: import("./schemas/wallet.schema").Wallet;
+        wallet: import("../../entities/wallet.entity").Wallet;
     }>;
     updateWallet(userId: string, updateWalletDto: UpdateWalletDto): Promise<{
         success: boolean;
-        wallet: import("./schemas/wallet.schema").Wallet;
+        wallet: import("../../entities/wallet.entity").Wallet;
     }>;
     updateBalance(userId: string, body: {
         amount: number;
     }): Promise<{
         success: boolean;
-        wallet: import("./schemas/wallet.schema").Wallet;
+        wallet: import("../../entities/wallet.entity").Wallet;
     }>;
 }

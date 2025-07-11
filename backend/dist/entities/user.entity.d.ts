@@ -2,9 +2,12 @@ import { Order } from './order.entity';
 import { ActivatedPackage } from './activated-package.entity';
 import { Referral } from './referral.entity';
 import { UserActivity } from './user-activity.entity';
+import { Wallet } from './wallet.entity';
 export declare class User {
     id: string;
     telegramId: string;
+    tonWalletAddress: string;
+    publicKey: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -22,6 +25,7 @@ export declare class User {
     level: number;
     createdAt: Date;
     updatedAt: Date;
+    wallet: Wallet;
     orders: Order[];
     activatedPackages: ActivatedPackage[];
     referrals: Referral[];
